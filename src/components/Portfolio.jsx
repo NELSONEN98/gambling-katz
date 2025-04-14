@@ -81,7 +81,7 @@ export default function Portfolio({ setActiveView }) {
               <img
                 className="portfolio__social__img"
                 src="/img/linked.png"
-                alt="github"
+                alt="linkedin"
               />
             </a>
             <img
