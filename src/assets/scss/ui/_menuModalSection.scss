@@ -1,0 +1,194 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+.menu {
+  position: fixed; /* Fija el modal en la pantalla */
+  top: 50%;
+  left: 50%;
+  width: 50vw;
+  height: 50vh;
+  background-color: v.$white; /* Fondo semitransparente */
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  border-radius: 2rem;
+  align-items: flex-start;
+  padding: 2rem;
+  z-index: 1000;
+
+  border: 2px dashed v.$purple;
+  @include m.telefono {
+    padding: 1rem 3rem 0 3rem;
+    justify-content: center;
+    height: 35vh;
+    gap: 0;
+  }
+
+  &.menu--open {
+    animation: modalOpen 0.5s ease-out forwards;
+  }
+
+  /* Animación de cierre */
+  &.menu--close {
+    animation: modalClose 0.5s ease-in forwards;
+  }
+
+  &__grid {
+    @include m.telefono {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  &__list {
+    @include m.telefono {
+      padding: 0;
+    }
+  }
+
+  &__options {
+    display: flex;
+    gap: 2rem;
+
+    @include m.telefono {
+      gap: 1rem;
+      text-align: left;
+      padding: 0 0 0 0;
+      margin-top: 1rem;
+    }
+  }
+
+  &__title__text {
+    font-size: 2.5rem;
+    margin: 0 0 0 0;
+    font-weight: 900;
+    font-family: v.$main_font;
+
+    background-clip: text;
+    line-height: 1.2;
+    background: linear-gradient(90deg, v.$purple, v.$blue);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    @include m.desktop {
+      font-size: 3rem;
+      margin: 0;
+    }
+    @include m.telefono {
+      font-size: 1.5rem;
+      text-align: center;
+      margin: 0;
+    }
+  }
+  &__option {
+    font-size: 1.4rem;
+    margin: 2rem 0 0 0;
+    font-weight: 700;
+    font-family: v.$main_font;
+    background-clip: text;
+    line-height: 1.2;
+    text-decoration: none;
+    list-style: none;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      color: v.$purple;
+      cursor: pointer;
+      animation: liftCorner 0.5s ease-in-out;
+    }
+
+    @include m.desktop {
+      font-size: 1.8rem;
+      margin: 2rem 5rem 4rem 0;
+    }
+
+    @include m.telefono {
+      margin: 0 0 1rem 0;
+      font-weight: 500;
+    }
+  }
+  &__img {
+    width: 10rem;
+    animation: float 3s ease-in-out infinite;
+
+    @include m.desktop {
+      width: 15rem;
+    }
+    @include m.telefono {
+      animation: none;
+      position: absolute;
+      top: 50%;
+    }
+  }
+  &__close {
+    position: absolute;
+    top: 1rem; /* Ajusta la posición superior */
+    right: 1rem; /* Ajusta la posición derecha */
+    background: none; /* Sin fondo */
+    border: none; /* Sin borde */
+    font-size: 3rem; /* Tamaño de la "X" */
+    font-weight: bold;
+    color: v.$purple; /* Color de la "X" */
+    cursor: pointer;
+    z-index: 1001; /* Asegura que esté por encima del contenido del modal */
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.2); /* Efecto de zoom al pasar el mouse */
+      color: v.$blue; /* Cambia el color al pasar el mouse */
+    }
+  }
+}
+.background {
+  position: fixed; /* Fija el fondo en la pantalla */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  backdrop-filter: blur(5px); /* Aplica el desenfoque */
+  z-index: 999;
+}
+
+@keyframes float {
+  0% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-10px);
+  }
+  100% {
+    transform: translatey(0px);
+  }
+}
+
+@keyframes liftCorner {
+  0% {
+    transform: rotate(0deg) translate(0, 0); /* Posición inicial */
+  }
+  50% {
+    transform: rotate(-5deg) translate(-5px, -5px); /* Levanta desde la esquina */
+  }
+  100% {
+    transform: rotate(0deg) translate(0, 0); /* Vuelve a la posición inicial */
+  }
+}
+@keyframes modalOpen {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5); /* Comienza pequeño */
+    opacity: 0; /* Comienza invisible */
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1); /* Tamaño normal */
+    opacity: 1; /* Totalmente visible */
+  }
+}
+
+@keyframes modalClose {
+  0% {
+    transform: translate(-50%, -50%) scale(1); /* Tamaño normal */
+    opacity: 1; /* Totalmente visible */
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.5); /* Se reduce */
+    opacity: 0; /* Se desvanece */
+  }
+}

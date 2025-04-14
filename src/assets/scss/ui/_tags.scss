@@ -1,0 +1,60 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+
+.tag__name--react {
+  display: inline-block;
+  background: linear-gradient(10deg, v.$purple, v.$blue);
+  color: v.$white;
+  font-weight: 500;
+  font-family: v.$main_font;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 2rem;
+  margin: 0;
+}
+.tag__name--css {
+  display: inline-block;
+  background: linear-gradient(10deg, v.$medium_blue, v.$blue);
+  color: v.$white;
+  font-weight: 500;
+  font-family: v.$main_font;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 2rem;
+  margin: 0;
+}
+.tag__name--html {
+  display: inline-block;
+  background: linear-gradient(10deg, v.$red_tomato, v.$light_orange);
+  color: v.$white;
+  font-weight: 500;
+  font-family: v.$main_font;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 2rem;
+  margin: 0;
+}
+
+.tag__name--js {
+  display: inline-block;
+  background: linear-gradient(10deg, v.$orange, v.$light_orange);
+  color: v.$white;
+  font-weight: 500;
+  font-family: v.$main_font;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 2rem;
+  margin: 0;
+}
+
+.tag__name--sass {
+  display: inline-block;
+  background: linear-gradient(10deg, v.$red_tomato, v.$purple);
+  color: v.$white;
+  font-weight: 500;
+  font-family: v.$main_font;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 2rem;
+  margin: 0;
+}

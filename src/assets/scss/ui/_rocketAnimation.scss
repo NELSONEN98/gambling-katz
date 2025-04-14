@@ -1,0 +1,181 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+
+.rocket__animation {
+  display: flex;
+  background: black;
+  position: relative;
+  width: 100%; /* Ancho total del contenedor */
+  height: 100vh; /* Altura específica del contenedor */
+  overflow: hidden; /* Para ocultar cualquier elemento que salga del contenedor */
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 2s ease-in-out;
+
+  &__img {
+    width: 1220px;
+    transform: rotate(90deg);
+    transform: scale(1); /* Escala inicial */
+    transition: transform 0.3s ease;
+    animation: float 3s ease-in-out infinite;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &.expanded {
+    .rocket__animation__container__rocket {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro */
+    }
+
+    .rocket__animation__img {
+      animation: expand 5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    }
+  }
+
+  .rocket__animation__container__rocket {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1); /* Efecto hover */
+    }
+  }
+
+  .rocket__animation__img {
+    height: auto;
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+  }
+}
+
+.stars-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  width: 4px; /* Ajusta el tamaño según sea necesario */
+  height: 4px;
+  background-color: white;
+  will-change: transform, opacity;
+  z-index: 20;
+  box-shadow: 4vw 50vh 0 #fff, 18vw 88vh 0 #fff;
+
+  @include m.desktop {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+.star1 {
+  width: 5px;
+  height: 5px;
+  background-color: white;
+  box-shadow: 4vw 50vh 0 #b9b9b9, 18vw 88vh 0 #969696;
+}
+
+.star2 {
+  position: absolute;
+  width: 5px; /* Ajusta el tamaño según sea necesario */
+  height: 5px;
+  background-color: white;
+  z-index: 20;
+  box-shadow: 4vw 50vh 0 #fff, 18vw 88vh 0 #fff;
+
+  @include m.desktop {
+    width: 2.5px;
+    height: 2.5px;
+  }
+}
+
+.space {
+  width: var(--star-size);
+  height: var(--star-size);
+  background-color: v.$white;
+  box-shadow: var(--space-layer);
+  position: absolute; /* Necesario para animaciones */
+  top: 0; /* Asegura que las estrellas comiencen desde la parte superior del contenedor */
+  left: 0; /* Asegura que las estrellas se alineen desde el borde izquierdo */
+  opacity: 75%;
+  animation: moveStars var(--animation-duration) linear infinite;
+  z-index: -1;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes expand {
+  0% {
+    transform: scale(1);
+    opacity: 1; /* Totalmente visible al inicio */
+  }
+
+  100% {
+    transform: scale(30);
+    opacity: 0.8; /* Se desvanece ligeramente al final */
+  }
+}
+
+@keyframes moveStars {
+  0% {
+    transform: translate(0, 0); /* Punto inicial */
+  }
+  25% {
+    transform: translate(
+      10px,
+      -10px
+    ); /* Mueve hacia la esquina superior derecha */
+  }
+  50% {
+    transform: translate(0, -20px); /* Mueve hacia arriba */
+  }
+  75% {
+    transform: translate(
+      -10px,
+      -10px
+    ); /* Mueve hacia la esquina superior izquierda */
+  }
+  100% {
+    transform: translate(0, 0); /* Vuelve al punto inicial */
+  }
+}
+
+.rocket__expanded {
+  animation: expand 1s ease-in-out forwards, deform 1s ease-in-out forwards;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(0); /* Desplazado hacia abajo */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Posición final */
+  }
+}

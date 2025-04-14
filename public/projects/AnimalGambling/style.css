@@ -1,0 +1,418 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+:root {
+  --color-primary: #753682;
+  --color-secondary: #bf2e34;
+  --color-tertiary: #c7365f;
+  --color-quaternary: #2f2f2f;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-gray: #ddd;
+  --color-light: #f5f5f5;
+  --primary-font: "Pixelify Sans", sans-serif;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+
+  height: 100vh;
+  color: #333;
+  /*background-image: linear-gradient(to top left, #753682 0%, #bf2e34 100%);*/
+  background-image: linear-gradient(to top left, #753682 0%, #1f1e1e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LAYOUT */
+.main-screen {
+  display: none;
+  position: relative;
+  width: 100rem;
+  height: 60rem;
+  background-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(200px);
+  filter: blur();
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.25);
+
+  overflow: hidden;
+  /*display: flex;*/
+}
+.screen-flex {
+  display: flex;
+}
+
+@media (max-width: 1400px) {
+  .main-screen {
+    width: 100rem;
+    height: 53rem;
+
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+}
+
+.player {
+  flex: 50%;
+  padding: 9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.75s;
+}
+
+/* ELEMENTS */
+.name {
+  position: relative;
+  font-size: 6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  word-spacing: 2px;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+.score {
+  font-size: 12rem;
+  font-weight: 300;
+  color: #c7365f;
+  margin-bottom: auto;
+}
+
+.player--active {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.player--active .name {
+  font-weight: 700;
+}
+.player--active .score {
+  font-weight: 400;
+}
+
+.player--active .current {
+  opacity: 1;
+}
+
+.current {
+  background-color: #c7365f;
+  opacity: 0.8;
+
+  color: #fff;
+  width: 65%;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.75s;
+}
+
+.current-label {
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-size: 3rem;
+  color: #ddd;
+}
+
+.current-score {
+  font-size: 5rem;
+}
+
+/* ABSOLUTE POSITIONED ELEMENTS */
+.btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #444;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 2.3rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 400;
+  transition: all 0.2s;
+
+  background-color: white;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+
+  padding: 0.7rem 2.5rem;
+  border-radius: 50rem;
+  box-shadow: 0 1.75rem 3.5rem rgba(0, 0, 0, 0.1);
+}
+/*
+.btn::first-letter {
+  font-size: 2.4rem;
+  display: inline-block;
+  margin-right: 0.7rem;
+}*/
+
+.btn--new {
+  top: 4rem;
+}
+.reach {
+  position: absolute;
+  font-size: 6rem;
+  background: linear-gradient(165deg, #b0308a, #bf2e34, #c7365f);
+  color: white;
+  padding: 1.5rem;
+  left: 40%;
+  top: 28rem;
+}
+.btn--roll {
+  top: 39.3rem;
+}
+.btn--hold {
+  top: 46.1rem;
+}
+
+.btn:active {
+  transform: translate(-50%, 3px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
+
+.btn:focus {
+  outline: none;
+}
+.dice-container {
+  position: absolute;
+  left: 50%;
+  top: 16rem;
+  transform: translateX(-50%); /* Centra el contenedor horizontalmente */
+}
+.dice {
+  transform-origin: center; /* Asegura que el pivote esté centrado */
+  height: 10rem;
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.2);
+}
+
+.player--winner {
+  background-color: #2f2f2f;
+}
+
+.player--winner .name {
+  font-weight: 700;
+  color: #c7365f;
+}
+.hidden {
+  display: none;
+}
+
+/*.letraGanadora {
+  background-color: ;
+}
+*/
+
+.player-character-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background-color: #a0a0a0;
+
+  justify-items: stretch;
+  align-items: center;
+}
+.player-character-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  color: #fff;
+  background-color: black;
+  font-family: var(--primary-font);
+  padding: 1.2rem 0;
+}
+.player-character-text span {
+  display: block;
+}
+.player-character-grid {
+  z-index: 100;
+  position: absolute;
+  left: 50%;
+  top: 2rem;
+  left: 30rem;
+  right: 0;
+  bottom: 0;
+  width: 100rem;
+  height: 60rem;
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.2);
+}
+@media (max-width: 1400px) {
+  .player-character-grid {
+    top: 0.5rem;
+    width: 80%;
+    height: 10rem;
+    left: 10rem;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+}
+.player-character-img {
+  width: 230px;
+}
+.player-character-img:hover {
+  scale: 1.1;
+  transition: all 0.5s;
+  cursor: pointer;
+}
+
+.player-character-bg {
+  display: flex;
+  flex-direction: column;
+  border: #000000 solid 10px;
+}
+.player-character-name {
+  text-align: center;
+  color: #fff;
+  background-color: black;
+  font-family: var(--primary-font);
+  padding: 1.2rem 0;
+  font-size: 2.4rem;
+}
+
+.player-character-flex {
+  display: flex;
+  align-items: center;
+  transition: all 0.5s;
+}
+
+/*
+.player-character-flex:hover {
+  background: linear-gradient(135deg, #753682, #bf2e34, #c7365f);
+  cursor: pointer;
+}*/
+
+.player-description {
+  font-size: 2rem;
+  color: #000;
+  margin: 1rem;
+  font-family: var(--primary-font);
+  text-align: left;
+}
+
+.player-description span {
+  font-weight: 700;
+}
+
+.hover-green:hover {
+  background: linear-gradient(135deg, #00ff00, #008000);
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+/* Hover effect for Player 2 (blue gradient) */
+.hover-blue:hover {
+  background: linear-gradient(135deg, rgb(101, 119, 189), rgb(45, 48, 139));
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+/* Disable hover for selected characters */
+.no-hover:hover {
+  background: inherit;
+  cursor: default;
+  transition: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.dice.spin {
+  animation: spin 0.5s ease-in-out; /* Duración de 0.5 segundos */
+}
+
+/** PORTATIL */
+@media (max-width: 1400px) {
+  .player-character-container {
+    grid-template-columns: repeat(2, 1fr); /* Mantén la estructura */
+    background-color: #a0a0a0;
+    justify-items: stretch;
+    align-items: center;
+  }
+
+  .player-character-text {
+    font-size: 3.2rem; /* Reduce el tamaño de fuente un 20% */
+    padding: 0.96rem 0; /* Reduce el padding un 20% */
+  }
+
+  .player-character-grid {
+    width: 80rem; /* Reduce el ancho un 20% */
+    height: 48rem; /* Reduce la altura un 20% */
+    left: 24rem; /* Ajusta la posición un 20% */
+    box-shadow: 0 1.6rem 4rem rgba(0, 0, 0, 0.2); /* Ajusta el box-shadow */
+  }
+
+  .player-character-img {
+    width: 184px; /* Reduce el tamaño de la imagen un 20% */
+  }
+
+  .player-character-name {
+    font-size: 1.92rem; /* Reduce el tamaño de fuente un 20% */
+    padding: 0.96rem 0; /* Reduce el padding un 20% */
+  }
+
+  .player-character-flex {
+    transition: all 0.4s; /* Ajusta la transición */
+  }
+
+  .player-description {
+    font-size: 1.6rem; /* Reduce el tamaño de fuente un 20% */
+    margin: 0.8rem; /* Reduce el margen un 20% */
+  }
+
+  .hover-green:hover {
+    background: linear-gradient(
+      135deg,
+      #00cc00,
+      #006600
+    ); /* Ajusta el degradado si es necesario */
+  }
+
+  .hover-blue:hover {
+    background: linear-gradient(
+      135deg,
+      rgb(81, 95, 151),
+      rgb(36, 38, 111)
+    ); /* Ajusta el degradado si es necesario */
+  }
+}
+
+/** characters */
+.selected-character {
+  position: absolute;
+  width: 29rem; /* Ajusta el tamaño de la imagen */
+  height: 29rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1000;
+}
+
+.selected-character--player1 {
+  top: 60%;
+  left: 10px;
+}
+
+.selected-character--player2 {
+  top: 60%;
+  right: 10px;
+}
+
+.player-selections {
+  display: none;
+}

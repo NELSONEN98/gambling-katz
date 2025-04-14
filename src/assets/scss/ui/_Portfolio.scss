@@ -1,0 +1,231 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+
+.portfolio {
+  padding: 3rem 8rem 0 8rem;
+  animation: fadeIn 2s ease-in-out;
+
+  @include m.desktop {
+    padding: 4rem 7rem;
+  }
+
+  @include m.telefono {
+    padding: 2rem 2rem;
+  }
+  &__grid {
+    display: flex;
+    gap: 10rem;
+    @include m.desktop {
+      gap: 10rem;
+    }
+
+    @include m.telefono {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  &__img {
+    width: 10rem;
+    height: 8rem;
+    border-radius: 1rem;
+    @include m.telefono {
+      width: 100%;
+      height: 8rem;
+    }
+  }
+
+  &__title {
+    font-size: 2.5rem;
+    margin: 0 5rem 0 0;
+    font-weight: 900;
+    font-family: v.$main_font;
+
+    background-clip: text;
+    line-height: 1.2;
+    background: linear-gradient(90deg, v.$purple, v.$blue);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    @include m.desktop {
+      font-size: 3rem;
+      margin: 0;
+    }
+    @include m.telefono {
+      font-size: 2rem;
+      text-align: center;
+      margin: 0;
+    }
+  }
+
+  &__text {
+    font-size: 1.2rem;
+    margin: 1rem 0 2rem 0;
+    font-weight: 500;
+    font-family: v.$main_font;
+    background-clip: text;
+    line-height: 1.2;
+
+    @include m.desktop {
+      font-size: 1.2rem;
+      margin: 2rem 5rem 4rem 0;
+    }
+
+    @include m.telefono {
+      margin: 1rem 0 1rem 0;
+    }
+  }
+  &__content__text {
+    font-family: v.$main_font;
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  &__content__grid {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    transition: all 0.3s ease-in-out;
+    @include m.telefono {
+      flex-direction: column;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: v.$light_gray;
+    }
+  }
+
+  &__menu {
+    overflow-y: auto;
+    max-height: 30rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    @include m.desktop {
+      max-height: 38rem;
+    }
+    @include m.telefono {
+      max-height: 28rem;
+    }
+
+    &::-webkit-scrollbar {
+      display: none; /* Oculta la barra de scroll */
+    }
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  &__list__container {
+    text-decoration: none;
+    padding: 0;
+    @include m.telefono {
+      display: none;
+    }
+  }
+  &__list {
+    position: relative; /* Necesario para posicionar el ::before */
+    text-decoration: none;
+    list-style: none; /* Elimina cualquier estilo de lista predeterminado */
+    font-weight: 500;
+    font-family: v.$main_font;
+    margin: 1rem 0;
+    padding-left: 4rem; /* Espacio para la barra lateral */
+    transition: transform 0.3s ease; /* Transición suave para el texto */
+
+    &::before {
+      content: ""; /* Crea la barra lateral */
+      position: absolute;
+      left: 0; /* Coloca la barra en el borde izquierdo */
+      top: 30%;
+      height: 20%; /* Altura completa del elemento */
+      transform: translateY(-50%);
+      width: 30px; /* Ancho de la barra */
+      transition: width 0.3s ease, background-color 0.3s ease; /* Transición suave */
+      background-color: v.$blue; /* Color de la barra */
+    }
+
+    &:hover {
+      cursor: pointer;
+      transform: translateX(10px);
+      /* Mueve el texto hacia la derecha al hacer hover */
+    }
+
+    &:hover::before {
+      background-color: v.$purple;
+      width: 15%;
+      /* Cambia el color de la barra al hacer hover */
+    }
+    &__active {
+      transform: translateX(10px); /* Mueve el texto hacia la derecha */
+
+      &::before {
+        background-color: v.$purple; /* Color de la barra activa */
+        width: 15%; /* Barra completamente expandida */
+      }
+    }
+  }
+
+  &__content {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  &__content__title {
+    font-family: v.$main_font;
+    font-size: 1.5rem;
+    font-weight: 700;
+    @include m.telefono {
+      text-align: center;
+    }
+  }
+  &__social__links {
+    display: flex;
+    gap: 1.5rem;
+    @include m.telefono {
+      justify-content: center;
+    }
+  }
+
+  &__social__img {
+    width: 4rem;
+    margin-top: 1.5rem;
+    align-items: center;
+    @include m.telefono {
+      width: 2rem;
+      margin: 0;
+    }
+
+    @include m.desktop {
+      margin-top: 5rem;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+
+    &--rocket {
+      &:hover {
+        scale: 1.2;
+        transition: all 0.3s ease-in-out;
+      }
+    }
+  }
+}
+
+.tag__container {
+  display: flex;
+  gap: 1rem;
+  @include m.telefono {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(0); /* Desplazado hacia abajo */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Posición final */
+  }
+}

@@ -1,0 +1,249 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+
+.header {
+  display: flex;
+  background: black;
+  position: relative;
+
+  width: 100%; /* Ancho total del contenedor */
+  height: 100vh; /* Altura específica del contenedor */
+  overflow: hidden; /* Para ocultar cualquier elemento que salga del contenedor */
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+
+  @include m.telefono {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  &__inicio {
+    color: v.$white;
+    padding: 5rem 0;
+    margin-left: 15rem;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    @include m.telefono {
+      margin-left: 0;
+      margin-top: 0;
+      padding: 5rem 0 0 0;
+    }
+  }
+
+  &__resume {
+    font-family: v.$main_font;
+
+    display: flex;
+    justify-content: space-around;
+    font-weight: 500;
+    font-size: 2rem;
+    margin-top: 2rem;
+
+    @include m.telefono {
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+  }
+
+  &__name {
+    font-family: v.$title_font;
+    font-size: 8rem;
+    line-height: 0.9;
+    display: flex;
+    justify-content: space-around;
+    z-index: 100;
+
+    @include m.desktop {
+      font-size: 10rem;
+    }
+    @include m.telefono {
+      font-size: 4rem;
+    }
+  }
+
+  &__clickme {
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    font-family: v.$points_font;
+    font-weight: 700;
+    transform: scaleX(2);
+    margin: 2rem;
+    color: white;
+
+    z-index: 1;
+    animation: blink 1s infinite;
+
+    &:hover {
+      transform: scale(1.5);
+    }
+
+    @include m.desktop {
+      font-size: 2rem;
+      padding: 1.5rem 3.5rem;
+    }
+    @include m.telefono {
+      margin: 1rem 0 0 0;
+      position: absolute;
+      top: 37rem;
+      font-size: 3rem;
+    }
+  }
+
+  .wave__img {
+    margin-top: 28rem;
+    position: absolute;
+    z-index: 1;
+
+    @include m.desktop {
+      margin-top: 38rem;
+    }
+  }
+
+  .space {
+    width: var(--star-size);
+    height: var(--star-size);
+    background-color: v.$white;
+    box-shadow: var(--space-layer);
+    position: absolute; /* Necesario para animaciones */
+    top: 0; /* Asegura que las estrellas comiencen desde la parte superior del contenedor */
+    left: 0; /* Asegura que las estrellas se alineen desde el borde izquierdo */
+    opacity: 75%;
+    animation: moveStars var(--animation-duration) linear infinite;
+    z-index: -1;
+  }
+
+  /*
+  @keyframes moveStars {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-100vh);
+    }
+  }
+*/
+  .cat__img {
+    width: 45rem;
+    animation: float 5s ease-in-out infinite;
+    z-index: 1;
+
+    @include m.desktop {
+      width: 60rem;
+    }
+    @include m.telefono {
+      width: 20rem;
+    }
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-30px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+}
+.space {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+.star {
+  position: absolute;
+  width: 4px; /* Ajusta el tamaño según sea necesario */
+  height: 4px;
+  background-color: white;
+
+  will-change: transform, opacity;
+  z-index: 20;
+  box-shadow: 4vw 50vh 0 #fff, 18vw 88vh 0 #fff;
+
+  @include m.desktop {
+    width: 10px;
+    height: 10px;
+  }
+}
+.star1 {
+  width: 5px;
+  height: 5px;
+  background-color: white;
+  box-shadow: 4vw 50vh 0 #b9b9b9, 18vw 88vh 0 #969696;
+}
+
+.star2 {
+  position: absolute;
+  width: 5px; /* Ajusta el tamaño según sea necesario */
+  height: 5px;
+  background-color: white;
+
+  z-index: 20;
+  box-shadow: 4vw 50vh 0 #fff, 18vw 88vh 0 #fff;
+
+  @include m.desktop {
+    width: 2.5px;
+    height: 2.5px;
+  }
+}
+
+.App {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  background: black; /* Fondo negro */
+}
+
+.stars-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.moveUp {
+  animation: moveHeaderUp 2s ease-in-out forwards;
+  @include m.telefono {
+    animation: moveHeaderUpTelefono 2s ease-in-out forwards;
+  }
+}
+
+@keyframes moveHeaderUp {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes moveHeaderUpTelefono {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(
+      -280%
+    ); /* Aumenta el desplazamiento para pantallas pequeñas */
+  }
+}
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

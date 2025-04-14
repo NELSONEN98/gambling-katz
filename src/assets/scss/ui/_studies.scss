@@ -1,0 +1,24 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+
+.studies__container {
+  .studies__container__text {
+    .studies__title {
+      font-size: 2rem;
+      margin: 0;
+      font-family: v.$title_font;
+      text-align: center;
+      background-clip: text;
+      grid-column: 1 / 3;
+      line-height: 1.2;
+      background: linear-gradient(
+        80deg,
+        v.$orange,
+        v.$light_orange
+      ); /* Gradiente de naranja a blanco */
+      -webkit-background-clip: text; /* Aplica el gradiente al texto */
+      -webkit-text-fill-color: transparent;
+      transition: all 0.5s ease-in-out;
+    }
+  }
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Animal gambling</title>
+  </head>
+  <body>
+    <main class="main-screen">
+      <section class="player player--0 player--active">
+        <h2 class="name" id="name--0">Player 01</h2>
+        <p class="score" id="score--0">0</p>
+        <div class="current">
+          <p class="current-label">Current</p>
+          <p class="current-score" id="current--0">0</p>
+        </div>
+      </section>
+      <section class="player player--1">
+        <h2 class="name" id="name--1">Player 02</h2>
+        <p class="score" id="score--1">0</p>
+        <div class="current">
+          <p class="current-label">Current</p>
+          <p class="current-score" id="current--1">0</p>
+        </div>
+      </section>
+
+      <div class="dice-container">
+        <img src="dices/dice-1.png" alt="Playing dice" class="dice hidden" />
+      </div>
+      <button class="btn btn--new">New game</button>
+      <div class="reach">Goal: 50</div>
+
+      <button class="btn btn--roll">Roll dice</button>
+      <button class="btn btn--hold">Hold</button>
+    </main>
+    <div class="player-character-grid">
+      <h2 class="player-character-text">Select Player 01</h2>
+      <div class="player-character-container">
+        <div class="player-character-bg">
+          <div class="player-character-flex">
+            <img
+              class="player-character-img"
+              src="img/penguin.png"
+              alt="penguinimg"
+              class="player-character"
+              id="penguin"
+            />
+            <div class="player-description-flex">
+              <p class="player-description"><span>Name:</span> Tax Penguin</p>
+              <p class="player-description"><span>Age:</span> 30 years</p>
+              <p class="player-description">
+                <span>Description: </span> Pursued by the government, he seeks
+                refuge in gambling.
+              </p>
+            </div>
+          </div>
+          <h1 class="player-character-name">Tax Penguin</h1>
+        </div>
+        <div class="player-character-bg">
+          <div class="player-character-flex">
+            <img
+              class="player-character-img"
+              src="img/bear.png"
+              alt="bear"
+              class="player-character"
+              id="bear"
+            />
+            <div class="player-description-flex">
+              <p class="player-description"><span>Name:</span> Bearnardo</p>
+              <p class="player-description"><span>Age:</span> 42 years</p>
+              <p class="player-description">
+                <span>Condition:</span> He started a new life as a butcher to
+                hide from the law.
+              </p>
+            </div>
+          </div>
+          <h1 class="player-character-name">Bearnardo</h1>
+        </div>
+        <div class="player-character-bg">
+          <div class="player-character-flex">
+            <img
+              class="player-character-img"
+              src="img/duck.png"
+              alt="duckimg"
+              class="player-character"
+              id="duck"
+            />
+            <div class="player-description-flex">
+              <p class="player-description"><span>Name:</span> Lucky Ducky</p>
+              <p class="player-description"><span>Age:</span> 25 years</p>
+              <p class="player-description">
+                <span>Condition:</span> Just looking for a dopamine hit with the
+                dice.
+              </p>
+            </div>
+          </div>
+          <h1 class="player-character-name">Lucky Ducky</h1>
+        </div>
+        <div class="player-character-bg">
+          <div class="player-character-flex">
+            <img
+              class="player-character-img"
+              src="img/egg.png"
+              alt="eggimg"
+              class="player-character"
+              id="egg"
+            />
+            <div class="player-description-flex">
+              <p class="player-description"><span>Name:</span> Mystery Egg</p>
+              <p class="player-description"><span>Age:</span> ?</p>
+              <p class="player-description"><span>Condition:</span> ???</p>
+            </div>
+          </div>
+          <h1 class="player-character-name">Mystery Egg</h1>
+        </div>
+      </div>
+    </div>
+    <div class="selected-character selected-character--player1"></div>
+    <div class="selected-character selected-character--player2"></div>
+    <div class="player-selections">
+      <p>Player 1 selected: <span id="player1-selection">None</span></p>
+      <p>Player 2 selected: <span id="player2-selection">None</span></p>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
