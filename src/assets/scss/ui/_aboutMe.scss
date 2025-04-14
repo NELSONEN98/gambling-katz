@@ -208,7 +208,7 @@
   position: relative;
   display: grid;
   height: auto;
-  overflow-y: auto;
+  overflow-y: hidden;
   z-index: 1200;
   @include m.grid(5, 1fr);
 

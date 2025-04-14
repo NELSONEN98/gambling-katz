@@ -76,12 +76,13 @@ export default function Portfolio({ setActiveView }) {
                 alt="github"
               />
             </a>
-
-            <img
-              className="portfolio__social__img"
-              src="/img/linked.png"
-              alt="github"
-            />
+            <a href="https://github.com/NELSONEN98" target="_blank">
+              <img
+                className="portfolio__social__img"
+                src="/img/linked.png"
+                alt="github"
+              />
+            </a>
             <img
               className="portfolio__social__img portfolio__social__img--rocket"
               src="/img/rocketpiskel.png"
