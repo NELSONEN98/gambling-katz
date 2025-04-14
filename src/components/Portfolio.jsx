@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import "../assets/scss/ui/_portfolio.scss";
+import "../assets/scss/ui/_Portfolio.scss";
 import MenuModalSelection from "./MenuModalSelection";
 import { ReactTag, HtmlTag, CssTag, SassTag, JsTag } from "./Tags";
 
