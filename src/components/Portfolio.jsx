@@ -70,7 +70,7 @@ export default function Portfolio({ setActiveView }) {
               <img
                 className="portfolio__social__img"
                 src="/img/github-mark.png"
-                alt="github"
+                alt="githube"
               />
             </a>
 
