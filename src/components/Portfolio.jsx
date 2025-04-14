@@ -66,17 +66,18 @@ export default function Portfolio({ setActiveView }) {
             </li>*/}
           </ul>
           <div className="portfolio__social__links">
-            <a
-              href="https://www.linkedin.com/in/nelson-enrique-bedoya-arango-1466071b1/"
-              target="_blank"
-            >
+            <a href="https://github.com/NELSONEN98" target="_blank">
               <img
                 className="portfolio__social__img"
                 src="/img/github-mark.png"
                 alt="github"
               />
             </a>
-            <a href="https://github.com/NELSONEN98" target="_blank">
+
+            <a
+              href="https://www.linkedin.com/in/nelson-enrique-bedoya-arango-1466071b1/"
+              target="_blank"
+            >
               <img
                 className="portfolio__social__img"
                 src="/img/linked.png"
