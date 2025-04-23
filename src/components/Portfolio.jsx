@@ -165,6 +165,37 @@ function ReactPortfolio() {
         <div className="portfolio__content__grid">
           <img
             className="portfolio__img"
+            src="/img/portfolio/react.PNG"
+            alt="ejemplo"
+          />
+          <div className="portfolio__content__flex">
+            <a
+              href="https://react-quiz-test-a.netlify.app/"
+              target="_blank"
+              className="portfolio__content__title"
+            >
+              React Quiz
+            </a>
+            <p className="portfolio__content__text">
+              React-Quiz is an interactive quiz application built with React and
+              the useReducer hook. It challenges users with 15 carefully crafted
+              questions to test their knowledge of React fundamentals. The app
+              features dynamic state management using useReducer, providing a
+              smooth and responsive experience as users progress through the
+              quiz.
+            </p>
+            <div className="tag__container">
+              <ReactTag />
+              <JsTag />
+              <CssTag />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="portfolio__content">
+        <div className="portfolio__content__grid">
+          <img
+            className="portfolio__img"
             src="/img/portfolio/resume.PNG"
             alt="ejemplo"
           />
