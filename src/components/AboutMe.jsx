@@ -39,18 +39,11 @@ function AboutMeInfo({ handleSections }) {
       <div className="about__me__text">
         <h2 className="about__me__title">About Me</h2>
         <p>
-          Hi, I'm Nelson — a creative web developer with a designer’s eye and a
-          passion for crafting beautiful, user-centered digital experiences.
+           Hi, I'm Nelson — a creative designer and illustrator with strong skills in Adobe Creative Suite and a passion for continuous learning. I approach every project with originality and a personal touch, combining visual creativity with technical knowledge. My experience also includes web design, front-end technologies, and the use of AI tools to optimize and automate workflows, allowing me to deliver effective and visually engaging solutions.
+
+<p>Do you have an idea or project where you want to unleash all your creativity? Let’s bring it to life together!</p>
         </p>
-        <p>
-          With a strong background in web development and digital design, I
-          build sleek, functional interfaces and components using the latest
-          technologies.
-        </p>
-        <p>
-          Naturally curious and detail-obsessed, I'm always learning, always
-          evolving.
-        </p>
+      
       </div>
       <CatImg />
       <div className="about__me__button">
@@ -75,10 +68,13 @@ function Skills({ onSectionRocket }) {
     { src: "img/figma.svg", alt: "Figma" },
     { src: "img/photoshop.svg", alt: "Photoshop" },
     { src: "img/illustrator.svg", alt: "illustrator" },
+    { src: "img/effects.png", alt: "after" },
+     { src: "img/lightroom.png", alt: "light" },
     { src: "img/piskel.png", alt: "piskel" },
     { src: "img/fl.png", alt: "flstudio" },
     { src: "img/color.jpg", alt: "flstudio" },
     { src: "img/capcut.jpg", alt: "capcut" },
+
   ];
 
   return (

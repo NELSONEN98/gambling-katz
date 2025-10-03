@@ -79,8 +79,9 @@ function Header({ onJourneyComplete }) {
         className={!startedJourney ? "header__inicio" : "header__inicio moveUp"}
       >
         <div className="header__name">Nelson</div>
-        <div className="header__name">Bedoya</div>
-        <p className="header__resume">Web Designer and Developer</p>
+        <div className="header__name">Arango</div>
+        <p className="header__resume">Multidisciplinary Designer | Web & Front-End
+</p>
         <a className="header__clickme" onClick={setStartedJourney}>
           v
         </a>
