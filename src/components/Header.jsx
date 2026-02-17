@@ -1,9 +1,16 @@
 import "../assets/scss/ui/_header.scss";
 import React, { useEffect, useRef, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import useScrollToNext from "../hooks/useScrollToNext";
 
 function Header({ onJourneyComplete }) {
   const [startedJourney, setStartedJourney] = useState(false);
+
+  useScrollToNext(() => {
+    if (!startedJourney) {
+      setStartedJourney(true);
+    }
+  });
 
   const windowSize = useRef({
     width: window.innerWidth,
@@ -52,15 +59,13 @@ function Header({ onJourneyComplete }) {
               className={`star ${index % 2 === 0 ? "star1" : "star2"}`}
               initial={{
                 opacity: 0,
-                transform: `translateY(${
-                  windowSize.current.height + star.offset
-                }px) translateX(${star.x * windowSize.current.width}px)`,
+                transform: `translateY(${windowSize.current.height + star.offset
+                  }px) translateX(${star.x * windowSize.current.width}px)`,
               }}
               animate={{
                 opacity: 1,
-                transform: `translateY(-700px) translateX(${
-                  star.x * windowSize.current.width
-                }px)`,
+                transform: `translateY(-700px) translateX(${star.x * windowSize.current.width
+                  }px)`,
               }}
               transition={{
                 duration: startedJourney ? 2 : star.duration,
@@ -80,8 +85,8 @@ function Header({ onJourneyComplete }) {
       >
         <div className="header__name">Nelson</div>
         <div className="header__name">Arango</div>
-        <p className="header__resume">Multidisciplinary Designer | Web & Front-End
-</p>
+        <p className="header__resume">Multidisciplinary Designer | Web & Front-End Developer
+        </p>
         <a className="header__clickme" onClick={setStartedJourney}>
           v
         </a>

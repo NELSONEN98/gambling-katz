@@ -5,9 +5,12 @@
   display: flex;
   background: black;
   position: relative;
-  width: 100%; /* Ancho total del contenedor */
-  height: 100vh; /* Altura específica del contenedor */
-  overflow: hidden; /* Para ocultar cualquier elemento que salga del contenedor */
+  width: 100%;
+  /* Ancho total del contenedor */
+  height: 100vh;
+  /* Altura específica del contenedor */
+  overflow: hidden;
+  /* Para ocultar cualquier elemento que salga del contenedor */
   box-sizing: border-box;
   align-items: center;
   justify-content: center;
@@ -16,9 +19,11 @@
   &__img {
     width: 1220px;
     transform: rotate(90deg);
-    transform: scale(1); /* Escala inicial */
+    transform: scale(1);
+    /* Escala inicial */
     transition: transform 0.3s ease;
     animation: float 3s ease-in-out infinite;
+
     &:hover {
       cursor: pointer;
     }
@@ -35,7 +40,8 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro */
+      background-color: rgba(0, 0, 0, 0.8);
+      /* Fondo oscuro */
     }
 
     .rocket__animation__img {
@@ -48,7 +54,8 @@
     transition: transform 0.3s ease;
 
     &:hover {
-      transform: scale(1.1); /* Efecto hover */
+      transform: scale(1.1);
+      /* Efecto hover */
     }
   }
 
@@ -56,6 +63,29 @@
     height: auto;
     transform: rotate(90deg);
     transition: transform 0.3s ease;
+  }
+
+  &__skip {
+    position: absolute;
+    bottom: 5rem;
+    color: v.$white;
+    font-size: 2rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    transition: all 0.3s ease;
+    z-index: 100;
+
+    &:hover {
+      opacity: 0.7;
+      letter-spacing: 0.4rem;
+    }
+
+    @include m.telefono {
+      bottom: 2rem;
+      font-size: 1.5rem;
+    }
   }
 }
 
@@ -71,7 +101,8 @@
 
 .star {
   position: absolute;
-  width: 4px; /* Ajusta el tamaño según sea necesario */
+  width: 4px;
+  /* Ajusta el tamaño según sea necesario */
   height: 4px;
   background-color: white;
   will-change: transform, opacity;
@@ -93,7 +124,8 @@
 
 .star2 {
   position: absolute;
-  width: 5px; /* Ajusta el tamaño según sea necesario */
+  width: 5px;
+  /* Ajusta el tamaño según sea necesario */
   height: 5px;
   background-color: white;
   z-index: 20;
@@ -110,9 +142,12 @@
   height: var(--star-size);
   background-color: v.$white;
   box-shadow: var(--space-layer);
-  position: absolute; /* Necesario para animaciones */
-  top: 0; /* Asegura que las estrellas comiencen desde la parte superior del contenedor */
-  left: 0; /* Asegura que las estrellas se alineen desde el borde izquierdo */
+  position: absolute;
+  /* Necesario para animaciones */
+  top: 0;
+  /* Asegura que las estrellas comiencen desde la parte superior del contenedor */
+  left: 0;
+  /* Asegura que las estrellas se alineen desde el borde izquierdo */
   opacity: 75%;
   animation: moveStars var(--animation-duration) linear infinite;
   z-index: -1;
@@ -122,9 +157,11 @@
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-30px);
   }
+
   100% {
     transform: translateY(0);
   }
@@ -133,49 +170,60 @@
 @keyframes expand {
   0% {
     transform: scale(1);
-    opacity: 1; /* Totalmente visible al inicio */
+    opacity: 1;
+    /* Totalmente visible al inicio */
   }
 
   100% {
     transform: scale(30);
-    opacity: 0.8; /* Se desvanece ligeramente al final */
+    opacity: 0.8;
+    /* Se desvanece ligeramente al final */
   }
 }
 
 @keyframes moveStars {
   0% {
-    transform: translate(0, 0); /* Punto inicial */
+    transform: translate(0, 0);
+    /* Punto inicial */
   }
+
   25% {
-    transform: translate(
-      10px,
-      -10px
-    ); /* Mueve hacia la esquina superior derecha */
+    transform: translate(10px,
+        -10px);
+    /* Mueve hacia la esquina superior derecha */
   }
+
   50% {
-    transform: translate(0, -20px); /* Mueve hacia arriba */
+    transform: translate(0, -20px);
+    /* Mueve hacia arriba */
   }
+
   75% {
-    transform: translate(
-      -10px,
-      -10px
-    ); /* Mueve hacia la esquina superior izquierda */
+    transform: translate(-10px,
+        -10px);
+    /* Mueve hacia la esquina superior izquierda */
   }
+
   100% {
-    transform: translate(0, 0); /* Vuelve al punto inicial */
+    transform: translate(0, 0);
+    /* Vuelve al punto inicial */
   }
 }
 
 .rocket__expanded {
   animation: expand 1s ease-in-out forwards, deform 1s ease-in-out forwards;
 }
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
-    transform: translateY(0); /* Desplazado hacia abajo */
+    transform: translateY(0);
+    /* Desplazado hacia abajo */
   }
+
   100% {
     opacity: 1;
-    transform: translateY(0); /* Posición final */
+    transform: translateY(0);
+    /* Posición final */
   }
 }

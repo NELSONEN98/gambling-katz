@@ -6,8 +6,10 @@
   background-color: black;
   width: 100vw;
   height: 100vh;
-  overflow: hidden; /* Oculta el desbordamiento */
-  position: relative; /* Necesario para posicionar el botón */
+  overflow: hidden;
+  /* Oculta el desbordamiento */
+  position: relative;
+  /* Necesario para posicionar el botón */
   /* Animación de expansión al cargar */
 
   @include m.telefono {
@@ -16,6 +18,7 @@
     overflow-y: auto;
     width: 100%;
   }
+
   &__bg__img {
     position: absolute;
     width: 100%;
@@ -31,7 +34,8 @@
 
   .star {
     position: absolute;
-    width: 4px; /* Tamaño de las estrellas */
+    width: 4px;
+    /* Tamaño de las estrellas */
     height: 4px;
     background-color: v.$white;
     /* Forma redonda */
@@ -41,126 +45,119 @@
     // Generar posiciones aleatorias
     @for $i from 1 through 50 {
       &:nth-child(#{$i}) {
-        top: random(100) * 1%; /* Posición vertical aleatoria */
-        left: random(100) * 1%; /* Posición horizontal aleatoria */
-        animation-delay: random(5) * 0.2s; /* Retraso aleatorio */
+        top: random(100) * 1%;
+        /* Posición vertical aleatoria */
+        left: random(100) * 1%;
+        /* Posición horizontal aleatoria */
+        animation-delay: random(5) * 0.2s;
+        /* Retraso aleatorio */
       }
     }
   }
+
   &__container {
     animation: slideDown 2s ease-in-out;
-
-    position: relative; /* Necesario para posicionar las estrellas */
-    padding: 1rem 3rem;
+    position: relative;
+    padding: 2rem clamp(1rem, 5vw, 5rem);
+    display: grid;
     gap: 2rem;
     align-items: center;
+    grid-template-columns: 1fr;
 
-    @include m.grid(5, 1fr);
+    @include m.tablet {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4rem;
+    }
+
+    @include m.laptop {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5rem;
+    }
 
     @include m.desktop {
-      padding: 2rem 1rem;
       gap: 10rem;
+      padding: 2rem 1rem;
     }
 
     @include m.telefono {
       display: flex;
       flex-direction: column;
-      padding: 1rem 1rem;
-      min-height: auto; /* Permite que la altura crezca según el contenido */
-      overflow: visible; /* Asegura que el contenido no se corte */
-      margin: 0;
+      padding: 1rem;
     }
   }
 
-  &__box {
-    animation: slideDown 2s ease-in-out;
-
-    position: relative; /* Necesario para posicionar las estrellas */
-    padding: 1rem 3rem;
-    gap: 2rem;
-    align-items: center;
-
-    @include m.desktop {
-      padding: 2rem 1rem;
-      gap: 10rem;
-    }
-
-    @include m.telefono {
-      display: flex;
-      flex-direction: column;
-      padding: 1rem 1rem;
-      margin: 0;
-    }
-  }
   &__title {
-    font-size: 3.8rem;
+    font-size: clamp(2.5rem, 8vw, 4rem);
     margin: 0;
     font-family: v.$title_font;
     text-align: center;
-
     background-clip: text;
-    grid-column: 1 / 3;
     line-height: 1.2;
-    background: linear-gradient(
-      10deg,
-      v.$purple,
-      v.$light_blue
-    ); /* Gradiente de naranja a blanco */
-    -webkit-background-clip: text; /* Aplica el gradiente al texto */
+    background: linear-gradient(10deg, v.$purple, v.$light_blue);
+    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     transition: all 0.5s ease-in-out;
-    &:hover {
-      scale: 1.1;
-      transition: all 0.5s ease-in-out;
-      cursor: pointer;
+
+    @include m.tablet {
+      grid-column: 1 / 2;
+      text-align: left;
     }
 
-    @include m.desktop {
-      font-size: 4rem;
-      margin-bottom: 3rem;
+    @include m.laptop {
+      grid-column: 1 / 3;
     }
-    @include m.telefono {
-      margin-bottom: 1rem;
-      font-size: 2.5rem;
+
+    &:hover {
+      scale: 1.1;
+      cursor: pointer;
     }
   }
 
   &__text {
     z-index: 120;
-    //border: 1px dashed v.$white;
     padding: 1rem;
-    // border-radius: 1rem;
     color: v.$white;
     font-family: v.$main_font;
-    font-size: 1rem;
-    line-height: 1.5rem;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.6;
     margin: 0;
-    grid-column: 1 / 3;
 
-    @include m.desktop {
-      font-size: 1.2rem;
-      margin-left: 6rem;
+    @include m.tablet {
+      grid-column: 1 / 2;
+    }
+
+    @include m.laptop {
       grid-column: 1 / 3;
+      margin-left: clamp(0rem, 5vw, 6rem);
     }
   }
+
   &__pixel {
-    width: 450px;
-    @include m.desktop {
-      width: 550px;
+    width: 100%;
+    max-width: 450px;
+
+    @include m.laptop {
+      max-width: 550px;
     }
+
     @include m.telefono {
-      width: 220px;
-      margin-bottom: 18rem;
+      max-width: 220px;
+      margin-bottom: 2rem;
     }
   }
+
   &__img {
-    grid-column: 3 / 6;
     z-index: 100;
     overflow: hidden;
     margin-top: 1rem;
     animation: float 5s ease-in-out infinite;
+    justify-self: center;
 
-    @include m.desktop {
+    @include m.tablet {
+      grid-column: 2 / 3;
+    }
+
+    @include m.laptop {
       grid-column: 3 / 6;
     }
   }
@@ -170,16 +167,20 @@
 
     top: 50%;
     left: 90%;
-    transform: translate(-50%, -50%) rotate(-90deg); /* Centra el botón y aplica la rotación */
-    z-index: 10; /* Asegúrate de que esté por encima de otros elementos */
+    transform: translate(-50%, -50%) rotate(-90deg);
+    /* Centra el botón y aplica la rotación */
+    z-index: 10;
+    /* Asegúrate de que esté por encima de otros elementos */
     z-index: 1000;
 
     @include m.telefono {
       position: absolute;
       top: 85%;
       left: 50%;
-      transform: translate(-50%, -50%); /* Centra el botón */
+      transform: translate(-50%, -50%);
+      /* Centra el botón */
     }
+
     .btn__next {
       font-family: v.$points_font;
       font-size: 3rem;
@@ -189,6 +190,7 @@
       border-radius: 100%;
       border: 1px dashed v.$white;
       background-color: transparent;
+
       @include m.desktop {
         font-size: 4rem;
         padding: 2rem 3rem;
@@ -233,7 +235,8 @@
       padding: 1rem 1rem;
       margin: 0;
       gap: 1rem;
-      min-height: auto; /* Permite que la altura crezca según el contenido */
+      min-height: auto;
+      /* Permite que la altura crezca según el contenido */
       overflow-y: auto;
     }
   }
@@ -241,11 +244,14 @@
   &__design__title__grid {
     flex-direction: column;
     text-align: center;
+
     @include m.telefono {
       flex-direction: column;
       text-align: center;
-      min-height: auto; /* Permite que la altura crezca según el contenido */
-      overflow: visible; /* Asegura que el contenido no se corte */
+      min-height: auto;
+      /* Permite que la altura crezca según el contenido */
+      overflow: visible;
+      /* Asegura que el contenido no se corte */
     }
   }
 
@@ -258,24 +264,27 @@
     background-clip: text;
     grid-column: 1 / 5;
     line-height: 1.2;
-    background: linear-gradient(
-      10deg,
-      v.$purple,
-      v.$light_blue
-    ); /* Gradiente de naranja a blanco */
-    -webkit-background-clip: text; /* Aplica el gradiente al texto */
+    background: linear-gradient(10deg,
+        v.$purple,
+        v.$light_blue );
+    /* Gradiente de naranja a blanco */
+    -webkit-background-clip: text;
+    /* Aplica el gradiente al texto */
     -webkit-text-fill-color: transparent;
     transition: all 0.5s ease-in-out;
+
     &:hover {
       scale: 1.1;
       transition: all 0.5s ease-in-out;
       cursor: pointer;
     }
+
     @include m.desktop {
       padding: 2rem;
       gap: 4rem;
       animation: expand 1s ease-in-out forwards, deform 1s ease-in-out forwards;
     }
+
     @include m.telefono {
       font-size: 2.5rem;
     }
@@ -287,11 +296,13 @@
     font-weight: 700;
     margin: 0;
     animation: expand 1s ease-in-out forwards, deform 1s ease-in-out forwards;
+
     @include m.telefono {
       font-size: 2rem;
       text-align: left;
     }
   }
+
   &__design__title__text {
     color: v.$white;
     font-family: v.$main_font;
@@ -304,6 +315,7 @@
     }
   }
 }
+
 .warning {
   display: none;
   margin-bottom: 22rem;
@@ -312,16 +324,20 @@
     display: block;
   }
 }
+
 @keyframes blink {
   0% {
     opacity: 1;
   }
+
   20% {
     opacity: 0.2;
   }
+
   50% {
     opacity: 0.3;
   }
+
   70% {
     opacity: 0.5;
   }
@@ -333,107 +349,138 @@
 
 @keyframes float {
   0% {
-    transform: translate(0, 0); /* Punto inicial */
+    transform: translate(0, 0);
+    /* Punto inicial */
   }
+
   25% {
-    transform: translate(
-      10px,
-      -10px
-    ); /* Mueve hacia la esquina superior derecha */
+    transform: translate(10px,
+        -10px);
+    /* Mueve hacia la esquina superior derecha */
   }
+
   50% {
-    transform: translate(0, -20px); /* Mueve hacia arriba */
+    transform: translate(0, -20px);
+    /* Mueve hacia arriba */
   }
+
   75% {
-    transform: translate(
-      -10px,
-      -10px
-    ); /* Mueve hacia la esquina superior izquierda */
+    transform: translate(-10px,
+        -10px);
+    /* Mueve hacia la esquina superior izquierda */
   }
+
   100% {
-    transform: translate(0, 0); /* Vuelve al punto inicial */
+    transform: translate(0, 0);
+    /* Vuelve al punto inicial */
   }
 }
+
 @keyframes expand {
   0% {
-    transform: scale(0); /* Comienza completamente contraído */
-    opacity: 0; /* Comienza invisible */
+    transform: scale(0);
+    /* Comienza completamente contraído */
+    opacity: 0;
+    /* Comienza invisible */
   }
+
   50% {
-    transform: scale(1.05); /* Expande un poco más del tamaño final */
-    opacity: 1; /* Aparece gradualmente */
+    transform: scale(1.05);
+    /* Expande un poco más del tamaño final */
+    opacity: 1;
+    /* Aparece gradualmente */
   }
+
   100% {
-    transform: scale(1); /* Vuelve a su tamaño normal */
-    opacity: 1; /* Totalmente visible */
+    transform: scale(1);
+    /* Vuelve a su tamaño normal */
+    opacity: 1;
+    /* Totalmente visible */
   }
 }
+
 @keyframes deform {
   0% {
-    clip-path: path(
-      M 50 0 C 140 20,
-      200 40,
-      200 100 C 200 160,
-      140 180,
-      100 200 C 60 180,
-      0 160,
-      0 100 C 0 40,
-      60 20,
-      100 0 Z
-    ); /* Forma inicial con bordes ondulados */
-    transform: scale(0.5); /* Comienza más pequeño */
-    opacity: 0; /* Comienza invisible */
+    clip-path: path(M 50 0 C 140 20,
+        200 40,
+        200 100 C 200 160,
+        140 180,
+        100 200 C 60 180,
+        0 160,
+        0 100 C 0 40,
+        60 20,
+        100 0 Z);
+    /* Forma inicial con bordes ondulados */
+    transform: scale(0.5);
+    /* Comienza más pequeño */
+    opacity: 0;
+    /* Comienza invisible */
   }
+
   50% {
-    clip-path: path(
-      M 50 0 C 160 30,
-      200 60,
-      200 100 C 200 140,
-      160 170,
-      100 200 C 40 170,
-      0 140,
-      0 100 C 0 60,
-      40 30,
-      100 0 Z
-    ); /* Forma intermedia con bordes más pronunciados */
-    transform: scale(1.1); /* Expande un poco más del tamaño final */
-    opacity: 1; /* Aparece gradualmente */
+    clip-path: path(M 50 0 C 160 30,
+        200 60,
+        200 100 C 200 140,
+        160 170,
+        100 200 C 40 170,
+        0 140,
+        0 100 C 0 60,
+        40 30,
+        100 0 Z);
+    /* Forma intermedia con bordes más pronunciados */
+    transform: scale(1.1);
+    /* Expande un poco más del tamaño final */
+    opacity: 1;
+    /* Aparece gradualmente */
   }
+
   100% {
-    clip-path: path(
-      M 0 0 C 50 20,
-      150 20,
-      200 0 C 200 50,
-      180 150,
-      200 200 C 150 180,
-      50 180,
-      0 200 C 20 150,
-      20 50,
-      0 0 Z
-    ); /* Forma final con bordes ondulados */
-    transform: scale(1); /* Tamaño normal */
-    opacity: 1; /* Totalmente visible */
+    clip-path: path(M 0 0 C 50 20,
+        150 20,
+        200 0 C 200 50,
+        180 150,
+        200 200 C 150 180,
+        50 180,
+        0 200 C 20 150,
+        20 50,
+        0 0 Z);
+    /* Forma final con bordes ondulados */
+    transform: scale(1);
+    /* Tamaño normal */
+    opacity: 1;
+    /* Totalmente visible */
   }
 }
+
 @keyframes slideDown {
   0% {
-    transform: translateY(100%); /* Comienza fuera del viewport, arriba */
-    opacity: 0; /* Comienza invisible */
+    transform: translateY(100%);
+    /* Comienza fuera del viewport, arriba */
+    opacity: 0;
+    /* Comienza invisible */
   }
+
   50% {
-    transform: translateY(10%); /* Rebota ligeramente hacia abajo */
-    opacity: 1; /* Aparece gradualmente */
+    transform: translateY(10%);
+    /* Rebota ligeramente hacia abajo */
+    opacity: 1;
+    /* Aparece gradualmente */
   }
+
   100% {
-    transform: translateY(0); /* Llega a su posición final */
-    opacity: 1; /* Totalmente visible */
+    transform: translateY(0);
+    /* Llega a su posición final */
+    opacity: 1;
+    /* Totalmente visible */
   }
 }
+
 @keyframes slideIn {
   from {
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -445,6 +492,7 @@
     transform: translateX(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(-100%);
     opacity: 0;

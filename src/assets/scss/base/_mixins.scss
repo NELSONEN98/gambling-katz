@@ -2,13 +2,19 @@
 
 /** Media Queries **/
 @mixin telefono {
-  @media (max-width: v.$telefono) {
+  @media (max-width: #{v.$tablet - 1px}) {
     @content;
   }
 }
 
 @mixin tablet {
   @media (min-width: v.$tablet) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @media (min-width: v.$laptop) {
     @content;
   }
 }
@@ -39,12 +45,13 @@
   gap: $espaciado;
   grid-template-columns: repeat($columnas, 1fr);
 }
+
 @mixin scrollHorizontal {
   overflow-y: hidden;
   overflow-x: scroll;
   scroll-snap-type: x mandatory;
 
-  > * {
+  >* {
     scroll-snap-align: center;
   }
 }

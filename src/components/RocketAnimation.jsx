@@ -47,9 +47,8 @@ export default function RocketAnimation({ onSectionPortfolio }) {
             className={`star ${index % 2 === 0 ? "star1" : "star2"}`}
             initial={{
               opacity: 0,
-              transform: `translateX(${
-                windowSize.current.width + 600
-              }px) translateY(${star.y}px)`,
+              transform: `translateX(${windowSize.current.width + 600
+                }px) translateY(${star.y}px)`,
             }}
             animate={{
               opacity: 1,
@@ -69,13 +68,17 @@ export default function RocketAnimation({ onSectionPortfolio }) {
           onClick={handleRocket}
         >
           <img
-            className={`rocket__animation__img ${
-              isRocketClicked ? "rocket__expanded" : ""
-            }`}
+            className={`rocket__animation__img ${isRocketClicked ? "rocket__expanded" : ""
+              }`}
             src="/img/rockered.png"
             alt="rocket"
           />
         </div>
+        {!isRocketClicked && (
+          <p className="rocket__animation__skip" onClick={onSectionPortfolio}>
+            Continue ...
+          </p>
+        )}
       </div>
     </div>
   );
