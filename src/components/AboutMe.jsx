@@ -21,7 +21,7 @@ export default function AboutMe() {
   return (
     <div className="about__me">
       <div className="about__me__box">
-        {[...Array(50)].map((_, i) => (
+        {[...Array(20)].map((_, i) => (
           <div key={i} className="star"></div>
         ))}
 
