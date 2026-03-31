@@ -12,8 +12,14 @@ export default function Portfolio() {
   }
   return (
     <div className="portfolio">
+      <div className="portfolio__hull-corner-tl" />
+      <div className="portfolio__hull-corner-br" />
       <div className="portfolio__grid">
         <div className="portfolio__container__text">
+          <div className="portfolio__status">
+            <span className="portfolio__status__dot" />
+            Systems online
+          </div>
           <h2 className="portfolio__title">My projects</h2>
 
           <p className="portfolio__text">
@@ -119,6 +125,7 @@ export default function Portfolio() {
           )}
         </div>
       </div>
+      <div className="portfolio__coordinates">[ 04.7231 // -73.8592 ]</div>
     </div>
   );
 }
@@ -126,6 +133,37 @@ export default function Portfolio() {
 function ReactPortfolio() {
   return (
     <>
+    <div className="portfolio__content">
+        <div className="portfolio__content__grid">
+          <img
+            className="portfolio__img"
+            src="/img/portfolio/subinvoxa.png"
+            alt="ejemplo"
+          />
+          <div className="portfolio__content__flex">
+            <a
+              href="https://subinvoxa.com/"
+              target="_blank"
+              className="portfolio__content__title"
+            >
+              SubInvoxa
+            </a>
+            <p className="portfolio__content__text">
+              I developed the frontend of the Subinvoxa platform, a web application used for submitting electronic invoices to DIAN.
+
+I was responsible for implementing the user interface using modern frontend technologies, as well as creating a consistent design system, including color variables and visual guidelines. I designed the logo in Adobe Photoshop and defined the overall visual identity of the platform.
+
+Additionally, I implemented basic UI animations to enhance the sense of professionalism and improve the overall user experience.
+imagne: subinvoxa.com
+            </p>
+            <div className="tag__container">
+              <ReactTag />
+              <JsTag />
+              <CssTag />
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="portfolio__content">
         <div className="portfolio__content__grid">
           <img
