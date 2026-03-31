@@ -40,9 +40,9 @@ function Header() {
     }
   }, [startedJourney, navigate]);
 
-  // Genera 180 estrellas con valores aleatorios una sola vez
+  // Genera estrellas con valores aleatorios una sola vez
   const stars = useMemo(() => {
-    return Array.from({ length: 120 }).map(() => ({
+    return Array.from({ length: 50 }).map(() => ({
       x: Math.random(),
       delay: Math.random() * 5,
       duration: Math.random() * 10 + 20,
@@ -53,33 +53,29 @@ function Header() {
   return (
     <div className="header">
       {/* Se muestran las estrellas con diferente animación según el estado */}
-      {[0, 1].map((group) => (
-        <div className="stars-container" key={group}>
-          {stars.map((star, index) => (
-            <motion.div
-              key={`star-${group}-${index}-${startedJourney}`}
-              className={`star ${index % 2 === 0 ? "star1" : "star2"}`}
-              initial={{
-                opacity: 0,
-                transform: `translateY(${windowSize.current.height + star.offset
-                  }px) translateX(${star.x * windowSize.current.width}px)`,
-              }}
-              animate={{
-                opacity: 1,
-                transform: `translateY(-700px) translateX(${star.x * windowSize.current.width
-                  }px)`,
-              }}
-              transition={{
-                duration: startedJourney ? 2 : star.duration,
-                repeat: Infinity,
-                delay: startedJourney
-                  ? star.delay
-                  : star.delay + group * (star.duration / 2),
-              }}
-            />
-          ))}
-        </div>
-      ))}
+      <div className="stars-container">
+        {stars.map((star, index) => (
+          <motion.div
+            key={`star-${index}-${startedJourney}`}
+            className={`star ${index % 2 === 0 ? "star1" : "star2"}`}
+            initial={{
+              opacity: 0,
+              transform: `translateY(${windowSize.current.height + star.offset
+                }px) translateX(${star.x * windowSize.current.width}px)`,
+            }}
+            animate={{
+              opacity: 1,
+              transform: `translateY(-700px) translateX(${star.x * windowSize.current.width
+                }px)`,
+            }}
+            transition={{
+              duration: startedJourney ? 2 : star.duration,
+              repeat: Infinity,
+              delay: startedJourney ? star.delay : star.delay,
+            }}
+          />
+        ))}
+      </div>
 
       {/* Sección de inicio */}
       <div
@@ -87,17 +83,11 @@ function Header() {
       >
         {[
           { size: 1.4, top: "-1rem",   left: "8%",    delay: 2.0 },
-          { size: 0.8, top: "0rem",    left: "30%",   delay: 2.5 },
           { size: 1.1, top: "-0.5rem", right: "12%",  delay: 1.9 },
-          { size: 0.6, top: "18%",     left: "-1.5rem", delay: 2.3 },
           { size: 1.6, top: "22%",     right: "-2rem",  delay: 2.1 },
-          { size: 0.7, top: "55%",     left: "-1rem", delay: 2.7 },
           { size: 1.0, top: "60%",     right: "-1.5rem", delay: 2.4 },
-          { size: 0.9, bottom: "-0.5rem", left: "15%", delay: 2.2 },
-          { size: 0.6, bottom: "-0.8rem", left: "50%", delay: 2.8 },
           { size: 1.2, bottom: "-0.3rem", right: "10%", delay: 2.0 },
-          { size: 0.7, top: "40%",     left: "3%",    delay: 3.0 },
-          { size: 0.5, top: "10%",     right: "30%",  delay: 2.6 },
+          { size: 0.8, top: "0rem",    left: "30%",   delay: 2.5 },
         ].map((s, i) => (
           <div
             key={i}

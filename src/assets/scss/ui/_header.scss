@@ -47,6 +47,7 @@
     z-index: 100;
     opacity: 0;
     color: v.$star_yellow;
+    will-change: text-shadow, color;
 
     @include m.telefono {
       font-size: 5rem;
@@ -94,7 +95,8 @@
       45% 42%
     );
     opacity: 0;
-    animation: fadeInUp 0.5s ease forwards, starGlowLoop 3.5s ease-in-out infinite, starPulse 2.5s ease-in-out infinite;
+    animation: fadeInUp 0.5s ease forwards, starGlowLoop 3.5s ease-in-out infinite;
+    will-change: box-shadow, background-color;
 
     @include m.telefono {
       display: none;
@@ -167,6 +169,7 @@
     transform: translateY(100%);
     animation: catEnter 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 2.2s,
       float 5s ease-in-out infinite 3.4s;
+    will-change: transform, opacity;
 
     @include m.desktop {
       width: 60rem;
@@ -214,40 +217,34 @@
 .star {
   position: absolute;
   width: 4px;
-  /* Ajusta el tamaño según sea necesario */
   height: 4px;
   background-color: white;
-
   will-change: transform, opacity;
   z-index: 20;
-  box-shadow: 4vw 50vh 0 #fff, 18vw 88vh 0 #fff;
+  border-radius: 50%;
 
   @include m.desktop {
-    width: 10px;
-    height: 10px;
+    width: 4px;
+    height: 4px;
   }
 }
 
 .star1 {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   background-color: white;
-  box-shadow: 4vw 50vh 0 #b9b9b9, 18vw 88vh 0 #969696;
 }
 
 .star2 {
   position: absolute;
-  width: 5px;
-  /* Ajusta el tamaño según sea necesario */
-  height: 5px;
+  width: 4px;
+  height: 4px;
   background-color: white;
-
   z-index: 20;
-  box-shadow: 4vw 50vh 0 #fff, 18vw 88vh 0 #fff;
 
   @include m.desktop {
-    width: 2.5px;
-    height: 2.5px;
+    width: 4px;
+    height: 4px;
   }
 }
 
@@ -331,17 +328,6 @@
   }
 }
 
-@keyframes starPulse {
-  0%,
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.4) rotate(45deg);
-    opacity: 0.6;
-  }
-}
 
 @keyframes textGlowLoop {
   0%,
@@ -352,12 +338,11 @@
   }
   80% {
     color: #ffffcc;
-    text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffd600, 0 0 80px #ffab00,
-      0 0 120px rgba(255, 214, 0, 0.5);
+    text-shadow: 0 0 16px #ffeb3b, 0 0 32px rgba(255, 214, 0, 0.6);
   }
   85% {
     color: #fffde6;
-    text-shadow: 0 0 30px #fff176, 0 0 60px #ffeb3b, 0 0 100px #ffd600;
+    text-shadow: 0 0 20px #fff176, 0 0 40px #ffeb3b;
   }
 }
 
@@ -370,7 +355,7 @@
   }
   80% {
     background-color: #ffffcc;
-    box-shadow: 0 0 12px #ffeb3b, 0 0 30px #ffd600, 0 0 50px rgba(255, 214, 0, 0.4);
+    box-shadow: 0 0 16px #ffeb3b, 0 0 32px rgba(255, 214, 0, 0.5);
   }
   85% {
     background-color: #fffde6;
