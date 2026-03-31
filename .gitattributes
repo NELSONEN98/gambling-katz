@@ -1,1 +1,2 @@
+local_cache/fast-bge-small-en-v1.5/model_optimized.onnx filter=lfs diff=lfs merge=lfs -text
 *.onnx filter=lfs diff=lfs merge=lfs -text
