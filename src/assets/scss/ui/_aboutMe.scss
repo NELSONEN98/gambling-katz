@@ -26,18 +26,22 @@
   .star {
     position: absolute;
     width: 4px;
+    /* Tamaño de las estrellas */
     height: 4px;
     background-color: v.$white;
-    animation: blink 2.5s infinite ease-in-out;
+    /* Forma redonda */
+    animation: blink 2s infinite ease-in-out;
     z-index: 0;
-    will-change: opacity;
-    border-radius: 50%;
 
-    @for $i from 1 through 20 {
+    // Generar posiciones aleatorias
+    @for $i from 1 through 50 {
       &:nth-child(#{$i}) {
         top: random(100) * 1%;
+        /* Posición vertical aleatoria */
         left: random(100) * 1%;
-        animation-delay: random(25) * 0.1s;
+        /* Posición horizontal aleatoria */
+        animation-delay: random(5) * 0.2s;
+        /* Retraso aleatorio */
       }
     }
   }
@@ -56,7 +60,6 @@
     margin: 0 auto;
     height: 100vh;
     align-content: center;
-    will-change: transform;
 
     @include m.tablet {
       grid-template-columns: 1fr 1fr;
@@ -103,7 +106,6 @@
     );
     opacity: 0;
     animation: fadeInStar 0.5s ease forwards, starGlowLoop 3.5s ease-in-out infinite;
-    will-change: box-shadow, opacity;
 
     @include m.telefono {
       display: none;
@@ -118,7 +120,6 @@
     line-height: 1.2;
     color: v.$star_yellow;
     animation: textGlowLoop 4s ease-in-out infinite 1s;
-    will-change: text-shadow, color;
 
     &:hover {
       scale: 1.1;
@@ -170,7 +171,6 @@
     overflow: hidden;
     animation: float 5s ease-in-out infinite;
     justify-self: center;
-    will-change: transform;
 
     @include m.tablet {
       grid-column: 1 / -1;
@@ -198,7 +198,6 @@
       background-color: transparent;
       display: block;
       animation: btnGlow 3s ease-in-out infinite;
-      will-change: box-shadow, border-color, color;
 
       @include m.telefono {
         font-size: 1.8rem;
@@ -248,7 +247,6 @@
     line-height: 1.2;
     color: v.$star_yellow;
     animation: textGlowLoop 4s ease-in-out infinite 1s;
-    will-change: text-shadow, color;
 
     &:hover {
       scale: 1.1;
@@ -486,11 +484,12 @@
   }
   80% {
     color: #ffffcc;
-    text-shadow: 0 0 16px #ffeb3b, 0 0 32px rgba(255, 214, 0, 0.6);
+    text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffd600, 0 0 80px #ffab00,
+      0 0 120px rgba(255, 214, 0, 0.5);
   }
   85% {
     color: #fffde6;
-    text-shadow: 0 0 20px #fff176, 0 0 40px #ffeb3b;
+    text-shadow: 0 0 30px #fff176, 0 0 60px #ffeb3b, 0 0 100px #ffd600;
   }
 }
 
@@ -514,7 +513,7 @@
   }
   80% {
     background-color: #ffffcc;
-    box-shadow: 0 0 16px #ffeb3b, 0 0 32px rgba(255, 214, 0, 0.5);
+    box-shadow: 0 0 12px #ffeb3b, 0 0 30px #ffd600, 0 0 50px rgba(255, 214, 0, 0.4);
   }
   85% {
     background-color: #fffde6;
@@ -532,12 +531,12 @@
   }
   80% {
     border-color: #ffffcc;
-    box-shadow: 0 0 16px rgba(255, 235, 59, 0.5);
+    box-shadow: 0 0 12px #ffeb3b, 0 0 25px rgba(255, 214, 0, 0.4);
     color: #ffffcc;
   }
   85% {
     border-color: #fffde6;
-    box-shadow: 0 0 20px rgba(255, 241, 118, 0.4);
+    box-shadow: 0 0 18px #fff176, 0 0 35px rgba(255, 235, 59, 0.3);
     color: #fffde6;
   }
 }
