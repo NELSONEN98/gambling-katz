@@ -1,13 +1,22 @@
 import "../assets/scss/ui/_menuModalSection.scss";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function MenuModalSelection({ onClose, setActiveView }) {
+export default function MenuModalSelection({ onClose }) {
   const [isClosing, setIsClosing] = useState(false);
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
+    }, 500);
+  };
+
+  const handleNavigate = (path) => {
+    setIsClosing(true);
+    setTimeout(() => {
+      navigate(path);
     }, 500);
   };
 
@@ -28,13 +37,13 @@ export default function MenuModalSelection({ onClose, setActiveView }) {
             <ul className="menu__list">
               <li
                 className="menu__option"
-                onClick={() => setActiveView("header")}
+                onClick={() => handleNavigate("/")}
               >
                 ⭐ beginning of the journey
               </li>
               <li
                 className="menu__option"
-                onClick={() => setActiveView("aboutMe")}
+                onClick={() => handleNavigate("/about")}
               >
                 ⭐ About me
               </li>

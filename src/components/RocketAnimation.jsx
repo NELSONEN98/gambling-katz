@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import "../assets/scss/ui/_rocketAnimation.scss";
 
-export default function RocketAnimation({ onSectionPortfolio }) {
+export default function RocketAnimation() {
   const [isRocketClicked, setIsRocketClicked] = useState(false);
+  const navigate = useNavigate();
   const windowSize = useRef({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -12,7 +14,7 @@ export default function RocketAnimation({ onSectionPortfolio }) {
   function handleRocket() {
     setIsRocketClicked(true);
     setTimeout(() => {
-      onSectionPortfolio();
+      navigate("/portfolio");
     }, 1500);
   }
 
@@ -75,7 +77,7 @@ export default function RocketAnimation({ onSectionPortfolio }) {
           />
         </div>
         {!isRocketClicked && (
-          <p className="rocket__animation__skip" onClick={onSectionPortfolio}>
+          <p className="rocket__animation__skip" onClick={() => navigate("/portfolio")}>
             Continue ...
           </p>
         )}

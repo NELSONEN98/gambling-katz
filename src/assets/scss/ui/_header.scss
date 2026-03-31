@@ -23,32 +23,18 @@
 
   &__inicio {
     color: v.$white;
-    padding: 5rem 0;
+    padding: 5rem 2.5rem 2rem 2.5rem;
     margin-left: clamp(0rem, 10vw, 15rem);
     display: inline-flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 0;
+    position: relative;
 
     @include m.telefono {
       margin-left: 0;
-      margin-top: 0;
-      padding: 5rem 2rem 0 2rem;
-    }
-  }
-
-  &__resume {
-    font-family: v.$main_font;
-    display: flex;
-    justify-content: space-around;
-    font-weight: 500;
-    font-size: clamp(1rem, 2vw, 2rem);
-    margin-top: 2rem;
-    text-align: center;
-
-    @include m.telefono {
-      font-size: 1.2rem;
-      margin-top: 1rem;
+      padding: 4rem 2.5rem 4rem 2.5rem;
     }
   }
 
@@ -59,9 +45,59 @@
     display: flex;
     justify-content: space-around;
     z-index: 100;
+    opacity: 0;
+    color: v.$star_yellow;
 
     @include m.telefono {
       font-size: 5rem;
+    }
+
+    &--first {
+      animation: slideUpFade 0.8s ease forwards 0.3s,
+        textGlowLoop 4s ease-in-out infinite 1.6s;
+    }
+
+    &--second {
+      animation: slideUpFade 0.8s ease forwards 0.8s,
+        textGlowLoop 4s ease-in-out infinite 1.6s;
+    }
+  }
+
+  &__resume {
+    font-family: v.$main_font;
+    display: block;
+    font-weight: 500;
+    font-size: clamp(1rem, 2vw, 2rem);
+    margin-top: 1.5rem;
+    text-align: center;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 1.4s;
+
+    @include m.telefono {
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+  }
+
+  &__deco-star {
+    position: absolute;
+    background-color: v.$star_yellow;
+    clip-path: polygon(
+      50% 0%,
+      55% 42%,
+      100% 50%,
+      55% 58%,
+      50% 100%,
+      45% 58%,
+      0% 50%,
+      45% 42%
+    );
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards, starGlowLoop 3.5s ease-in-out infinite, starPulse 2.5s ease-in-out infinite;
+
+    @include m.telefono {
+      display: none;
     }
   }
 
@@ -72,21 +108,19 @@
     font-family: v.$points_font;
     font-weight: 700;
     transform: scaleX(2);
-    margin: 2rem;
+    margin-top: 3rem;
     color: white;
     font-size: clamp(2rem, 3vw, 3rem);
-
+    opacity: 0;
+    animation: blink 1.2s ease-in-out infinite, fadeInUp 0.6s ease forwards 2s;
     z-index: 1;
-    animation: blink 1s infinite;
 
     &:hover {
       transform: scale(1.5) scaleX(2);
     }
 
     @include m.telefono {
-      margin: 1rem 0 0 0;
-      position: absolute;
-      bottom: 20%;
+      margin-top: 2rem;
     }
   }
 
@@ -128,8 +162,11 @@
 */
   .cat__img {
     width: 45rem;
-    animation: float 5s ease-in-out infinite;
     z-index: 1;
+    opacity: 0;
+    transform: translateY(100%);
+    animation: catEnter 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 2.2s,
+      float 5s ease-in-out infinite 3.4s;
 
     @include m.desktop {
       width: 60rem;
@@ -137,6 +174,17 @@
 
     @include m.telefono {
       width: 20rem;
+    }
+  }
+
+  @keyframes catEnter {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
     }
   }
 
@@ -232,11 +280,11 @@
 
 @keyframes moveHeaderUp {
   from {
-    transform: translateX(0);
+    transform: translateY(0);
   }
 
   to {
-    transform: translateY(-100%);
+    transform: translateY(-150vh);
   }
 }
 
@@ -252,11 +300,80 @@
 }
 
 @keyframes blink {
-  0% {
-    opacity: 0;
-  }
-
+  0%,
   100% {
     opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes starPulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4) rotate(45deg);
+    opacity: 0.6;
+  }
+}
+
+@keyframes textGlowLoop {
+  0%,
+  70%,
+  100% {
+    color: #ffe45e;
+    text-shadow: 0 0 4px rgba(255, 228, 94, 0.2);
+  }
+  80% {
+    color: #ffffcc;
+    text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffd600, 0 0 80px #ffab00,
+      0 0 120px rgba(255, 214, 0, 0.5);
+  }
+  85% {
+    color: #fffde6;
+    text-shadow: 0 0 30px #fff176, 0 0 60px #ffeb3b, 0 0 100px #ffd600;
+  }
+}
+
+@keyframes starGlowLoop {
+  0%,
+  70%,
+  100% {
+    background-color: #ffe45e;
+    box-shadow: none;
+  }
+  80% {
+    background-color: #ffffcc;
+    box-shadow: 0 0 12px #ffeb3b, 0 0 30px #ffd600, 0 0 50px rgba(255, 214, 0, 0.4);
+  }
+  85% {
+    background-color: #fffde6;
+    box-shadow: 0 0 20px #fff176, 0 0 40px #ffeb3b;
   }
 }

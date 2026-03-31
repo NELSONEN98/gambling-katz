@@ -1,10 +1,9 @@
-import React from "react";
 import { useState } from "react";
 import "../assets/scss/ui/_Portfolio.scss";
 import MenuModalSelection from "./MenuModalSelection";
 import { ReactTag, HtmlTag, CssTag, SassTag, JsTag } from "./Tags";
 
-export default function Portfolio({ setActiveView }) {
+export default function Portfolio() {
   const [optionSelected, setOptionSelected] = useState("all");
   const [isMenuSelected, setIsMenuSelected] = useState(false);
 
@@ -93,12 +92,7 @@ export default function Portfolio({ setActiveView }) {
           </div>
         </div>
         {isMenuSelected && (
-          <>
-            <MenuModalSelection
-              onClose={closeModal}
-              setActiveView={setActiveView}
-            />
-          </>
+          <MenuModalSelection onClose={closeModal} />
         )}
         <div className="portfolio__menu">
           {optionSelected === "all" && (
