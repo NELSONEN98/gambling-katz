@@ -1,196 +1,419 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arquitectura Bosque — Casas en el campo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="normalize.css" />
+<link rel="stylesheet" href="css/newdesign.css" />
+</head>
+<body>
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/normalize.css" />
-    <link rel="stylesheet" href="css/style.css" />
-    <script src="script.js" defer></script>
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <span class="mark">AB</span>
+    <span>Arquitectura <em style="font-style:italic">Bosque</em></span>
+  </a>
+  <div class="nav__links">
+    <a href="#nosotros">Nosotros</a>
+    <a href="#modelos">Modelos</a>
+    <a href="#galeria">Galería</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <a class="nav__cta" href="tel:018009191">01·800·9191</a>
+  <button class="nav__menu" aria-label="Menú"><span></span></button>
+</nav>
 
-    <title>Document</title>
-  </head>
-  <body>
-    <div class="sticky__menu">
-      <div class="sticky__logo">
-        <h1 class="nombre-sitio-sticky">Arquitectura <span>Bosque</span></h1>
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero__bg"></div>
+
+  <div class="hero__index">
+    <a href="#nosotros">01 · Nosotros</a>
+    <a href="#modelos">02 · Modelos</a>
+    <a href="#galeria">03 · Galería</a>
+    <a href="#contacto">04 · Contacto</a>
+  </div>
+
+  <div class="hero__scroll">Desplazar ↓</div>
+
+  <div class="wrap hero__grid">
+    <div>
+      <div class="eyebrow" style="color:rgba(242,238,230,.7);margin-bottom:28px">Est. 2011 · Casas en el bosque</div>
+      <h1>
+        Vivir entre<br/>
+        árboles, <em>sin</em><br/>
+        renunciar al<br/>
+        confort.
+      </h1>
+      <p class="hero__sub">
+        Diseñamos y construimos casas de campo en madera y piedra, pensadas para durar generaciones y dialogar con el paisaje.
+      </p>
+      <a class="btn btn--light" href="#modelos">
+        Ver modelos <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <aside class="hero__meta">
+      <div><span>Lat</span><span>47.4569° N</span></div>
+      <div><span>Lon</span><span>11.8567° E</span></div>
+      <div><span>Altura</span><span>1 820 m</span></div>
+      <div><span>Edición</span><span>MMXXVI</span></div>
+    </aside>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span>Madera maciza</span>
+    <span>Piedra local</span>
+    <span>Aislamiento pasivo</span>
+    <span>Arquitectura lenta</span>
+    <span>Hecho a mano</span>
+    <span>Diseño a medida</span>
+    <span>Madera maciza</span>
+    <span>Piedra local</span>
+    <span>Aislamiento pasivo</span>
+    <span>Arquitectura lenta</span>
+    <span>Hecho a mano</span>
+    <span>Diseño a medida</span>
+  </div>
+</div>
+
+<!-- NOSOTROS -->
+<section class="nosotros" id="nosotros">
+  <div class="wrap">
+    <div class="nosotros__grid">
+      <div class="nosotros__head reveal">
+        <div class="eyebrow">01 / Nosotros</div>
+        <div class="num serif">01</div>
+        <h2>Una casa no<br/>se construye,<br/><em>se cultiva.</em></h2>
       </div>
-      <div class="sticky__links">
-        <a class="sticky__link" href="#">Inicio</a>
-        <a class="sticky__link" href="#section--1">Nosotros</a>
-        <a class="sticky__link" href="#section--2">Modelos</a>
-        <a class="sticky__link" href="#section--3">Galería</a>
-        <a class="sticky__link" href="#section--4">Contacto</a>
+
+      <div class="nosotros__body reveal">
+        <p>
+          Desde hace más de una década, levantamos casas que respetan el ritmo del bosque. Cada proyecto nace de un terreno concreto, de su luz, su pendiente y su silencio — no al revés. Usamos madera certificada, piedra del lugar y técnicas pasivas que reducen el consumo al mínimo.
+        </p>
+        <p>
+          Trabajamos con un equipo pequeño de arquitectos, carpinteros y canteros. Cada casa tarda en construirse, pero dura siglos.
+        </p>
+
+        <div class="nosotros__stats">
+          <div>
+            <div class="k serif">142</div>
+            <div class="l">Casas entregadas</div>
+          </div>
+          <div>
+            <div class="k serif">14</div>
+            <div class="l">Años construyendo</div>
+          </div>
+          <div>
+            <div class="k serif">0</div>
+            <div class="l">Residuos al bosque</div>
+          </div>
+        </div>
       </div>
     </div>
-    <header class="header">
-      <div class="contenedor contenido-header">
-        <div class="barra">
-          <div class="logo">
-            <h1 class="nombre-sitio">Arquitectura <span>Bosque</span></h1>
-            <div class="btn-expand"></div>
-          </div>
+  </div>
+</section>
 
-          <div class="contacto">
-            <a class="telefono" href="tel:01-800-9191">01-800-9191</a>
-            <nav class="navegacion">
-              <a class="link" href="#">Inicio</a>
-              <a class="link" href="#section--1">Nosotros</a>
-              <a class="link" href="#section--2">Modelos</a>
-              <a class="link" href="#section--3">Galería</a>
-              <a class="link" href="#section--4">Contacto</a>
-            </nav>
-          </div>
-        </div>
-        <div class="slogan">
-          <h1>Tu casa en el bosque</h1>
-          <p>Construimos la casa de tus sueños</p>
-        </div>
+<!-- MODELOS -->
+<section class="modelos" id="modelos">
+  <div class="wrap">
+    <div class="modelos__head reveal">
+      <div>
+        <div class="eyebrow">02 / Modelos</div>
+        <h2>Tres maneras<br/>de <em>habitar</em> el bosque.</h2>
       </div>
-    </header>
-    <!-- <div class="formulario">
-      <div class="formulario__titulo">
-        <h1>LLamanos!</h1>
+      <p>Tres tipologías base, infinitas adaptaciones. Cada modelo se ajusta al terreno, orientación y número de habitantes.</p>
+    </div>
+
+    <article class="modelo reveal">
+      <div class="modelo__media">
+        <span class="tag">Modelo 01</span>
+        <img src="img/modelo_basico.jpg" alt="Modelo básico" />
       </div>
-      <form class="formulario__grid">
-        <div class="campo">
-          <label for="nombre">Nombre:</label>
-          <input type="text" placeholder="Nombre" id="nombre" />
-        </div>
-        <div class="campo">
-          <label for="nombre">Apellidos:</label>
-          <input type="text" placeholder="Nombre" id="nombre" />
-        </div>
-
-        <div class="campo">
-          <label for="email">Email:</label>
-          <input type="email" placeholder="Email" id="email" />
-        </div>
-
-        <div class="campo">
-          <label for="asunto">teléfono:</label>
-          <input type="tel" placeholder="telefono" id="telefono" />
-        </div>
-        <div class="campo">
-          <label for="pais">País</label>
-          <select>
-            <option value="" value="" disabled>--Seleccione--</option>
-            <option value="TEST1">Test1</option>
-            <option value="TEST2">Test2</option>
-            <option value="TEST3" selected>Test3</option>
-            <option value="TEST4">Test4</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="pais">Ciudad</label>
-          <select>
-            <option value="" value="" disabled>--Seleccione--</option>
-            <option value="TEST1">Test1</option>
-            <option value="TEST2">Test2</option>
-            <option value="TEST3" selected>Test3</option>
-            <option value="TEST4">Test4</option>
-          </select>
-        </div>
-
-        <div class="campo">
-          <label for="asunto">Mensaje:</label>
-          <textarea rows="5" cols="20"></textarea>
-        </div>
-      </form>
-    </div>-->
-    <section class="contenedor mt-5 nosotros seccion">
-      <div class="contenido-nosotros">
-        <h2 id="section--1">Sobre nosotros</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis quia
-          assumenda ducimus ab autem enim id eum, aspernatur facere blanditiis
-          vitae incidunt ut quidem quis quo ratione earum, sit quisquam.
+      <div class="modelo__body">
+        <div class="modelo__num">Modelo 01 — Básico</div>
+        <h3 class="modelo__title">Refugio <em>Aire</em></h3>
+        <p class="modelo__desc">
+          Una planta abierta, techo a dos aguas y orientación sur. Pensada para parejas o estancias largas en soledad. Construcción en madera laminada con cimentación sobre pilotes.
         </p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error minus
-          voluptatibus autem quisquam, voluptas enim quos.
+        <div class="modelo__specs">
+          <div><div class="s">Superficie</div><div class="v serif">62 m²</div></div>
+          <div><div class="s">Habitaciones</div><div class="v serif">1+1</div></div>
+          <div><div class="s">Entrega</div><div class="v serif">4 meses</div></div>
+        </div>
+        <div class="modelo__price">
+          <span class="from">Desde</span>
+          <span class="amount serif">€ 148 000</span>
+        </div>
+        <a class="btn" href="#">Ver plano completo <span class="arrow">→</span></a>
+      </div>
+    </article>
+
+    <article class="modelo reveal">
+      <div class="modelo__media">
+        <span class="tag">Modelo 02</span>
+        <img src="img/modelo_premier.jpg" alt="Modelo premier" />
+      </div>
+      <div class="modelo__body">
+        <div class="modelo__num">Modelo 02 — Premier</div>
+        <h3 class="modelo__title">Cabaña <em>Umbral</em></h3>
+        <p class="modelo__desc">
+          La versión familiar. Dos plantas, cubierta de teja cerámica y chimenea central de piedra. Terraza elevada que se adentra entre los árboles sin talar uno solo.
         </p>
+        <div class="modelo__specs">
+          <div><div class="s">Superficie</div><div class="v serif">108 m²</div></div>
+          <div><div class="s">Habitaciones</div><div class="v serif">3+2</div></div>
+          <div><div class="s">Entrega</div><div class="v serif">7 meses</div></div>
+        </div>
+        <div class="modelo__price">
+          <span class="from">Desde</span>
+          <span class="amount serif">€ 246 000</span>
+        </div>
+        <a class="btn" href="#">Ver plano completo <span class="arrow">→</span></a>
       </div>
-    </section>
+    </article>
 
-    <main class="contenedor mt-5 seccion" id="section--2">
-      <h2>Conoce nuestros modelos</h2>
-      <div class="modelo basico">
-        <div class="contenido-modelo">
-          <h3>Modelo básico</h3>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-            tenetur temporibus molestias error eos consequatur ipsam incidunt at
-            iste placeat, quam doloremque corrupti vero earum suscipit mollitia
-            rem? Possimus, quis.
-          </p>
-          <a href="#" class="btn"> Más información</a>
-        </div>
+    <article class="modelo reveal">
+      <div class="modelo__media">
+        <span class="tag">Modelo 03</span>
+        <img src="img/modelo_elite.jpg" alt="Modelo elite" />
       </div>
-      <!-- modelo finaliza-->
-      <div class="modelo premier">
-        <div class="contenido-modelo">
-          <h3>Modelo premier</h3>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-            tenetur temporibus molestias error eos consequatur ipsam incidunt at
-            iste placeat, quam doloremque corrupti vero earum suscipit mollitia
-            rem? Possimus, quis.
-          </p>
-          <a href="#" class="btn"> Más información</a>
+      <div class="modelo__body">
+        <div class="modelo__num">Modelo 03 — Elite</div>
+        <h3 class="modelo__title">Casa <em>Linde</em></h3>
+        <p class="modelo__desc">
+          Proyecto a medida. Dos volúmenes conectados por un patio interior, materiales seleccionados en obra y sistema geotérmico. Cada casa es única; ninguna se repite.
+        </p>
+        <div class="modelo__specs">
+          <div><div class="s">Superficie</div><div class="v serif">180+ m²</div></div>
+          <div><div class="s">Habitaciones</div><div class="v serif">A medida</div></div>
+          <div><div class="s">Entrega</div><div class="v serif">12 meses</div></div>
         </div>
-      </div>
-      <!-- modelo finaliza-->
-      <div class="modelo elite">
-        <div class="contenido-modelo">
-          <h3>Modelo Elite</h3>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-            tenetur temporibus molestias error eos consequatur ipsam incidunt at
-            iste placeat, quam doloremque corrupti vero earum suscipit mollitia
-            rem? Possimus, quis.
-          </p>
-          <a href="#" class="btn"> Más información</a>
+        <div class="modelo__price">
+          <span class="from">Desde</span>
+          <span class="amount serif">€ 420 000</span>
         </div>
+        <a class="btn" href="#">Ver plano completo <span class="arrow">→</span></a>
       </div>
-      <!-- modelo finaliza-->
-    </main>
+    </article>
+  </div>
+</section>
 
-    <section class="contenedor mt-5 seccion" id="section--3">
-      <h2>Galería</h2>
-      <div class="galeria">
-        <div class="img"><img src="img/imagen_1.jpg" /></div>
-        <div class="img"><img src="img/imagen_2.jpg" /></div>
-        <div class="img"><img src="img/imagen_3.jpg" /></div>
-        <div class="img"><img src="img/imagen_4.jpg" /></div>
-        <div class="img"><img src="img/imagen_5.jpg" /></div>
-        <div class="img"><img src="img/imagen_6.jpg" /></div>
-        <div class="img"><img src="img/imagen_7.jpg" /></div>
+<!-- GALERIA -->
+<section class="galeria" id="galeria">
+  <div class="wrap">
+    <div class="galeria__head reveal">
+      <div>
+        <div class="eyebrow">03 / Galería</div>
+        <h2>Obras recientes,<br/><em>entre</em> el bosque.</h2>
       </div>
-    </section>
-    <footer class="footer mt-5">
-      <div class="barra contenedor">
-        <div class="logo">
-          <h1 class="nombre-sitio">Arquitectura <span>Bosque</span></h1>
-        </div>
-        <div class="contacto">
-          <a class="telefono" href="tel:01-800-9191">01-800-9191</a>
-          <nav class="navegacion">
-            <a class="link" href="#">Inicio</a>
-            <a class="link" href="#section--1">Nosotros</a>
-            <a class="link" href="#section--2">Modelos</a>
-            <a class="link" href="#section--3">Galería</a>
-            <a class="link" href="#section--4">Contacto</a>
-          </nav>
+      <p style="color:rgba(242,238,230,.6);max-width:320px;font-size:14px;margin:0">
+        Siete lugares, siete casas. Cada una responde a su terreno — y a las personas que la habitan.
+      </p>
+    </div>
+
+    <div class="galeria__grid">
+      <div class="galeria__row h-tall">
+        <a class="g" data-ratio="2/3" href="#"><img src="img/imagen_2.jpg" alt="" /><span class="meta">Interior · Estudio</span></a>
+        <a class="g" data-ratio="3/2" href="#"><img src="img/imagen_1.jpg" alt="" /><span class="meta">Valle · Tirol — 2024</span></a>
+        <a class="g" data-ratio="3/2" href="#"><img src="img/imagen_3.jpg" alt="" /><span class="meta">Porche · Roble</span></a>
+      </div>
+      <div class="galeria__row h-tall">
+        <a class="g" data-ratio="3/2" href="#"><img src="img/imagen_5.jpg" alt="" /><span class="meta">Lago · Berna</span></a>
+        <a class="g" data-ratio="3/2" href="#"><img src="img/imagen_7.jpg" alt="" /><span class="meta">Bosque · Alberta</span></a>
+        <a class="g" data-ratio="2/3" href="#"><img src="img/imagen_6.jpg" alt="" /><span class="meta">Colorado · 2023</span></a>
+      </div>
+      <div class="galeria__row h-wide">
+        <a class="g" data-ratio="3/1" href="#"><img src="img/imagen_4.jpg" alt="" /><span class="meta">Exterior · Hoguera</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / CONTACTO -->
+<section class="cta" id="contacto">
+  <div class="wrap cta__inner">
+    <div class="eyebrow" style="color:rgba(242,238,230,.7)">04 / Contacto</div>
+    <h2>¿Dónde <em>imaginas</em><br/>tu próxima casa?</h2>
+    <p>Cuéntanos el terreno, el momento de vida y lo que te trajo hasta aquí. Respondemos a mano, en no más de 48 horas.</p>
+
+    <form class="cta__form" onsubmit="event.preventDefault(); alert('Gracias, nos pondremos en contacto.');">
+      <label>
+        <span class="l">Nombre</span>
+        <input type="text" placeholder="Cómo te llamas" required />
+      </label>
+      <label>
+        <span class="l">Correo</span>
+        <input type="email" placeholder="tu@correo.com" required />
+      </label>
+      <label>
+        <span class="l">Modelo de interés</span>
+        <select>
+          <option>Refugio Aire · 01</option>
+          <option>Cabaña Umbral · 02</option>
+          <option>Casa Linde · 03</option>
+          <option>Aún no lo sé</option>
+        </select>
+      </label>
+      <label>
+        <span class="l">Ubicación del terreno</span>
+        <input type="text" placeholder="Región / país" />
+      </label>
+    </form>
+    <button class="btn btn--fill cta__submit" type="submit" onclick="document.querySelector('.cta__form').requestSubmit()">
+      Empezar conversación <span class="arrow">→</span>
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div>
+        <h3>Arquitectura <em>Bosque</em></h3>
+        <p>Casas de campo hechas a mano, en diálogo con el paisaje. Desde 2011.</p>
+      </div>
+      <div>
+        <h4>Navegar</h4>
+        <ul>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#modelos">Modelos</a></li>
+          <li><a href="#galeria">Galería</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Estudio</h4>
+        <ul>
+          <li><a href="#">Proceso</a></li>
+          <li><a href="#">Materiales</a></li>
+          <li><a href="#">Diario</a></li>
+          <li><a href="#">Prensa</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="tel:018009191">01 · 800 · 9191</a></li>
+          <li><a href="mailto:contacto@arquitecturabosque.com">contacto@arquitecturabosque.com</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Pinterest</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© MMXXVI Arquitectura Bosque</span>
+      <span>Hecho a mano · Entre árboles</span>
+    </div>
+  </div>
+</footer>
+
+<!-- TWEAKS PANEL -->
+<div id="tweaks-root"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const nav = document.getElementById('nav');
+const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 60);
+window.addEventListener('scroll', onScroll); onScroll();
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, {threshold:.12});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+const TWEAKS = {
+  "accent": "moss",
+  "heroTreatment": "dark-gradient",
+  "ticker": true
+};
+const accentMap = {
+  moss:   { color:'#3A4A37', label:'Verde musgo' },
+  terra:  { color:'#8C4A2B', label:'Terracota'   },
+  ochre:  { color:'#B98A3C', label:'Ocre'        },
+  ink:    { color:'#1A1815', label:'Tinta'       },
+  lake:   { color:'#355862', label:'Lago'        }
+};
+function applyTweaks(t){
+  document.documentElement.style.setProperty('--accent', accentMap[t.accent]?.color || accentMap.moss.color);
+  document.querySelector('.ticker').style.display = t.ticker ? '' : 'none';
+  const bg = document.querySelector('.hero__bg');
+  if (bg){
+    if (t.heroTreatment === 'duotone'){
+      bg.style.filter = 'grayscale(1) sepia(.6) hue-rotate(-20deg) saturate(1.2) contrast(1.05)';
+    } else if (t.heroTreatment === 'bright'){
+      bg.style.filter = 'saturate(1.1) contrast(1.05)';
+    } else {
+      bg.style.filter = '';
+    }
+  }
+}
+applyTweaks(TWEAKS);
+let tweaksOpen = false;
+function renderPanel(){
+  const root = document.getElementById('tweaks-root');
+  if (!tweaksOpen){ root.innerHTML=''; return; }
+  root.innerHTML = `
+  <div style="position:fixed;right:20px;bottom:20px;z-index:100;background:#F2EEE6;color:#1A1815;border:1px solid #CFC8B9;width:280px;font-family:Inter,system-ui,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #CFC8B9">
+      <strong style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500">Tweaks</strong>
+      <button id="tw-close" style="background:none;border:0;font-size:18px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="padding:16px;display:grid;gap:18px">
+      <div>
+        <label style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#6B665C;display:block;margin-bottom:8px">Color de acento</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          ${Object.entries(accentMap).map(([k,v])=>`
+            <button data-accent="${k}" title="${v.label}" style="width:28px;height:28px;border:2px solid ${TWEAKS.accent===k?'#1A1815':'transparent'};background:${v.color};cursor:pointer;padding:0"></button>
+          `).join('')}
         </div>
       </div>
-      <p class="copyright">Todos los derechos reservados &copy;</p>
-    </footer>
-  </body>
+      <div>
+        <label style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#6B665C;display:block;margin-bottom:8px">Tratamiento del hero</label>
+        <div style="display:grid;gap:6px">
+          ${['dark-gradient','duotone','bright'].map(v=>`
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+              <input type="radio" name="hero" value="${v}" ${TWEAKS.heroTreatment===v?'checked':''}/> ${v}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+      <div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+          <input id="tw-ticker" type="checkbox" ${TWEAKS.ticker?'checked':''}/> Mostrar marquesina
+        </label>
+      </div>
+    </div>
+  </div>`;
+  root.querySelectorAll('[data-accent]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      TWEAKS.accent = b.dataset.accent; applyTweaks(TWEAKS); renderPanel(); persist({accent:TWEAKS.accent});
+    });
+  });
+  root.querySelectorAll('input[name=hero]').forEach(r=>{
+    r.addEventListener('change',()=>{ TWEAKS.heroTreatment=r.value; applyTweaks(TWEAKS); persist({heroTreatment:r.value});});
+  });
+  root.querySelector('#tw-ticker').addEventListener('change',(e)=>{
+    TWEAKS.ticker=e.target.checked; applyTweaks(TWEAKS); persist({ticker:e.target.checked});
+  });
+  root.querySelector('#tw-close').addEventListener('click',()=>{
+    tweaksOpen=false; renderPanel();
+    window.parent.postMessage({type:'__edit_mode_dismissed'},'*');
+  });
+}
+function persist(edits){ window.parent.postMessage({type:'__edit_mode_set_keys', edits},'*'); }
+window.addEventListener('message',(e)=>{
+  const d=e.data||{};
+  if (d.type==='__activate_edit_mode'){ tweaksOpen=true; renderPanel(); }
+  if (d.type==='__deactivate_edit_mode'){ tweaksOpen=false; renderPanel(); }
+});
+window.parent.postMessage({type:'__edit_mode_available'},'*');
+</script>
+</body>
 </html>

@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animal Gambling — Design System</title>
+  <meta name="description" content="Dirty dice · dirtier players — a two-player casino dice game where you roll, risk, and bust." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Pixelify+Sans:wght@400;700&family=Jersey+10&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — Dark Casino (default)
+       ============================================================ */
+    :root {
+      /* Brand */
+      --color-primary: #f5b942;
+      --color-primary-hover: #ffd076;
+      --color-primary-active: #c49225;
+      --color-primary-rgb: 245, 185, 66;
+      --color-secondary: #c7365f;
+      --color-accent: #6fd3d9;
+
+      /* Casino Felt — dark by default */
+      --color-bg: #05110a;
+      --color-surface: #061a10;
+      --color-surface-2: #0a2e1f;
+      --color-border: #0f4028;
+      --color-border-strong: #155233;
+      --color-text: #e8e1cc;
+      --color-text-muted: #a89e85;
+      --color-text-subtle: rgba(232, 225, 204, 0.35);
+
+      /* Status */
+      --color-success: #7ee06b;
+      --color-success-bg: rgba(126, 224, 107, 0.12);
+      --color-warning: #f5b942;
+      --color-warning-bg: rgba(245, 185, 66, 0.12);
+      --color-error: #c7365f;
+      --color-error-bg: rgba(199, 54, 95, 0.12);
+      --color-info: #6fd3d9;
+      --color-info-bg: rgba(111, 211, 217, 0.12);
+
+      /* Typography */
+      --font-sans: "JetBrains Mono", ui-monospace, monospace;
+      --font-display: "Pixelify Sans", "Press Start 2P", sans-serif;
+      --font-mono: "Jersey 10", serif;
+
+      /* Spacing */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.5rem;
+      --space-6: 2rem;
+      --space-8: 3rem;
+      --space-10: 4rem;
+      --space-12: 6rem;
+
+      /* Radius */
+      --radius-sm: 0.25rem;
+      --radius-md: 0.375rem;
+      --radius-lg: 0.5rem;
+      --radius-xl: 0.75rem;
+      --radius-2xl: 1rem;
+      --radius-full: 9999px;
+
+      /* Shadows — neon glow variants */
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.6);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.7);
+      --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.8);
+      --shadow-glow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.3);
+      --shadow-neon: 0 0 1rem rgba(var(--color-primary-rgb), 0.5), 0 0 2.5rem rgba(var(--color-primary-rgb), 0.25);
+
+      /* Motion */
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration-fast: 150ms;
+      --duration: 250ms;
+      --duration-slow: 400ms;
+    }
+
+    /* Light override */
+    [data-theme="light"] {
+      --color-bg: #f4f0e4;
+      --color-surface: #fefcf7;
+      --color-surface-2: #f0ece0;
+      --color-border: #d8d0be;
+      --color-border-strong: #b8ae9a;
+      --color-text: #1a0e06;
+      --color-text-muted: #5c4a30;
+      --color-text-subtle: rgba(26, 14, 6, 0.4);
+      --color-success-bg: rgba(126, 224, 107, 0.2);
+      --color-warning-bg: rgba(245, 185, 66, 0.2);
+      --color-error-bg: rgba(199, 54, 95, 0.18);
+      --color-info-bg: rgba(111, 211, 217, 0.18);
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.08);
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.12);
+      --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.16);
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+    }
+    img, svg { display: block; max-width: 100%; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    a { color: var(--color-primary); text-decoration: none; transition: color var(--duration-fast) var(--ease); }
+    a:hover { color: var(--color-primary-hover); }
+    code, pre { font-family: var(--font-sans); font-size: 0.875em; }
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: var(--space-6) var(--space-4);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: 0 var(--space-2);
+    }
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      box-shadow: var(--shadow-neon);
+      image-rendering: pixelated;
+    }
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--color-primary);
+      text-shadow: 0 0 0.8rem rgba(var(--color-primary-rgb), 0.5);
+    }
+    .brand-tag {
+      display: block;
+      font-size: 0.65rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: var(--font-sans);
+      font-weight: 500;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: all var(--duration-fast) var(--ease);
+      border: 1px solid transparent;
+    }
+    .nav-link:hover {
+      background: var(--color-surface-2);
+      color: var(--color-text);
+      border-color: var(--color-border);
+    }
+    .nav-link.is-active {
+      background: rgba(var(--color-primary-rgb), 0.08);
+      color: var(--color-primary);
+      border-color: rgba(var(--color-primary-rgb), 0.3);
+    }
+    .nav-link .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: var(--space-3) var(--space-2);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: all var(--duration-fast) var(--ease);
+    }
+    .theme-toggle:hover {
+      color: var(--color-primary);
+      border-color: rgba(var(--color-primary-rgb), 0.4);
+    }
+
+    .main {
+      padding: var(--space-8) var(--space-10);
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .section {
+      margin-bottom: var(--space-12);
+      scroll-margin-top: var(--space-6);
+    }
+    .section-header {
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: var(--space-2);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      margin-bottom: var(--space-2);
+      color: var(--color-text);
+    }
+    .section-desc {
+      color: var(--color-text-muted);
+      max-width: 60ch;
+      font-size: 0.9rem;
+    }
+
+    /* ============================================================
+       HERO — Dirty Casino Marquee
+       ============================================================ */
+    .hero {
+      padding: var(--space-10) var(--space-8);
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(ellipse at top right, rgba(245, 185, 66, 0.1), transparent 55%),
+        radial-gradient(ellipse at bottom left, rgba(199, 54, 95, 0.08), transparent 50%),
+        radial-gradient(ellipse 60% 50% at 50% 55%, #0f4028, #0a2e1f 60%, #061a10 100%);
+      border: 1px solid var(--color-border-strong);
+      box-shadow: var(--shadow-md), inset 0 0 6rem rgba(0,0,0,0.4);
+      margin-bottom: var(--space-10);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(-45deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 3px);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 2rem solid;
+      border-image: linear-gradient(135deg, #4a2414, #2a120a, #5a2e18, #2a120a) 1;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      background: rgba(var(--color-primary-rgb), 0.1);
+      color: var(--color-primary);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(var(--color-primary-rgb), 0.25);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+      position: relative;
+    }
+    .hero-eyebrow .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--color-primary);
+      box-shadow: 0 0 0.6rem var(--color-primary);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(var(--color-primary-rgb), 0); }
+      100% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0); }
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.1;
+      margin-bottom: var(--space-4);
+      position: relative;
+      color: var(--color-text);
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--color-primary);
+      text-shadow: 0 0 1rem rgba(var(--color-primary-rgb), 0.6), 0 0 2.5rem rgba(var(--color-primary-rgb), 0.3);
+      animation: flicker 4s infinite;
+    }
+    @keyframes flicker {
+      0%, 90%, 94%, 100% { opacity: 1; }
+      91% { opacity: 0.7; }
+      93% { opacity: 0.4; }
+    }
+    .hero-desc {
+      font-size: 0.95rem;
+      color: var(--color-text-muted);
+      max-width: 55ch;
+      margin-bottom: var(--space-6);
+      position: relative;
+      letter-spacing: 0.02em;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      position: relative;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .hero-meta strong { color: var(--color-primary); font-weight: 700; }
+
+    /* ============================================================
+       COLOR PALETTE
+       ============================================================ */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: var(--space-4);
+    }
+    .swatch {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform var(--duration) var(--ease-out), box-shadow var(--duration) var(--ease), border-color var(--duration) var(--ease);
+    }
+    .swatch:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-border-strong);
+    }
+    .swatch-preview {
+      height: 100px;
+      position: relative;
+    }
+    .swatch-preview::after {
+      content: "Click to copy";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      transition: opacity var(--duration-fast) var(--ease);
+    }
+    .swatch:hover .swatch-preview::after { opacity: 1; }
+    .swatch.copied .swatch-preview::after {
+      content: "Copied ✓";
+      opacity: 1;
+      background: rgba(16, 185, 129, 0.85);
+    }
+    .swatch-info { padding: var(--space-3) var(--space-4); }
+    .swatch-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+      letter-spacing: 0.04em;
+    }
+    .swatch-hex {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+    }
+    .palette-rationale {
+      margin-top: var(--space-6);
+      padding: var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-primary);
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .neutral-scale {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 2px;
+      margin-top: var(--space-5);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+    .neutral-step {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: flex-end;
+      padding: var(--space-2);
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      color: var(--color-text);
+      letter-spacing: 0.04em;
+    }
+    .neutral-step[data-light="true"] { color: #e8e1cc; }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+    .type-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+    .type-row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: var(--space-5);
+      align-items: baseline;
+      padding-bottom: var(--space-4);
+      border-bottom: 1px dashed var(--color-border);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-label {
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .type-label small { display: block; opacity: 0.7; margin-top: 2px; font-size: 0.65rem; }
+
+    .display-1 {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.05em;
+      color: var(--color-primary);
+      text-shadow: 0 0 1rem rgba(var(--color-primary-rgb), 0.4);
+    }
+    .h1 { font-family: var(--font-display); font-size: 2.8rem; font-weight: 700; line-height: 1.1; letter-spacing: 0.04em; }
+    .h2 { font-family: var(--font-display); font-size: 2rem; font-weight: 700; line-height: 1.15; letter-spacing: 0.04em; }
+    .h3 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; line-height: 1.2; letter-spacing: 0.03em; }
+    .h4 { font-size: 1.2rem; font-weight: 700; line-height: 1.3; letter-spacing: 0.04em; text-transform: uppercase; }
+    .h5 { font-size: 1rem; font-weight: 700; line-height: 1.4; letter-spacing: 0.06em; text-transform: uppercase; }
+    .h6 { font-size: 0.8rem; font-weight: 700; line-height: 1.4; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); }
+    .body-text { font-size: 0.95rem; line-height: 1.7; color: var(--color-text); max-width: 65ch; }
+    .caption { font-size: 0.78rem; color: var(--color-text-muted); letter-spacing: 0.04em; }
+    .mono { font-family: var(--font-mono); font-size: 1.1rem; color: var(--color-primary); }
+
+    /* ============================================================
+       NAVBAR
+       ============================================================ */
+    .demo-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: var(--space-4);
+    }
+    .demo-frame { padding: var(--space-6); background: var(--color-bg); }
+    .demo-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-3) var(--space-5);
+      background: var(--color-surface-2);
+      border-top: 1px solid var(--color-border);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+    }
+    .demo-meta code { color: var(--color-primary); }
+
+    .demo-navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-xs);
+    }
+    .demo-navbar .brand { padding: 0; }
+    .demo-navbar-mark {
+      width: 26px; height: 26px;
+      border-radius: 3px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      image-rendering: pixelated;
+    }
+    .demo-navbar nav {
+      display: flex;
+      gap: var(--space-1);
+    }
+    .demo-navbar nav a {
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      transition: all var(--duration-fast) var(--ease);
+      position: relative;
+    }
+    .demo-navbar nav a:hover {
+      color: var(--color-text);
+      background: var(--color-surface-2);
+    }
+    .demo-navbar nav a.is-active {
+      color: var(--color-primary);
+    }
+    .demo-navbar nav a.is-active::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: var(--space-3);
+      right: var(--space-3);
+      height: 2px;
+      background: var(--color-primary);
+      box-shadow: 0 0 0.5rem var(--color-primary);
+    }
+
+    /* ============================================================
+       BUTTONS
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease);
+      text-decoration: none;
+      white-space: nowrap;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .btn:disabled, .btn.is-disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: rgba(var(--color-primary-rgb), 0.08);
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--color-primary);
+      color: #05110a;
+      box-shadow: var(--shadow-neon);
+    }
+    .btn-primary:active:not(:disabled) {
+      background: var(--color-primary-active);
+      transform: translateY(1px);
+    }
+    .btn-primary:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-secondary {
+      background: var(--color-surface);
+      color: var(--color-text);
+      border-color: var(--color-border-strong);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--color-surface-2);
+      border-color: var(--color-text-muted);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+    .btn-outline:hover:not(:disabled) {
+      background: rgba(111, 211, 217, 0.1);
+      box-shadow: 0 0 1rem rgba(111, 211, 217, 0.3);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--color-secondary);
+      border-color: var(--color-secondary);
+    }
+    .btn-danger:hover:not(:disabled) {
+      background: var(--color-secondary);
+      color: var(--color-text);
+      box-shadow: 0 0 1rem rgba(199, 54, 95, 0.5);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-text-muted);
+      border-color: transparent;
+    }
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--color-surface-2);
+      color: var(--color-text);
+      border-color: var(--color-border);
+    }
+
+    .btn-sm { padding: var(--space-2) var(--space-3); font-size: 0.75rem; }
+    .btn-lg { padding: var(--space-4) var(--space-6); font-size: 0.95rem; }
+
+    .btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      align-items: center;
+    }
+    .btn-row { margin-bottom: var(--space-4); }
+    .btn-row-label {
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      margin-bottom: var(--space-2);
+      letter-spacing: 0.08em;
+    }
+
+    .spinner {
+      width: 12px;
+      height: 12px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ============================================================
+       CARDS — character cards inspired
+       ============================================================ */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-5);
+    }
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: transform var(--duration) var(--ease-out), box-shadow var(--duration) var(--ease), border-color var(--duration) var(--ease);
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-primary);
+    }
+    .card-image {
+      aspect-ratio: 16/9;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.75)),
+        repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb), 0.03) 0, rgba(var(--color-primary-rgb), 0.03) 2px, transparent 2px, transparent 8px),
+        var(--color-surface-2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-image-amber { background:
+      linear-gradient(135deg, rgba(245,185,66,0.25), rgba(199,54,95,0.15)),
+      var(--color-surface-2);
+    }
+    .card-image-cyan { background:
+      linear-gradient(135deg, rgba(111,211,217,0.2), rgba(58,95,189,0.2)),
+      var(--color-surface-2);
+    }
+    .card-image-blood { background:
+      linear-gradient(135deg, rgba(199,54,95,0.25), rgba(245,185,66,0.1)),
+      var(--color-surface-2);
+    }
+    .card-image-emoji {
+      font-size: 3.5rem;
+      opacity: 0.8;
+    }
+    .card-tag {
+      position: absolute;
+      top: var(--space-3);
+      left: var(--space-3);
+      padding: 2px var(--space-2);
+      background: rgba(5, 17, 10, 0.9);
+      color: var(--color-primary);
+      border: 1px solid rgba(var(--color-primary-rgb), 0.4);
+      border-radius: var(--radius-sm);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .card-body {
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      flex: 1;
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: 0.04em;
+    }
+    .card-desc {
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      flex: 1;
+      line-height: 1.6;
+    }
+    .card-actions {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+      padding-top: var(--space-2);
+      border-top: 1px dashed var(--color-border);
+      margin-top: auto;
+    }
+
+    /* ============================================================
+       FORMS
+       ============================================================ */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-5);
+      background: var(--color-surface);
+      padding: var(--space-6);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .field { display: flex; flex-direction: column; gap: var(--space-2); }
+    .field-full { grid-column: 1 / -1; }
+    .label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .label .req { color: var(--color-error); }
+    .hint {
+      font-size: 0.73rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.02em;
+    }
+    .input, .select, .textarea {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      color: var(--color-text);
+      transition: border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
+    }
+    .input::placeholder, .textarea::placeholder { color: var(--color-text-subtle); }
+    .input:hover, .select:hover, .textarea:hover { border-color: var(--color-text-muted); }
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-glow);
+    }
+    .textarea { resize: vertical; min-height: 96px; font-family: inherit; }
+    .select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23a89e85' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--space-4) center;
+      background-color: var(--color-bg);
+      padding-right: var(--space-8);
+    }
+
+    .field.is-error .input, .field.is-error .select, .field.is-error .textarea {
+      border-color: var(--color-error);
+    }
+    .field.is-error .input:focus { box-shadow: 0 0 0 3px rgba(199, 54, 95, 0.2); }
+    .field.is-error .hint { color: var(--color-error); }
+
+    .field.is-success .input, .field.is-success .select { border-color: var(--color-success); }
+    .field.is-success .hint { color: var(--color-success); }
+
+    .check-row { display: flex; flex-direction: column; gap: var(--space-2); }
+    .check {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+    .check input[type="checkbox"], .check input[type="radio"] {
+      appearance: none;
+      width: 16px; height: 16px;
+      border: 1.5px solid var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .check input[type="radio"] { border-radius: 50%; }
+    .check input:hover { border-color: var(--color-primary); }
+    .check input:checked {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .check input[type="checkbox"]:checked::after {
+      content: "";
+      position: absolute;
+      left: 4px; top: 1px;
+      width: 5px; height: 9px;
+      border: solid #05110a;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .check input[type="radio"]:checked::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: #05110a;
+    }
+    .check input:focus-visible { box-shadow: var(--shadow-glow); }
+
+    /* ============================================================
+       BADGES & HUD
+       ============================================================ */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 2px var(--space-3);
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.4;
+      border: 1px solid transparent;
+    }
+    .badge .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .badge-success { background: var(--color-success-bg); color: var(--color-success); border-color: rgba(126, 224, 107, 0.25); }
+    .badge-warning { background: var(--color-warning-bg); color: var(--color-warning); border-color: rgba(245, 185, 66, 0.3); }
+    .badge-error { background: var(--color-error-bg); color: var(--color-error); border-color: rgba(199, 54, 95, 0.3); }
+    .badge-info { background: var(--color-info-bg); color: var(--color-info); border-color: rgba(111, 211, 217, 0.25); }
+    .badge-neutral { background: var(--color-surface-2); color: var(--color-text-muted); border-color: var(--color-border); }
+
+    .hud-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    .hud {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1px solid;
+    }
+    .hud-icon {
+      width: 26px; height: 26px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .hud-text strong { display: block; margin-bottom: 2px; font-size: 0.85rem; color: var(--color-text); }
+    .hud-text small { color: inherit; opacity: 0.75; font-size: 0.78rem; }
+    .hud.success { background: var(--color-success-bg); border-color: rgba(126, 224, 107, 0.25); color: var(--color-success); }
+    .hud.warning { background: var(--color-warning-bg); border-color: rgba(245, 185, 66, 0.3); color: var(--color-warning); }
+    .hud.error { background: var(--color-error-bg); border-color: rgba(199, 54, 95, 0.3); color: var(--color-error); }
+    .hud.info { background: var(--color-info-bg); border-color: rgba(111, 211, 217, 0.25); color: var(--color-info); }
+    .hud .hud-icon { background: currentColor; color: #05110a; }
+
+    .notif-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      align-items: center;
+    }
+    .icon-btn {
+      position: relative;
+      width: 38px; height: 38px;
+      display: grid;
+      place-items: center;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease);
+      color: var(--color-text-muted);
+    }
+    .icon-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .notif-badge {
+      position: absolute;
+      top: -5px; right: -5px;
+      min-width: 17px; height: 17px;
+      padding: 0 4px;
+      border-radius: var(--radius-sm);
+      background: var(--color-error);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--color-bg);
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .demo-footer {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-8) var(--space-6) var(--space-5);
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: var(--space-6);
+      padding-bottom: var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .footer-brand p {
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      max-width: 30ch;
+      margin-top: var(--space-3);
+      line-height: 1.6;
+    }
+    .footer-col h4 {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-3);
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+    .footer-col a { color: var(--color-text); font-size: 0.85rem; }
+    .footer-col a:hover { color: var(--color-primary); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--space-4);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+    }
+    .footer-social { display: flex; gap: var(--space-3); }
+    .footer-social a {
+      width: 30px; height: 30px;
+      display: grid; place-items: center;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      transition: all var(--duration-fast) var(--ease);
+    }
+    .footer-social a:hover { color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.4); }
+
+    /* ============================================================
+       PRINCIPLES
+       ============================================================ */
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    .principle {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      transition: transform var(--duration) var(--ease-out), border-color var(--duration) var(--ease);
+    }
+    .principle:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 1rem rgba(var(--color-primary-rgb), 0.15);
+    }
+    .principle-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: var(--radius-sm);
+      background: rgba(var(--color-primary-rgb), 0.1);
+      color: var(--color-primary);
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.75rem;
+      margin-bottom: var(--space-3);
+      border: 1px solid rgba(var(--color-primary-rgb), 0.25);
+    }
+    .principle h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+      letter-spacing: 0.04em;
+    }
+    .principle p {
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       ANIMATIONS DEMO
+       ============================================================ */
+    .anim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: var(--space-4);
+    }
+    .anim-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      text-align: center;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+    .anim-card h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-2);
+    }
+    .anim-card p {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-sans);
+      letter-spacing: 0.04em;
+    }
+    .anim-shape {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      margin: 0 auto var(--space-3);
+      box-shadow: var(--shadow-md);
+      image-rendering: pixelated;
+    }
+
+    .anim-lift:hover .anim-shape { transform: translateY(-8px); transition: transform var(--duration) var(--ease-out); }
+    .anim-rotate:hover .anim-shape { transform: rotate(15deg); transition: transform var(--duration) var(--ease-out); }
+    .anim-scale:hover .anim-shape { transform: scale(1.15); transition: transform var(--duration) var(--ease-out); }
+    .anim-glow:hover .anim-shape {
+      box-shadow: var(--shadow-neon), var(--shadow-md);
+      transition: box-shadow var(--duration) var(--ease);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .anim-float .anim-shape { animation: float 3s ease-in-out infinite; }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .anim-shimmer .anim-shape {
+      background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent), var(--color-primary));
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* ============================================================
+       PAGE FOOTER
+       ============================================================ */
+    .page-footer {
+      margin-top: var(--space-12);
+      padding: var(--space-6) 0;
+      border-top: 1px solid var(--color-border);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        overflow-x: auto;
+        padding: var(--space-3) var(--space-4);
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .nav-list { flex-direction: row; flex-shrink: 0; }
+      .nav-link { white-space: nowrap; }
+      .sidebar-footer { margin: 0; padding: 0; border: none; flex-shrink: 0; }
+      .main { padding: var(--space-5); }
+      .footer-top { grid-template-columns: 1fr; gap: var(--space-5); }
+      .demo-navbar { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+      .footer-bottom { flex-direction: column; gap: var(--space-3); }
+      .type-row { grid-template-columns: 1fr; gap: var(--space-2); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- ========================================================
+         SIDEBAR
+         ======================================================== -->
+    <aside class="sidebar" aria-label="Section navigation">
+      <header class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <span class="brand-name">Animal Gambling</span>
+          <span class="brand-tag">Design System</span>
+        </div>
+      </header>
+
+      <nav>
+        <ul class="nav-list">
+          <li><a class="nav-link is-active" href="#colors"><span class="dot"></span>Colors</a></li>
+          <li><a class="nav-link" href="#typography"><span class="dot"></span>Typography</a></li>
+          <li><a class="nav-link" href="#navbar"><span class="dot"></span>Navbar</a></li>
+          <li><a class="nav-link" href="#buttons"><span class="dot"></span>Buttons</a></li>
+          <li><a class="nav-link" href="#cards"><span class="dot"></span>Cards</a></li>
+          <li><a class="nav-link" href="#forms"><span class="dot"></span>Forms</a></li>
+          <li><a class="nav-link" href="#hud"><span class="dot"></span>HUD &amp; Badges</a></li>
+          <li><a class="nav-link" href="#footer"><span class="dot"></span>Footer</a></li>
+          <li><a class="nav-link" href="#principles"><span class="dot"></span>Principles</a></li>
+          <li><a class="nav-link" href="#animations"><span class="dot"></span>Animations</a></li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+          <span id="themeIcon">☀</span>
+          <span id="themeLabel">Light</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========================================================
+         MAIN
+         ======================================================== -->
+    <main class="main">
+      <!-- HERO -->
+      <header class="hero">
+        <div class="hero-eyebrow">
+          <span class="pulse"></span>
+          v1.0 · Living Design System
+        </div>
+        <h1 class="hero-title">Animal Gambling<br /><em>Design Language</em></h1>
+        <p class="hero-desc">Dirty dice · dirtier players — a two-player casino dice game where you roll, risk, and bust. Every visual decision channels a back-room table after midnight.</p>
+        <div class="hero-meta">
+          <span><strong>10</strong> Sections</span>
+          <span><strong>Single</strong> File</span>
+          <span><strong>WCAG AA</strong> Accessible</span>
+          <span><strong>Responsive</strong> Mobile + Desktop</span>
+        </div>
+      </header>
+
+      <!-- ========================================================
+           1. COLORS
+           ======================================================== -->
+      <section class="section" id="colors">
+        <header class="section-header">
+          <span class="section-eyebrow">01 — Foundations</span>
+          <h2 class="section-title">Color Palette</h2>
+          <p class="section-desc">A focused palette built for a back-room casino. Click any swatch to copy its hex value.</p>
+        </header>
+
+        <div class="swatch-grid">
+          <article class="swatch" data-copy="#f5b942">
+            <div class="swatch-preview" style="background: #f5b942; box-shadow: inset 0 0 2rem rgba(245,185,66,0.3);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Neon Amber</div>
+              <div class="swatch-hex">#F5B942 · Primary</div>
+            </div>
+          </article>
+          <article class="swatch" data-copy="#ffd076">
+            <div class="swatch-preview" style="background: #ffd076;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Amber Glow</div>
+              <div class="swatch-hex">#FFD076 · Primary Hover</div>
+            </div>
+          </article>
+          <article class="swatch" data-copy="#c7365f">
+            <div class="swatch-preview" style="background: #c7365f; box-shadow: inset 0 0 2rem rgba(199,54,95,0.3);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blood</div>
+              <div class="swatch-hex">#C7365F · Secondary</div>
+            </div>
+          </article>
+          <article class="swatch" data-copy="#6fd3d9">
+            <div class="swatch-preview" style="background: #6fd3d9;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Cyan</div>
+              <div class="swatch-hex">#6FD3D9 · Accent / P2</div>
+            </div>
+          </article>
+          <article class="swatch" data-copy="#7ee06b">
+            <div class="swatch-preview" style="background: #7ee06b;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Toxic</div>
+              <div class="swatch-hex">#7EE06B · Success</div>
+            </div>
+          </article>
+          <article class="swatch" data-copy="#3a5fbd">
+            <div class="swatch-preview" style="background: #3a5fbd;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Chip Blue</div>
+              <div class="swatch-hex">#3A5FBD · Info</div>
+            </div>
+          </article>
+          <article class="swatch" data-copy="#8a1e3c">
+            <div class="swatch-preview" style="background: #8a1e3c;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blood Deep</div>
+              <div class="swatch-hex">#8A1E3C · Danger Dark</div>
+            </div>
+          </article>
+          <article class="swatch" data-copy="#05110a">
+            <div class="swatch-preview" style="background: #05110a; border: 1px solid #0f4028;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Ink</div>
+              <div class="swatch-hex">#05110A · Background</div>
+            </div>
+          </article>
+        </div>
+
+        <h3 class="h5" style="margin: var(--space-6) 0 var(--space-3);">Casino Felt Scale</h3>
+        <div class="neutral-scale">
+          <div class="neutral-step" style="background:#e8e1cc; color:#1a0f06;">Bone</div>
+          <div class="neutral-step" style="background:#a89e85; color:#05110a;">Dim</div>
+          <div class="neutral-step" style="background:#3a1a0e;" data-light="true">Edge</div>
+          <div class="neutral-step" style="background:#2a120a;" data-light="true">Wood</div>
+          <div class="neutral-step" style="background:#155233;" data-light="true">Felt 3</div>
+          <div class="neutral-step" style="background:#0f4028;" data-light="true">Felt 2</div>
+          <div class="neutral-step" style="background:#0a2e1f;" data-light="true">Felt 1</div>
+          <div class="neutral-step" style="background:#061a10;" data-light="true">Felt 0</div>
+          <div class="neutral-step" style="background:#05110a;" data-light="true">Ink</div>
+        </div>
+
+        <p class="palette-rationale">The palette channels a back-room casino after midnight — neon amber bleeding through felt green, blood red marking the bust, cyan tagging the rival. Every color earns its place: amber is power and the active player, red is danger and loss, cyan is the opponent, toxic green is alive and winning. The deep felt greens hold the world together without competing.</p>
+      </section>
+
+      <!-- ========================================================
+           2. TYPOGRAPHY
+           ======================================================== -->
+      <section class="section" id="typography">
+        <header class="section-header">
+          <span class="section-eyebrow">02 — Foundations</span>
+          <h2 class="section-title">Typography</h2>
+          <p class="section-desc">Three families, each pulling its own shift: pixel display, mono interface, and large-format numbers.</p>
+        </header>
+
+        <div class="type-stack">
+          <div class="type-row">
+            <div class="type-label">Display<small>Pixelify Sans · 56px</small></div>
+            <div class="display-1">ANIMAL</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H1<small>Pixelify Sans · 45px</small></div>
+            <div class="h1">Game Over</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H2<small>Pixelify Sans · 32px</small></div>
+            <div class="h2">Select Your Degenerate</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H3<small>Pixelify Sans · 26px</small></div>
+            <div class="h3">Roll or Hold</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H4<small>JetBrains Mono · 19px · upper</small></div>
+            <div class="h4">Total Score</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H5<small>JetBrains Mono · 16px · upper</small></div>
+            <div class="h5">Chips on Hand</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H6<small>JetBrains Mono · 13px · upper</small></div>
+            <div class="h6">Session · Live · 000 Rolls</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">Body<small>JetBrains Mono · 15px</small></div>
+            <div class="body-text">Two degenerates. One die. Take turns rolling until someone reaches the goal. Roll a 1 and lose every point from that turn. Bank your points to keep them safe — if you're a coward.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">Caption<small>JetBrains Mono · 12px</small></div>
+            <div class="caption">— the only rules worth knowing — · est. 2024 · members only —</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">Score<small>Jersey 10 · Large format</small></div>
+            <div class="mono" style="font-size: 5rem; line-height: 1;">47</div>
+          </div>
+        </div>
+
+        <p class="palette-rationale">Three families, each pulling its own shift. Pixelify Sans handles the marquee signs, character names, and anything that needs retro-arcade energy — it sets the scene. JetBrains Mono runs the interface — stats, labels, buttons — keeping it readable under pressure. Jersey 10 sits at the top of the hierarchy for game-over scores and large numbers, because sometimes you need letterforms that feel cast in neon.</p>
+      </section>
+
+      <!-- ========================================================
+           3. NAVBAR
+           ======================================================== -->
+      <section class="section" id="navbar">
+        <header class="section-header">
+          <span class="section-eyebrow">03 — Navigation</span>
+          <h2 class="section-title">Navbar</h2>
+          <p class="section-desc">Compact top nav reflecting the HUD-style interface. Pixel aesthetic, amber active indicator.</p>
+        </header>
+
+        <div class="demo-card">
+          <div class="demo-frame">
+            <div class="demo-navbar">
+              <div class="brand">
+                <div class="demo-navbar-mark"></div>
+                <span class="brand-name">Animal Gambling</span>
+              </div>
+              <nav>
+                <a href="#" class="is-active">Dashboard</a>
+                <a href="#">Leaderboard</a>
+                <a href="#">Characters</a>
+                <a href="#">Rules</a>
+              </nav>
+              <div style="display:flex; gap: var(--space-2);">
+                <button class="btn btn-ghost btn-sm" type="button">⟲ Rematch</button>
+                <button class="btn btn-primary btn-sm" type="button">⚀ Roll</button>
+              </div>
+            </div>
+          </div>
+          <div class="demo-meta">
+            <span>Hover items · click to set active · amber neon indicator</span>
+            <code>.demo-navbar</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           4. BUTTONS
+           ======================================================== -->
+      <section class="section" id="buttons">
+        <header class="section-header">
+          <span class="section-eyebrow">04 — Components</span>
+          <h2 class="section-title">Buttons</h2>
+          <p class="section-desc">Five variants × three sizes. Neon glow on hover. Uppercase, monospace, pixel-precise.</p>
+        </header>
+
+        <div class="demo-card">
+          <div class="demo-frame">
+            <div class="btn-row">
+              <div class="btn-row-label">Variants</div>
+              <div class="btn-grid">
+                <button class="btn btn-primary" type="button">⚀ Roll Dice</button>
+                <button class="btn btn-secondary" type="button">⎔ Hold</button>
+                <button class="btn btn-outline" type="button">☆ Rematch</button>
+                <button class="btn btn-danger" type="button">× New Game</button>
+                <button class="btn btn-ghost" type="button">⚑ Rules</button>
+                <button class="btn btn-primary" type="button" disabled>Disabled</button>
+                <button class="btn btn-primary" type="button"><span class="spinner" aria-hidden="true"></span>Rolling</button>
+              </div>
+            </div>
+            <div class="btn-row">
+              <div class="btn-row-label">Sizes</div>
+              <div class="btn-grid">
+                <button class="btn btn-primary btn-sm" type="button">Small</button>
+                <button class="btn btn-primary" type="button">Default</button>
+                <button class="btn btn-primary btn-lg" type="button">Large</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           5. CARDS
+           ======================================================== -->
+      <section class="section" id="cards">
+        <header class="section-header">
+          <span class="section-eyebrow">05 — Components</span>
+          <h2 class="section-title">Cards</h2>
+          <p class="section-desc">Character card pattern — felt texture, amber hover glow, pixel art imagery.</p>
+        </header>
+
+        <div class="card-grid">
+          <article class="card">
+            <div class="card-image card-image-amber">
+              <span class="card-image-emoji">🐧</span>
+              <span class="card-tag">ID/001</span>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Tax Penguin</h3>
+              <p class="card-desc">Wanted for tax evasion in three jurisdictions. Cold-blooded. Fugitive. The house always wins — he just needs to become the house.</p>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" type="button">Select P1</button>
+                <button class="btn btn-ghost btn-sm" type="button">Profile</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-image card-image-blood">
+              <span class="card-image-emoji">🐻</span>
+              <span class="card-tag">ID/002</span>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Bearnardo</h3>
+              <p class="card-desc">Ex-mob enforcer. Now pretends to be a butcher. Heavy. Patient. He's buried worse things than his losses.</p>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" type="button">Select P1</button>
+                <button class="btn btn-ghost btn-sm" type="button">Profile</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-image card-image-cyan">
+              <span class="card-image-emoji">🥚</span>
+              <span class="card-tag">ID/004</span>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Mystery Egg</h3>
+              <p class="card-desc">Unknown. Has never been seen outside its shell. Age: ??? Condition: ... Tags: ???, ???</p>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" type="button">Select P2</button>
+                <button class="btn btn-ghost btn-sm" type="button">Profile</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           6. FORMS
+           ======================================================== -->
+      <section class="section" id="forms">
+        <header class="section-header">
+          <span class="section-eyebrow">06 — Components</span>
+          <h2 class="section-title">Forms</h2>
+          <p class="section-desc">Inputs, selects, checkboxes, and radios. Amber focus rings. Felt-dark backgrounds throughout.</p>
+        </header>
+
+        <form class="form-grid" onsubmit="event.preventDefault();">
+          <div class="field">
+            <label class="label" for="name">Player Name <span class="req">*</span></label>
+            <input class="input" id="name" type="text" placeholder="e.g. Tax Penguin" />
+            <span class="hint">Your alias at the table.</span>
+          </div>
+
+          <div class="field is-success">
+            <label class="label" for="email">Email</label>
+            <input class="input" id="email" type="email" value="degenerate@casino.local" />
+            <span class="hint">✓ Name is available</span>
+          </div>
+
+          <div class="field is-error">
+            <label class="label" for="score">Goal Score</label>
+            <input class="input" id="score" type="number" value="5" />
+            <span class="hint">Goal must be between 10 and 100.</span>
+          </div>
+
+          <div class="field">
+            <label class="label" for="char">Character</label>
+            <select class="select" id="char">
+              <option>Tax Penguin</option>
+              <option>Bearnardo</option>
+              <option>Lucky Ducky</option>
+              <option>Mystery Egg</option>
+            </select>
+          </div>
+
+          <div class="field field-full">
+            <label class="label" for="message">Session Notes</label>
+            <textarea class="textarea" id="message" placeholder="Anything worth remembering from the last session..."></textarea>
+          </div>
+
+          <div class="field">
+            <span class="label">Effects</span>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" checked /> Scanlines</label>
+              <label class="check"><input type="checkbox" checked /> Smoke wisps</label>
+              <label class="check"><input type="checkbox" /> Particles</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label">Difficulty</span>
+            <div class="check-row">
+              <label class="check"><input type="radio" name="diff" /> Easy (goal: 25)</label>
+              <label class="check"><input type="radio" name="diff" checked /> Standard (goal: 50)</label>
+              <label class="check"><input type="radio" name="diff" /> Degenerate (goal: 100)</label>
+            </div>
+          </div>
+
+          <div class="field field-full" style="flex-direction: row; gap: var(--space-3); justify-content: flex-end; padding-top: var(--space-2); border-top: 1px solid var(--color-border);">
+            <button class="btn btn-ghost" type="button">Cancel</button>
+            <button class="btn btn-primary" type="submit">Save Config</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ========================================================
+           7. HUD STATES & BADGES
+           ======================================================== -->
+      <section class="section" id="hud">
+        <header class="section-header">
+          <span class="section-eyebrow">07 — Feedback</span>
+          <h2 class="section-title">HUD States &amp; Badges</h2>
+          <p class="section-desc">Game state messages and inline status indicators. Never ambiguous — risk is always visible.</p>
+        </header>
+
+        <h3 class="h5" style="margin-bottom: var(--space-3);">Status Messages</h3>
+        <div class="hud-grid">
+          <div class="hud success">
+            <div class="hud-icon">✓</div>
+            <div class="hud-text"><strong>Player 1 wins!</strong><small>Tax Penguin reaches 50 first.</small></div>
+          </div>
+          <div class="hud warning">
+            <div class="hud-icon">!</div>
+            <div class="hud-text"><strong>Big risk this turn</strong><small>Current score: 18. Hold or roll?</small></div>
+          </div>
+          <div class="hud error">
+            <div class="hud-icon">×</div>
+            <div class="hud-text"><strong>× Busted ×</strong><small>Snake eye. Turn lost. Zero points.</small></div>
+          </div>
+          <div class="hud info">
+            <div class="hud-icon">i</div>
+            <div class="hud-text"><strong>Player 2's turn</strong><small>Bearnardo is thinking...</small></div>
+          </div>
+        </div>
+
+        <h3 class="h5" style="margin: var(--space-6) 0 var(--space-3);">Badges</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-6);">
+          <span class="badge badge-success"><span class="dot"></span>● LIVE</span>
+          <span class="badge badge-warning"><span class="dot"></span>ROLLING</span>
+          <span class="badge badge-error"><span class="dot"></span>BUSTED</span>
+          <span class="badge badge-info"><span class="dot"></span>WAITING</span>
+          <span class="badge badge-neutral"><span class="dot"></span>IDLE</span>
+          <span class="badge badge-success">★ WINNER</span>
+          <span class="badge badge-error">† LOSER</span>
+          <span class="badge badge-warning">FUGITIVE</span>
+          <span class="badge badge-neutral">???</span>
+        </div>
+
+        <h3 class="h5" style="margin-bottom: var(--space-3);">HUD Controls</h3>
+        <div class="notif-row">
+          <button class="icon-btn" type="button" aria-label="3 rolls remaining">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/></svg>
+            <span class="notif-badge">3</span>
+          </button>
+          <button class="icon-btn" type="button" aria-label="42 total rolls">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span class="notif-badge">42</span>
+          </button>
+          <button class="icon-btn" type="button" aria-label="5 chips">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            <span class="notif-badge">5</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           8. FOOTER
+           ======================================================== -->
+      <section class="section" id="footer">
+        <header class="section-header">
+          <span class="section-eyebrow">08 — Layout</span>
+          <h2 class="section-title">Footer</h2>
+          <p class="section-desc">Structured site footer with brand, link columns, social row, and legal line.</p>
+        </header>
+
+        <div class="demo-footer">
+          <div class="footer-top">
+            <div class="footer-brand">
+              <div class="brand">
+                <div class="brand-mark" style="width:28px;height:28px;"></div>
+                <span class="brand-name">Animal Gambling</span>
+              </div>
+              <p>Dirty dice · dirtier players. A two-player casino dice game built for the back room.</p>
+            </div>
+            <div class="footer-col">
+              <h4>Game</h4>
+              <ul>
+                <li><a href="#">Play Now</a></li>
+                <li><a href="#">Characters</a></li>
+                <li><a href="#">Leaderboard</a></li>
+                <li><a href="#">Rules</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>About</h4>
+              <ul>
+                <li><a href="#">The Dev</a></li>
+                <li><a href="#">Design</a></li>
+                <li><a href="#">Changelog</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Resources</h4>
+              <ul>
+                <li><a href="#">Styleguide</a></li>
+                <li><a href="#">Source Code</a></li>
+                <li><a href="#">Figma</a></li>
+                <li><a href="#">Portfolio</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <span>© 2026 Animal Gambling. All rights reserved. The house always wins.</span>
+            <div class="footer-social">
+              <a href="#" aria-label="Twitter"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.8a8.5 8.5 0 0 1-2.36.64 4.13 4.13 0 0 0 1.81-2.27 8.21 8.21 0 0 1-2.61 1 4.1 4.1 0 0 0-7 3.74A11.64 11.64 0 0 1 3.39 4.62a4.16 4.16 0 0 0 1.27 5.49A4.09 4.09 0 0 1 2.8 9.6v.05a4.1 4.1 0 0 0 3.3 4.03 4.1 4.1 0 0 1-1.86.07 4.11 4.11 0 0 0 3.83 2.85A8.22 8.22 0 0 1 2 18.29a11.6 11.6 0 0 0 6.29 1.84c7.55 0 11.67-6.25 11.67-11.67l-.01-.53A8.34 8.34 0 0 0 22 5.8z"/></svg></a>
+              <a href="#" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1-.02-1.96-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.16 1.18a10.94 10.94 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13 0 1.54-.01 2.79-.01 3.17 0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg></a>
+              <a href="#" aria-label="LinkedIn"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zM7.12 20H3.56V9h3.56v11zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM20.45 20h-3.56v-5.6c0-1.34-.03-3.06-1.86-3.06-1.87 0-2.16 1.46-2.16 2.96V20H9.32V9h3.41v1.5h.05c.48-.9 1.64-1.86 3.38-1.86 3.61 0 4.28 2.38 4.28 5.47V20z"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           9. PRINCIPLES
+           ======================================================== -->
+      <section class="section" id="principles">
+        <header class="section-header">
+          <span class="section-eyebrow">09 — Foundation</span>
+          <h2 class="section-title">Design Principles</h2>
+          <p class="section-desc">Decisions made on purpose. Each principle is a constraint that shapes the visual system.</p>
+        </header>
+
+        <div class="principles">
+          <div class="principle">
+            <div class="principle-num">01</div>
+            <h3>Atmosphere First</h3>
+            <p>The table must feel alive before the player makes a single move. Smoke, scanlines, felt grain, and neon flicker are not decoration — they are the product. Lose the atmosphere and you lose the game.</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">02</div>
+            <h3>Risk Made Visible</h3>
+            <p>Every decision in the game is a risk. The UI mirrors this — a bust flashes red, a winning streak glows amber, and the inactive player dims. State is never ambiguous. The player must feel the stakes.</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">03</div>
+            <h3>Character-Led</h3>
+            <p>The animals are not cosmetic skins. Tax Penguin, Bearnardo, Lucky Ducky, and Mystery Egg each carry a personality that bleeds into their lore, their loss quotes, and their idle animations.</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">04</div>
+            <h3>Pixel Meets Neon</h3>
+            <p>Pixelated rendering meets glowing shadows. The combination creates deliberate tension — old-school fidelity colliding with neon excess. It defines the visual language and cannot be separated.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           10. ANIMATIONS
+           ======================================================== -->
+      <section class="section" id="animations">
+        <header class="section-header">
+          <span class="section-eyebrow">10 — Motion</span>
+          <h2 class="section-title">Animations</h2>
+          <p class="section-desc">Microinteractions that confirm state changes. Neon glow, pixel float, and dice-roll timing. Respects <code style="font-family:var(--font-sans);font-size:0.85em;color:var(--color-primary)">prefers-reduced-motion</code>.</p>
+        </header>
+
+        <div class="anim-grid">
+          <div class="anim-card anim-lift">
+            <div class="anim-shape"></div>
+            <h4>Lift</h4>
+            <p>translateY(-8px)</p>
+          </div>
+          <div class="anim-card anim-rotate">
+            <div class="anim-shape"></div>
+            <h4>Tilt</h4>
+            <p>rotate(15deg)</p>
+          </div>
+          <div class="anim-card anim-scale">
+            <div class="anim-shape"></div>
+            <h4>Scale</h4>
+            <p>scale(1.15)</p>
+          </div>
+          <div class="anim-card anim-glow">
+            <div class="anim-shape"></div>
+            <h4>Neon Glow</h4>
+            <p>amber box-shadow</p>
+          </div>
+          <div class="anim-card anim-float">
+            <div class="anim-shape"></div>
+            <h4>Float</h4>
+            <p>idle bounce loop</p>
+          </div>
+          <div class="anim-card anim-shimmer">
+            <div class="anim-shape"></div>
+            <h4>Shimmer</h4>
+            <p>gradient sweep</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <p>Animal Gambling Design System · Generated 2026 · Dirty dice, clean code.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Click-to-copy color swatches
+    document.querySelectorAll(".swatch").forEach((el) => {
+      el.addEventListener("click", async () => {
+        const value = el.dataset.copy;
+        try {
+          await navigator.clipboard.writeText(value);
+          el.classList.add("copied");
+          setTimeout(() => el.classList.remove("copied"), 1200);
+        } catch (e) {
+          console.warn("Clipboard not available", e);
+        }
+      });
+    });
+
+    // Theme toggle — dark is default, toggle switches to light
+    const root = document.documentElement;
+    const toggle = document.getElementById("themeToggle");
+    const icon = document.getElementById("themeIcon");
+    const label = document.getElementById("themeLabel");
+    const stored = localStorage.getItem("ag-styleguide-theme");
+    if (stored === "light") {
+      root.setAttribute("data-theme", "light");
+      icon.textContent = "◐";
+      label.textContent = "Dark";
+    }
+    toggle.addEventListener("click", () => {
+      const isLight = root.getAttribute("data-theme") === "light";
+      if (isLight) {
+        root.removeAttribute("data-theme");
+        icon.textContent = "☀";
+        label.textContent = "Light";
+        localStorage.setItem("ag-styleguide-theme", "dark");
+      } else {
+        root.setAttribute("data-theme", "light");
+        icon.textContent = "◐";
+        label.textContent = "Dark";
+        localStorage.setItem("ag-styleguide-theme", "light");
+      }
+    });
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll(".section");
+    const links = document.querySelectorAll(".nav-link");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            links.forEach((l) => {
+              l.classList.toggle("is-active", l.getAttribute("href") === "#" + id);
+            });
+          }
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => observer.observe(s));
+
+    // Demo navbar: click to set active
+    document.querySelectorAll(".demo-navbar nav a").forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.querySelectorAll(".demo-navbar nav a").forEach((x) => x.classList.remove("is-active"));
+        a.classList.add("is-active");
+      });
+    });
+  </script>
+</body>
+</html>

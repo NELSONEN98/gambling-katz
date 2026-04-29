@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPACE VR+ — Styleguide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       TOKENS — fuente única de verdad (replicado de src/index.css)
+       ============================================================ */
+    :root {
+      font-size: 62.5%; /* 1rem = 10px → cálculos limpios */
+
+      /* Backgrounds — degradado de profundidad espacial */
+      --color-bg:           #050814;
+      --color-bg-secondary: #0A0F26;
+      --color-bg-tertiary:  #0F1640;
+
+      /* Acentos neón — primario, secundario, terciario */
+      --color-accent:   #00F0FF;  /* cyan  — CTA, focos, datos vivos */
+      --color-accent-2: #FF00AA;  /* magenta — hover, alertas, énfasis */
+      --color-accent-3: #B829FF;  /* violeta — profundidad, glitch B */
+      --color-warning:  #FFE600;  /* HUD warning */
+
+      --color-accent-glow:  rgba(0, 240, 255, 0.18);
+      --color-magenta-glow: rgba(255, 0, 170, 0.18);
+
+      --color-text:           #E8F4FF;
+      --color-text-secondary: #6B85B8;
+
+      --border-accent:  rgba(0, 240, 255, 0.35);
+      --border-magenta: rgba(255, 0, 170, 0.35);
+
+      --font-family: 'Inter', system-ui, sans-serif;
+      --font-display: 'Orbitron', sans-serif;
+      --font-mono: 'Share Tech Mono', 'Courier New', monospace;
+    }
+
+    *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: var(--font-family);
+      font-size: 1.6rem;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Scan lines globales — efecto CRT, refuerza identidad gaming/cyber */
+    body::after {
+      content:'';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 240, 255, 0.025) 0px,
+        rgba(0, 240, 255, 0.025) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: overlay;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; border: none; background: none; cursor: pointer; }
+
+    /* ============================================================
+       LAYOUT DEL STYLEGUIDE
+       ============================================================ */
+    .page {
+      max-width: 130rem;
+      margin: 0 auto;
+      padding: 8rem 5rem 12rem;
+    }
+
+    .pageHeader {
+      border-bottom: 1px solid var(--border-accent);
+      padding-bottom: 4rem;
+      margin-bottom: 6rem;
+    }
+
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      letter-spacing: 0.3em;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      margin-bottom: 1.6rem;
+    }
+
+    .pageTitle {
+      font-family: var(--font-display);
+      font-size: 6.4rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.2rem;
+    }
+    .pageTitle span { color: var(--color-accent); text-shadow: 0 0 20px rgba(0,240,255,0.6); }
+
+    .pageLead {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      color: var(--color-text-secondary);
+      max-width: 80rem;
+    }
+
+    .section {
+      margin-bottom: 8rem;
+      padding: 4rem;
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--border-accent);
+      position: relative;
+    }
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2), transparent);
+      box-shadow: 0 0 12px var(--color-accent);
+    }
+
+    .sectionHead {
+      display: flex;
+      align-items: baseline;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .sectionTag {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+      color: var(--color-accent-2);
+    }
+    .sectionTitle {
+      font-family: var(--font-display);
+      font-size: 3.2rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+    }
+
+    .rationale {
+      background: rgba(0, 240, 255, 0.04);
+      border-left: 3px solid var(--color-accent);
+      padding: 1.6rem 2rem;
+      margin: 2rem 0 3rem;
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      color: var(--color-text-secondary);
+      line-height: 1.75;
+    }
+    .rationale strong { color: var(--color-accent); letter-spacing: 0.05em; }
+
+    .demo {
+      padding: 3rem;
+      background: var(--color-bg);
+      border: 1px dashed var(--border-accent);
+      margin-top: 2rem;
+    }
+
+    /* ============================================================
+       1. PALETA DE COLORES
+       ============================================================ */
+    .swatchGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+      gap: 2rem;
+    }
+    .swatch {
+      border: 1px solid var(--border-accent);
+      overflow: hidden;
+    }
+    .swatchColor {
+      height: 12rem;
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem 1.4rem;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.85);
+    }
+    .swatchInfo {
+      padding: 1.4rem 1.6rem;
+      background: var(--color-bg-secondary);
+    }
+    .swatchName {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
+      color: var(--color-text);
+    }
+    .swatchHex {
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      color: var(--color-accent);
+      margin-top: 0.4rem;
+    }
+    .swatchUse {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      color: var(--color-text-secondary);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       2. TIPOGRAFÍA
+       ============================================================ */
+    .typeRow {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 3rem;
+      align-items: center;
+      padding: 2.4rem 0;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+    }
+    .typeRow:last-child { border-bottom: none; }
+    .typeLabel {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+    }
+    .typeLabel small {
+      display: block;
+      color: var(--color-text-secondary);
+      margin-top: 0.4rem;
+      letter-spacing: 0.1em;
+    }
+    .typeOrbitron { font-family: var(--font-display); font-size: 4.8rem; font-weight: 900; letter-spacing: 0.05em; }
+    .typeInter    { font-family: var(--font-family); font-size: 1.6rem; line-height: 1.6; color: var(--color-text); }
+    .typeMono     { font-family: var(--font-mono); font-size: 1.4rem; letter-spacing: 0.1em; color: var(--color-text-secondary); }
+
+    /* ============================================================
+       3. NAVBAR
+       ============================================================ */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.8rem 3rem;
+      background: rgba(5, 8, 20, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-accent);
+    }
+    .navLogo {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      text-shadow: 0 0 12px rgba(0,240,255,0.5);
+    }
+    .navLinks {
+      display: flex;
+      gap: 2.8rem;
+      list-style: none;
+    }
+    .navLinks a {
+      font-family: var(--font-mono);
+      font-size: 1.3rem;
+      letter-spacing: 0.2em;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+    .navLinks a:hover {
+      color: var(--color-accent);
+      text-shadow: 0 0 8px rgba(0,240,255,0.5);
+    }
+
+    /* ============================================================
+       4. BOTONES
+       ============================================================ */
+    .btnRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: center;
+    }
+    .btnPrimary {
+      display: inline-flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 1.8rem 3.2rem;
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: var(--color-accent);
+      color: var(--color-bg);
+      clip-path: polygon(6% 0, 100% 0, 94% 100%, 0% 100%);
+      box-shadow: 0 0 20px rgba(0,240,255,0.3);
+      transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .btnPrimary:hover {
+      background: var(--color-accent-2);
+      color: var(--color-text);
+      box-shadow: 0 0 32px rgba(255,0,170,0.6);
+    }
+
+    .btnGhost {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem 2.8rem;
+      font-family: var(--font-mono);
+      font-size: 1.3rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--color-accent);
+      border: 1px solid var(--border-accent);
+      transition: all 0.25s ease;
+    }
+    .btnGhost:hover {
+      background: var(--color-accent-glow);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 16px rgba(0,240,255,0.4);
+    }
+
+    .btnDanger {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem 2.8rem;
+      font-family: var(--font-mono);
+      font-size: 1.3rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: var(--color-accent-2);
+      color: var(--color-text);
+      clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+      box-shadow: 0 0 20px rgba(255,0,170,0.4);
+    }
+    .btnDanger:hover { background: var(--color-accent-3); }
+
+    /* ============================================================
+       5. CARDS
+       ============================================================ */
+    .cardGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+      gap: 2.4rem;
+    }
+    .card {
+      padding: 2.4rem;
+      background: var(--color-bg);
+      border: 1px solid var(--border-accent);
+      position: relative;
+      transition: all 0.25s ease;
+      clip-path: polygon(0 0, 100% 0, 100% 92%, 92% 100%, 0 100%);
+    }
+    .card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,240,255,0.15);
+    }
+    .cardCode {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      letter-spacing: 0.25em;
+      color: var(--color-accent-2);
+      margin-bottom: 1rem;
+    }
+    .cardTitle {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+    }
+    .cardText {
+      font-family: var(--font-mono);
+      font-size: 1.3rem;
+      color: var(--color-text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Card variante: info-item con border-left animado */
+    .infoItem {
+      display: flex;
+      gap: 1.6rem;
+      padding: 1.4rem 1.6rem;
+      background: rgba(5, 8, 20, 0.5);
+      border-left: 2px solid var(--color-accent);
+      transition: all 0.25s ease;
+    }
+    .infoItem:hover {
+      background: rgba(0, 240, 255, 0.08);
+      border-left-color: var(--color-accent-2);
+      transform: translateX(4px);
+    }
+    .infoIcon { font-size: 2rem; }
+    .infoLabel {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .infoValue {
+      font-size: 1.4rem;
+      color: var(--color-text);
+    }
+
+    /* ============================================================
+       6. FORMULARIO
+       ============================================================ */
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      max-width: 50rem;
+    }
+    .formGroup { display: flex; flex-direction: column; gap: 0.7rem; }
+    .label {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      text-transform: uppercase;
+    }
+    .label .req { color: var(--color-accent-2); margin-left: 0.4rem; }
+    .input, .textarea {
+      background: rgba(0, 240, 255, 0.04);
+      border: 1px solid var(--border-accent);
+      padding: 1.2rem 1.4rem;
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      color: var(--color-text);
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+    .input:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 2px var(--color-accent-glow), 0 0 16px rgba(0,240,255,0.2);
+      background: rgba(0,240,255,0.08);
+    }
+    .input::placeholder, .textarea::placeholder {
+      color: rgba(107, 133, 184, 0.5);
+    }
+    .errorMsg {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      color: var(--color-accent-2);
+      letter-spacing: 0.1em;
+      margin-top: 0.4rem;
+    }
+    .inputError { border-color: var(--color-accent-2) !important; box-shadow: 0 0 10px rgba(255,0,170,0.35); }
+
+    /* ============================================================
+       7. FOOTER
+       ============================================================ */
+    .footerDemo {
+      background: var(--color-bg);
+      border-top: 1px solid var(--border-accent);
+      padding: 4rem 3rem 2rem;
+      position: relative;
+    }
+    .footerDemo::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-accent), var(--color-accent-2), transparent);
+      box-shadow: 0 0 12px var(--color-accent);
+    }
+    .footerInner {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border-accent);
+    }
+    .footerLogo {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      color: var(--color-accent);
+      text-shadow: 0 0 16px rgba(0,240,255,0.5);
+      margin-bottom: 1rem;
+    }
+    .footerTagline {
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      color: var(--color-text-secondary);
+      letter-spacing: 0.1em;
+    }
+    .footerColTitle {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      letter-spacing: 0.25em;
+      color: var(--color-accent-2);
+      margin-bottom: 1rem;
+    }
+    .footerCol a {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+      padding: 0.4rem 0;
+      transition: all 0.2s ease;
+    }
+    .footerCol a:hover {
+      color: var(--color-accent);
+      transform: translateX(4px);
+      text-shadow: 0 0 8px rgba(0,240,255,0.5);
+    }
+    .footerBottom {
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      letter-spacing: 0.15em;
+    }
+
+    /* ============================================================
+       8. EFECTOS HUD / ESTADOS
+       ============================================================ */
+    .statusBar {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .statusItem {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      letter-spacing: 0.15em;
+      color: var(--color-text-secondary);
+      padding: 0.8rem 1.4rem;
+      border: 1px solid var(--border-accent);
+    }
+    .dot {
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+      background: var(--color-accent);
+      box-shadow: 0 0 8px var(--color-accent);
+      animation: dotBlink 1.6s ease-in-out infinite;
+    }
+    .dot.warn { background: var(--color-warning); box-shadow: 0 0 8px var(--color-warning); }
+    .dot.danger { background: var(--color-accent-2); box-shadow: 0 0 8px var(--color-accent-2); }
+    @keyframes dotBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      padding: 0.6rem 1.4rem;
+      border: 1px solid var(--border-accent);
+      background: var(--color-accent-glow);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 768px) {
+      .page { padding: 4rem 1.6rem 6rem; }
+      .pageTitle { font-size: 4rem; }
+      .section { padding: 2.4rem 2rem; }
+      .footerInner { grid-template-columns: 1fr; }
+      .footerBottom { flex-direction: column; gap: 1rem; text-align: center; }
+      .nav { flex-direction: column; gap: 1.6rem; padding: 1.6rem; }
+      .navLinks { flex-wrap: wrap; justify-content: center; gap: 1.6rem; }
+      .typeRow { grid-template-columns: 1fr; }
+      .typeOrbitron { font-size: 3.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="page">
+
+    <!-- ============================================================
+         HEADER DEL STYLEGUIDE
+         ============================================================ -->
+    <header class="pageHeader">
+      <div class="kicker">// SYSTEM_VERSION 1.0 — DESIGN TOKENS</div>
+      <h1 class="pageTitle">SPACE VR+ <span>STYLEGUIDE</span></h1>
+      <p class="pageLead">
+        &gt; Sistema de diseño de la landing. Cada decisión nace de la intención: transmitir
+        inmersión, futurismo y energía gaming sin sacrificar legibilidad. Lo que sigue
+        documenta tokens, componentes y el porqué de cada uno.
+      </p>
+    </header>
+
+    <!-- ============================================================
+         1. PALETA
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 01</span>
+        <h2 class="sectionTitle">Paleta de colores</h2>
+      </div>
+
+      <div class="rationale">
+        <strong>Por qué esta paleta.</strong> Trabajamos sobre fondo casi-negro azulado
+        (<code>#050814</code>) para simular el vacío del espacio y maximizar el contraste
+        de los neones. El <strong>cyan</strong> es el color primario porque es el más
+        legible sobre negro y es el lenguaje universal del HUD futurista (Tron, Cyberpunk,
+        interfaces sci-fi). El <strong>magenta</strong> rompe la monocromía y se reserva
+        para hover y énfasis: el ojo lo lee como "acción" o "atención". El violeta cierra
+        la tríada para los efectos de glitch y profundidad cromática. Tres acentos máximo
+        — más colores diluyen la identidad.
+      </div>
+
+      <div class="swatchGrid">
+        <div class="swatch">
+          <div class="swatchColor" style="background: #050814;">#050814</div>
+          <div class="swatchInfo">
+            <div class="swatchName">BG / Vacío</div>
+            <div class="swatchHex">--color-bg</div>
+            <div class="swatchUse">Fondo principal del sitio. Casi-negro con tinte azul.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatchColor" style="background: #0A0F26;">#0A0F26</div>
+          <div class="swatchInfo">
+            <div class="swatchName">BG Secondary</div>
+            <div class="swatchHex">--color-bg-secondary</div>
+            <div class="swatchUse">Secciones alternadas para crear ritmo vertical.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatchColor" style="background: #0F1640;">#0F1640</div>
+          <div class="swatchInfo">
+            <div class="swatchName">BG Tertiary</div>
+            <div class="swatchHex">--color-bg-tertiary</div>
+            <div class="swatchUse">Capas elevadas (modales, paneles HUD).</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatchColor" style="background: #00F0FF; color: #050814;">#00F0FF</div>
+          <div class="swatchInfo">
+            <div class="swatchName">Accent Primary</div>
+            <div class="swatchHex">--color-accent · cyan</div>
+            <div class="swatchUse">CTAs, datos vivos, focos, bordes activos.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatchColor" style="background: #FF00AA;">#FF00AA</div>
+          <div class="swatchInfo">
+            <div class="swatchName">Accent Secondary</div>
+            <div class="swatchHex">--color-accent-2 · magenta</div>
+            <div class="swatchUse">Hover, alertas, elementos requeridos.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatchColor" style="background: #B829FF;">#B829FF</div>
+          <div class="swatchInfo">
+            <div class="swatchName">Accent Tertiary</div>
+            <div class="swatchHex">--color-accent-3 · violeta</div>
+            <div class="swatchUse">Glitch, gradientes, profundidad cromática.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatchColor" style="background: #FFE600; color:#050814;">#FFE600</div>
+          <div class="swatchInfo">
+            <div class="swatchName">Warning</div>
+            <div class="swatchHex">--color-warning</div>
+            <div class="swatchUse">Indicadores HUD, estados de advertencia.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatchColor" style="background: #E8F4FF; color:#050814;">#E8F4FF</div>
+          <div class="swatchInfo">
+            <div class="swatchName">Text</div>
+            <div class="swatchHex">--color-text</div>
+            <div class="swatchUse">Texto principal. Casi-blanco con tinte azul.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatchColor" style="background: #6B85B8;">#6B85B8</div>
+          <div class="swatchInfo">
+            <div class="swatchName">Text Secondary</div>
+            <div class="swatchHex">--color-text-secondary</div>
+            <div class="swatchUse">Texto descriptivo, labels, jerarquía 2.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         2. TIPOGRAFÍA
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 02</span>
+        <h2 class="sectionTitle">Tipografía</h2>
+      </div>
+
+      <div class="rationale">
+        <strong>Por qué tres familias.</strong> Cada fuente cumple un rol claro y
+        evita la sobrecarga visual.
+        <strong>Orbitron</strong> es geometría pura, anchas mayúsculas: lenguaje sci-fi
+        universal — la usamos para títulos donde el impacto pesa más que la lectura larga.
+        <strong>Inter</strong> es la fuente humanista de cuerpo: máxima legibilidad en
+        textos descriptivos, neutra para que los acentos brillen.
+        <strong>Share Tech Mono</strong> es la voz de "terminal" — etiquetas, micro-copy,
+        prompts (<code>&gt;</code>). Refuerza la metáfora HUD/consola.
+        Base <code>1rem = 10px</code> (<code>html { font-size: 62.5% }</code>) para hacer
+        cálculos limpios: 1.6rem = 16px sin abrir la calculadora.
+      </div>
+
+      <div class="demo">
+        <div class="typeRow">
+          <div>
+            <div class="typeLabel">Orbitron · Display
+              <small>Títulos y CTAs visuales</small>
+            </div>
+          </div>
+          <div class="typeOrbitron">VIVE EL FUTURO HOY</div>
+        </div>
+        <div class="typeRow">
+          <div>
+            <div class="typeLabel">Inter · Body
+              <small>Cuerpo de texto, legibilidad larga</small>
+            </div>
+          </div>
+          <div class="typeInter">
+            Sumérgite en mundos increíbles. La mejor tecnología VR te espera —
+            experiencias inmersivas para todos.
+          </div>
+        </div>
+        <div class="typeRow">
+          <div>
+            <div class="typeLabel">Share Tech Mono · UI
+              <small>Etiquetas HUD, prompts, micro-copy</small>
+            </div>
+          </div>
+          <div class="typeMono">&gt; INITIALIZING_SYSTEM... // STATUS: ONLINE</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3. NAVBAR
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 03</span>
+        <h2 class="sectionTitle">Navbar</h2>
+      </div>
+
+      <div class="rationale">
+        <strong>Por qué así.</strong> Fondo translúcido con <code>backdrop-filter: blur</code>
+        para que el navbar conviva con el video del hero sin taparlo: la navegación
+        flota, no domina. El logo en Orbitron+cyan ancla la identidad a la izquierda;
+        los links en Mono y mayúsculas refuerzan el código HUD. Hover con
+        <code>text-shadow</code> en lugar de subrayado: respeta la estética digital.
+      </div>
+
+      <div class="demo">
+        <nav class="nav">
+          <div class="navLogo">SPACE VR+</div>
+          <ul class="navLinks">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Experiencias</a></li>
+            <li><a href="#">Eventos</a></li>
+            <li><a href="#">Nosotros</a></li>
+            <li><a href="#">Contacto</a></li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. BOTONES
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 04</span>
+        <h2 class="sectionTitle">Botones</h2>
+      </div>
+
+      <div class="rationale">
+        <strong>Por qué los cortes diagonales (clip-path).</strong> En vez de bordes
+        redondeados (lenguaje SaaS suave), usamos <code>clip-path</code> para cortar
+        las esquinas en diagonal — recuerda interfaces de naves, HUDs de videojuegos,
+        cápsulas militares. El glow (<code>box-shadow</code> con color cyan) refuerza
+        la idea de "energía". El hover cambia de cyan a magenta: pasa de "información"
+        a "acción" — es un cambio semántico, no decorativo. El botón
+        <strong>ghost</strong> existe para acciones secundarias donde no querés competir
+        con el CTA principal.
+      </div>
+
+      <div class="demo">
+        <div class="btnRow">
+          <a class="btnPrimary" href="#">▶ PRESS_START →</a>
+          <a class="btnGhost" href="#">VER MÁS</a>
+          <a class="btnDanger" href="#">CANCELAR</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. CARDS
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 05</span>
+        <h2 class="sectionTitle">Cards</h2>
+      </div>
+
+      <div class="rationale">
+        <strong>Por qué dos tipos.</strong>
+        La <strong>card principal</strong> usa <code>clip-path</code> en una esquina
+        para sumarse al lenguaje HUD (no es un rectángulo aburrido) y eleva al hover
+        con un translateY suave + glow cyan: feedback claro sin animaciones agresivas.
+        El <strong>info-item</strong> con <code>border-left</code> animado es para
+        listas de datos compactos (contacto, specs) — el desplazamiento horizontal en
+        hover indica "hay más, hacé click". Cambia el color del borde de cyan a magenta
+        para reforzar la interacción.
+      </div>
+
+      <div class="demo">
+        <div class="cardGrid">
+          <article class="card">
+            <div class="cardCode">// EXP_01</div>
+            <h3 class="cardTitle">VR para colegios</h3>
+            <p class="cardText">
+              Experiencias educativas que transforman el aprendizaje en aventura.
+              Ciencia, historia y exploración inmersiva.
+            </p>
+          </article>
+          <article class="card">
+            <div class="cardCode">// EXP_02</div>
+            <h3 class="cardTitle">Cumpleaños VR</h3>
+            <p class="cardText">
+              Festejos que se viven adentro de mundos imposibles. Multijugador para
+              hasta 8 personas en simultáneo.
+            </p>
+          </article>
+          <article class="card">
+            <div class="cardCode">// EXP_03</div>
+            <h3 class="cardTitle">Eventos corporativos</h3>
+            <p class="cardText">
+              Team building en gravedad cero, escape rooms cuánticos, y experiencias
+              custom para tu marca.
+            </p>
+          </article>
+        </div>
+
+        <div style="margin-top: 3rem; display: grid; gap: 1.2rem;">
+          <div class="infoItem">
+            <span class="infoIcon">📍</span>
+            <div>
+              <span class="infoLabel">Ubicación</span>
+              <span class="infoValue">Buenos Aires, Argentina</span>
+            </div>
+          </div>
+          <div class="infoItem">
+            <span class="infoIcon">📧</span>
+            <div>
+              <span class="infoLabel">Email</span>
+              <span class="infoValue">contacto@spacevr.plus</span>
+            </div>
+          </div>
+          <div class="infoItem">
+            <span class="infoIcon">⏱</span>
+            <div>
+              <span class="infoLabel">Horario</span>
+              <span class="infoValue">Lun a Dom · 11:00 → 23:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. FORMULARIO
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 06</span>
+        <h2 class="sectionTitle">Formulario</h2>
+      </div>
+
+      <div class="rationale">
+        <strong>Por qué labels en cyan/mayúsculas y inputs translúcidos.</strong>
+        El label en mono+mayúsculas+cyan parece una "etiqueta de panel" — el formulario
+        deja de ser un trámite y se vuelve un terminal. Inputs con fondo cyan al 4%
+        +  borde en cyan al 35%: existen pero no gritan. En foco subimos opacidad
+        del fondo y agregamos un anillo (<code>box-shadow</code>) — feedback claro sin
+        cambiar el layout. Errores en magenta (no rojo): mantenemos coherencia con la
+        paleta. El asterisco de requerido también va en magenta para que el ojo lo
+        encuentre antes de leer el label.
+      </div>
+
+      <div class="demo">
+        <form class="form" onsubmit="event.preventDefault();">
+          <div class="formGroup">
+            <label class="label" for="name">NOMBRE<span class="req">*</span></label>
+            <input class="input" type="text" id="name" placeholder="Tu nombre completo" />
+          </div>
+          <div class="formGroup">
+            <label class="label" for="email">EMAIL<span class="req">*</span></label>
+            <input class="input inputError" type="email" id="email" value="email-invalido" />
+            <span class="errorMsg">// ERR_001 · Email inválido</span>
+          </div>
+          <div class="formGroup">
+            <label class="label" for="msg">MENSAJE</label>
+            <textarea class="textarea" id="msg" rows="4" placeholder="Contanos qué experiencia querés vivir..."></textarea>
+          </div>
+          <button class="btnPrimary" type="submit">ENVIAR_TRANSMISIÓN →</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. ESTADOS HUD
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 07</span>
+        <h2 class="sectionTitle">Estados HUD &amp; Badges</h2>
+      </div>
+
+      <div class="rationale">
+        <strong>Por qué estos micro-elementos pesan tanto.</strong> Son los que
+        transforman una landing genérica en un "panel de control". El punto que parpadea
+        (<code>@keyframes dotBlink</code>) le da vida al sitio sin animaciones costosas.
+        Las badges con <code>// CODE</code> imitan etiquetas de inventario o comandos
+        de consola — son baratas de producir y ricas en personalidad.
+      </div>
+
+      <div class="demo">
+        <div class="statusBar">
+          <div class="statusItem"><span class="dot"></span> SYSTEM_ONLINE</div>
+          <div class="statusItem"><span class="dot warn"></span> LATENCY_42MS</div>
+          <div class="statusItem"><span class="dot danger"></span> ALERT · MAINTENANCE</div>
+        </div>
+        <div style="margin-top: 2rem; display: flex; gap: 1.2rem; flex-wrap: wrap;">
+          <span class="badge">// LIVE</span>
+          <span class="badge">// V1.0</span>
+          <span class="badge">// 2026</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         8. FOOTER
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 08</span>
+        <h2 class="sectionTitle">Footer</h2>
+      </div>
+
+      <div class="rationale">
+        <strong>Por qué la línea superior con gradiente.</strong> El footer es el cierre
+        — necesita un acento visual que no robe atención al contenido pero que diga
+        "acá termina algo". La línea de 1px con gradiente cyan→magenta y glow es el
+        sello del sistema: aparece también arriba del modal y arriba del formulario,
+        creando coherencia. La grilla 2-1-1 prioriza el branding (más espacio para
+        el logo + tagline) sobre los links secundarios. En mobile colapsa a 1 columna.
+      </div>
+
+      <div class="demo" style="padding: 0;">
+        <footer class="footerDemo">
+          <div class="footerInner">
+            <div>
+              <div class="footerLogo">SPACE VR+</div>
+              <p class="footerTagline">&gt; Realidad virtual sin límites · 2026</p>
+            </div>
+            <div class="footerCol">
+              <div class="footerColTitle">// NAV</div>
+              <a href="#">Experiencias</a>
+              <a href="#">Eventos</a>
+              <a href="#">Nosotros</a>
+              <a href="#">Contacto</a>
+            </div>
+            <div class="footerCol">
+              <div class="footerColTitle">// SOCIAL</div>
+              <a href="#">Instagram</a>
+              <a href="#">TikTok</a>
+              <a href="#">YouTube</a>
+              <a href="#">Discord</a>
+            </div>
+          </div>
+          <div class="footerBottom">
+            <span>// © 2026 · SPACE VR+ · ALL RIGHTS RESERVED</span>
+            <span>// BUILD 1.0.0</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         9. PRINCIPIOS DE DISEÑO
+         ============================================================ -->
+    <section class="section">
+      <div class="sectionHead">
+        <span class="sectionTag">// 09</span>
+        <h2 class="sectionTitle">Principios</h2>
+      </div>
+
+      <div class="rationale" style="border-left-color: var(--color-accent-2);">
+        <strong>1 · Coherencia &gt; novedad.</strong> Todo elemento usa los mismos
+        tokens. Si una sección rompe la grilla, rompe el sistema entero.
+      </div>
+      <div class="rationale">
+        <strong>2 · Negro es lienzo, neón es pintura.</strong> El fondo casi-negro deja
+        espacio. Los acentos brillan porque son <em>escasos</em>: si todo destaca,
+        nada destaca.
+      </div>
+      <div class="rationale" style="border-left-color: var(--color-accent-3);">
+        <strong>3 · Movimiento con propósito.</strong> Glitch, scan-lines, blink:
+        cada animación refuerza la metáfora HUD. Nada se mueve solo por moverse —
+        eso cansa al usuario y mata la performance.
+      </div>
+      <div class="rationale">
+        <strong>4 · Mono para máquinas, Display para humanos.</strong> La mono dice
+        "esto lo escribió un sistema". Orbitron grita "esto importa". Inter explica.
+        Mezclar las tres bien resulta en un lenguaje propio.
+      </div>
+      <div class="rationale" style="border-left-color: var(--color-accent-2);">
+        <strong>5 · Mobile no es opcional.</strong> Cada componente tiene su breakpoint
+        en 768px. El sistema escala — tipos más chicos, grillas a 1 columna, paddings
+        reducidos — sin perder identidad.
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

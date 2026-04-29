@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cosmic UI Kit · Nelson Arango</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Slackey&family=Codystar:wght@400&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { min-height: 100vh; }
+  .kit-wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 5rem 2rem 6rem;
+  }
+  .kit-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 2rem;
+    transition: color 0.2s;
+  }
+  .kit-back:hover { color: var(--accent); }
+  .kit-head {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 3rem;
+    align-items: end;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  @media (max-width: 800px) { .kit-head { grid-template-columns: 1fr; } }
+  .kit-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1;
+    margin: 1rem 0 1rem;
+  }
+  .kit-title span { color: var(--accent); }
+  .kit-sub {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+  .kit-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--ink-dim);
+    padding: 1.25rem;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.25);
+  }
+  .kit-meta-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.06);
+  }
+  .kit-meta-row:last-child { border: none; }
+  .kit-meta-k { color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.15em; font-size: 9px; }
+  .kit-meta-v { color: var(--accent); }
+
+  .kit-section {
+    margin-top: 4rem;
+  }
+  .kit-section__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  .kit-section__label::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+  .kit-section__title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    margin: 0 0 1.5rem;
+  }
+  .kit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .swatch-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .swatch {
+    width: 48px; height: 48px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    position: relative;
+  }
+  .swatch__name {
+    position: absolute;
+    bottom: -18px; left: 0;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--ink);
+    background: transparent;
+    transition: all 0.2s;
+  }
+  .pill-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+  .pill-btn--filled { background: var(--accent); color: #05070e; border-color: var(--accent); font-weight: 700; }
+  .pill-btn--filled:hover { color: #05070e; box-shadow: 0 0 18px var(--accent-glow); transform: translateY(-2px); }
+
+  .stepper { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .stepper__btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    transition: all 0.2s;
+  }
+  .stepper__btn:hover { border-color: var(--accent); color: var(--accent); }
+  .stepper__val {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    min-width: 2ch;
+    text-align: center;
+  }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip.on { background: var(--accent); color: #05070e; border-color: var(--accent); font-weight: 600; }
+
+  .progress-ring {
+    width: 70px; height: 70px;
+    position: relative;
+  }
+  .progress-ring__bg, .progress-ring__fg {
+    fill: none;
+    stroke-width: 4;
+    cx: 35; cy: 35; r: 31;
+  }
+  .progress-ring__bg { stroke: rgba(255,255,255,0.08); }
+  .progress-ring__fg {
+    stroke: var(--accent);
+    stroke-dasharray: 195;
+    stroke-dashoffset: calc(195 - (195 * var(--p, 65) / 100));
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+    transition: stroke-dashoffset 0.4s;
+  }
+  .progress-ring__val {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  .loader-dots { display: flex; gap: 6px; }
+  .loader-dots span {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: ldots 1.2s infinite ease-in-out;
+  }
+  .loader-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .loader-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes ldots {
+    0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  .signal-bars { display: flex; align-items: flex-end; gap: 3px; height: 28px; }
+  .signal-bars span {
+    width: 4px;
+    background: var(--accent);
+    border-radius: 1px;
+    animation: sig 1s infinite ease-in-out;
+  }
+  .signal-bars span:nth-child(1) { height: 30%; animation-delay: 0s; }
+  .signal-bars span:nth-child(2) { height: 55%; animation-delay: 0.1s; }
+  .signal-bars span:nth-child(3) { height: 80%; animation-delay: 0.2s; }
+  .signal-bars span:nth-child(4) { height: 100%; animation-delay: 0.3s; }
+  @keyframes sig {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+  .badge--ok { color: #7bffbc; border-color: rgba(123,255,188,0.4); background: rgba(123,255,188,0.06); }
+  .badge--warn { color: #ffe45e; border-color: rgba(255,228,94,0.4); background: rgba(255,228,94,0.06); }
+  .badge--live { color: #ff7ac6; border-color: rgba(255,122,198,0.4); background: rgba(255,122,198,0.06); }
+  .badge__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
+
+  .tabs { display: flex; gap: 0.25rem; border-bottom: 1px solid var(--border); }
+  .tab {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.6rem 0.9rem;
+    color: var(--ink-dim);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+  }
+  .tab.active { color: var(--accent); }
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  .avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff, var(--accent) 50%, #f0a020);
+    box-shadow: 0 0 16px var(--accent-glow);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    color: #05070e;
+    font-size: 1rem;
+  }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="../components/Starfield.jsx"></script>
+<script type="text/babel" src="../components/Cursor.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+function Card({ label, id, children, span }) {
+  return (
+    <div className="ui-card" style={{ gridColumn: span ? `span ${span}` : undefined }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span className="ui-card__label">{label}</span>
+        <span className="ui-card__label" style={{ color: "var(--ink-faint)" }}>{id}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function App() {
+  const [switches, setSwitches] = useState([true, false, true]);
+  const [checks, setChecks] = useState([true, false, true, false]);
+  const [radio, setRadio] = useState(1);
+  const [slider, setSlider] = useState(65);
+  const [text, setText] = useState("");
+  const [step, setStep] = useState(3);
+  const [chips, setChips] = useState([true, false, true, false, false]);
+  const [tab, setTab] = useState(0);
+
+  return (
+    <>
+      <Starfield density={1.2} speed={0.5} />
+      <CometCursor enabled={true} />
+
+      <div className="kit-wrap">
+        <a className="kit-back" href="../Resume.html">← back to mission NA-01</a>
+
+        <div className="kit-head">
+          <div>
+            <div className="section-chip">
+              <span className="section-chip__num">UI-KIT /</span>
+              <span>Mini-project · Design system</span>
+            </div>
+            <h1 className="kit-title">Cosmic <span>UI Kit</span></h1>
+            <p className="kit-sub">
+              A library of interactive components I design and build for fun — buttons, toggles, sliders,
+              badges, loaders, steppers, progress rings. Each one is crafted with consistent motion,
+              focus states, and keyboard friendliness. They're also what power the interactive bits of
+              my resume.
+            </p>
+          </div>
+          <div className="kit-meta">
+            <div className="kit-meta-row"><span className="kit-meta-k">Author</span><span className="kit-meta-v">Nelson Arango</span></div>
+            <div className="kit-meta-row"><span className="kit-meta-k">Stack</span><span className="kit-meta-v">React · CSS</span></div>
+            <div className="kit-meta-row"><span className="kit-meta-k">Components</span><span className="kit-meta-v">14+</span></div>
+            <div className="kit-meta-row"><span className="kit-meta-k">Status</span><span className="kit-meta-v">Evolving</span></div>
+          </div>
+        </div>
+
+        {/* FOUNDATIONS */}
+        <div className="kit-section">
+          <div className="kit-section__label">Foundations · 01</div>
+          <h2 className="kit-section__title">Palette &amp; typography</h2>
+          <div className="kit-grid">
+            <Card label="Palette" id="F-01">
+              <div className="swatch-row" style={{ marginTop: "1.25rem" }}>
+                {[
+                  { c: "#ffe45e", n: "Sun" },
+                  { c: "#a07aff", n: "Nebula" },
+                  { c: "#7adfff", n: "Ice" },
+                  { c: "#7bffbc", n: "Aurora" },
+                  { c: "#ff7ac6", n: "Pulsar" },
+                  { c: "#f6f4ef", n: "Ink" },
+                ].map((s, i) => (
+                  <div key={i} className="swatch" style={{ background: s.c }}>
+                    <span className="swatch__name">{s.n}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+            <Card label="Type" id="F-02" span={2}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                <span style={{ fontFamily: "Slackey", fontSize: "1.75rem", color: "var(--accent)", lineHeight: 1 }}>Slackey · display</span>
+                <span style={{ fontFamily: "Codystar", fontSize: "1.25rem", letterSpacing: "0.25em" }}>CODYSTAR · PIXEL</span>
+                <span style={{ fontFamily: "JetBrains Mono", fontSize: "0.875rem", color: "var(--ink-dim)" }}>JetBrains Mono · system</span>
+                <span style={{ fontFamily: "Roboto", fontSize: "0.9375rem", color: "var(--ink-dim)" }}>Roboto · body text · the quick brown fox</span>
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* INPUTS */}
+        <div className="kit-section">
+          <div className="kit-section__label">Inputs · 02</div>
+          <h2 className="kit-section__title">Controls</h2>
+          <div className="kit-grid">
+            <Card label="Toggle switches" id="I-01">
+              <div className="ui-row">
+                {switches.map((on, i) => (
+                  <button key={i}
+                    className={`ui-switch ${on ? "on" : ""}`}
+                    onClick={() => setSwitches((p) => p.map((v, idx) => (idx === i ? !v : v)))}>
+                    <span className="ui-switch__thumb" />
+                  </button>
+                ))}
+              </div>
+            </Card>
+            <Card label="Checkboxes" id="I-02">
+              <div className="ui-col">
+                {["Responsive", "Accessible", "Animated", "Dark mode"].map((label, i) => (
+                  <label key={i} className="ui-check">
+                    <input type="checkbox" checked={checks[i]}
+                      onChange={() => setChecks((p) => p.map((v, idx) => (idx === i ? !v : v)))} />
+                    <span className="ui-check__box">
+                      <svg viewBox="0 0 12 10" className="ui-check__icon">
+                        <polyline points="1.5 5 4.5 8 10.5 2" />
+                      </svg>
+                    </span>
+                    <span>{label}</span>
+                  </label>
+                ))}
+              </div>
+            </Card>
+            <Card label="Radio buttons" id="I-03">
+              <div className="ui-col">
+                {["Small", "Medium", "Large"].map((label, i) => (
+                  <label key={i} className="ui-radio">
+                    <input type="radio" name="size" checked={radio === i} onChange={() => setRadio(i)} />
+                    <span className="ui-radio__circle" />
+                    <span>{label}</span>
+                  </label>
+                ))}
+              </div>
+            </Card>
+            <Card label={`Range slider · ${slider}%`} id="I-04">
+              <input type="range" min="0" max="100" value={slider}
+                onChange={(e) => setSlider(Number(e.target.value))}
+                className="ui-slider"
+                style={{ background: `linear-gradient(to right, var(--accent) ${slider}%, rgba(255,255,255,0.08) ${slider}%)` }} />
+            </Card>
+            <Card label="Text input" id="I-05">
+              <input type="text" className="ui-input" placeholder="Type something..."
+                value={text} onChange={(e) => setText(e.target.value)} />
+            </Card>
+            <Card label="Stepper" id="I-06">
+              <div className="stepper" style={{ marginTop: "auto" }}>
+                <button className="stepper__btn" onClick={() => setStep((v) => Math.max(0, v - 1))}>−</button>
+                <span className="stepper__val">{step}</span>
+                <button className="stepper__btn" onClick={() => setStep((v) => v + 1)}>+</button>
+              </div>
+            </Card>
+            <Card label="Chip group" id="I-07" span={2}>
+              <div className="chip-group" style={{ marginTop: "auto" }}>
+                {["Design", "Motion", "React", "System", "Prototype"].map((c, i) => (
+                  <button key={c} className={`chip ${chips[i] ? "on" : ""}`}
+                    onClick={() => setChips((p) => p.map((v, idx) => (idx === i ? !v : v)))}>
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* ACTIONS */}
+        <div className="kit-section">
+          <div className="kit-section__label">Actions · 03</div>
+          <h2 className="kit-section__title">Buttons</h2>
+          <div className="kit-grid">
+            <Card label="Pill buttons" id="A-01" span={2}>
+              <div className="ui-row" style={{ marginTop: "auto" }}>
+                <button className="pill-btn pill-btn--filled">Launch</button>
+                <button className="pill-btn">Secondary</button>
+                <button className="pill-btn">
+                  <span style={{ fontSize: "1.1em" }}>→</span> With icon
+                </button>
+              </div>
+            </Card>
+            <Card label="Square buttons" id="A-02">
+              <div className="ui-row" style={{ marginTop: "auto" }}>
+                <button className="ui-btn ui-btn--primary">Primary</button>
+                <button className="ui-btn ui-btn--outline">Outline</button>
+                <button className="ui-btn ui-btn--ghost">Ghost</button>
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* FEEDBACK */}
+        <div className="kit-section">
+          <div className="kit-section__label">Feedback · 04</div>
+          <h2 className="kit-section__title">Status &amp; motion</h2>
+          <div className="kit-grid">
+            <Card label="Progress ring" id="B-01">
+              <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginTop: "auto" }}>
+                <div className="progress-ring" style={{ "--p": slider }}>
+                  <svg width="70" height="70" viewBox="0 0 70 70">
+                    <circle className="progress-ring__bg" cx="35" cy="35" r="31" />
+                    <circle className="progress-ring__fg" cx="35" cy="35" r="31" />
+                  </svg>
+                  <div className="progress-ring__val">{slider}</div>
+                </div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--ink-dim)" }}>
+                  Bound to slider
+                </div>
+              </div>
+            </Card>
+            <Card label="Loader" id="B-02">
+              <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginTop: "auto" }}>
+                <div className="loader-dots"><span /><span /><span /></div>
+                <div className="signal-bars"><span /><span /><span /><span /></div>
+              </div>
+            </Card>
+            <Card label="Badges" id="B-03">
+              <div className="ui-row" style={{ marginTop: "auto" }}>
+                <span className="badge badge--ok"><span className="badge__dot" /> Online</span>
+                <span className="badge badge--warn"><span className="badge__dot" /> Syncing</span>
+                <span className="badge badge--live"><span className="badge__dot" /> Live</span>
+              </div>
+            </Card>
+            <Card label="Tabs" id="B-04" span={2}>
+              <div className="tabs" style={{ marginTop: "0.5rem" }}>
+                {["Overview", "Telemetry", "Logs", "Crew"].map((t, i) => (
+                  <button key={t} className={`tab ${tab === i ? "active" : ""}`} onClick={() => setTab(i)}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+              <div style={{ fontSize: "0.875rem", color: "var(--ink-dim)", marginTop: "0.75rem" }}>
+                Active panel: <span style={{ color: "var(--accent)" }}>{["Overview", "Telemetry", "Logs", "Crew"][tab]}</span>
+              </div>
+            </Card>
+            <Card label="Avatar" id="B-05">
+              <div className="ui-row" style={{ marginTop: "auto" }}>
+                <div className="avatar">N</div>
+                <div className="avatar" style={{ background: "radial-gradient(circle at 30% 30%, #fff, #a07aff 50%, #4b2aa8)" }}>A</div>
+                <div className="avatar" style={{ background: "radial-gradient(circle at 30% 30%, #fff, #7adfff 50%, #0e6b91)" }}>R</div>
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        <div className="kit-section" style={{ marginTop: "5rem", textAlign: "center" }}>
+          <a className="pill-btn pill-btn--filled" href="../Resume.html">← back to mission</a>
+        </div>
+      </div>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>

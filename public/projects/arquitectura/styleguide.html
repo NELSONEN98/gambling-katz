@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arquitectura Bosque — Design System</title>
+  <meta name="description" content="Editorial design system for Arquitectura Bosque — luxury countryside homes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — ARQUITECTURA BOSQUE
+       ============================================================ */
+    :root {
+      --bone:    #F2EEE6;
+      --bone-2:  #E8E2D6;
+      --bone-3:  #DDD7CB;
+      --ink:     #1A1815;
+      --ink-2:   #2B2823;
+      --muted:   #6B665C;
+      --line:    #CFC8B9;
+      --moss:    #3A4A37;
+      --moss-lt: #4f6649;
+      --terra:   #8C4A2B;
+      --terra-lt:#a85a36;
+      --accent:  var(--moss);
+
+      --serif: "Cormorant Garamond", "Times New Roman", serif;
+      --sans:  "Inter", system-ui, sans-serif;
+      --mono:  "JetBrains Mono", ui-monospace, monospace;
+
+      --color-primary:     #3A4A37;
+      --color-primary-rgb: 58, 74, 55;
+      --color-secondary:   #8C4A2B;
+      --color-accent:      #CFC8B9;
+
+      --radius-sm: .25rem;
+      --radius-md: .5rem;
+      --radius-lg: .75rem;
+      --radius-xl: 1rem;
+      --radius-full: 9999px;
+
+      --shadow-xs: 0 1px 3px rgba(26,24,21,.06);
+      --shadow-sm: 0 3px 10px rgba(26,24,21,.08);
+      --shadow-md: 0 8px 28px rgba(26,24,21,.10);
+      --shadow-lg: 0 20px 56px rgba(26,24,21,.12);
+
+      --ease: cubic-bezier(.4,0,.2,1);
+      --ease-out: cubic-bezier(.16,1,.3,1);
+      --dur: 250ms;
+      --dur-fast: 150ms;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background: var(--bone);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    img, svg { display: block; max-width: 100%; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    a { color: var(--moss); text-decoration: none; transition: color var(--dur-fast); }
+    a:hover { color: var(--moss-lt); }
+    code { font-family: var(--mono); font-size: .85em; background: var(--bone-2); padding: 1px 5px; border-radius: 3px; }
+    :focus-visible { outline: 2px solid var(--moss); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .app { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+
+    .sidebar {
+      position: sticky; top: 0; height: 100vh;
+      padding: 2.5rem 1.25rem;
+      background: var(--bone-2); border-right: 1px solid var(--line);
+      display: flex; flex-direction: column; gap: 2rem; overflow-y: auto;
+    }
+    .brand { display: flex; align-items: center; gap: .75rem; padding: 0 .5rem; }
+    .brand-mark {
+      width: 34px; height: 34px; border: 1px solid var(--ink);
+      display: grid; place-items: center;
+      font-family: var(--mono); font-size: 10px; letter-spacing: .1em; flex-shrink: 0;
+    }
+    .brand-name { font-family: var(--serif); font-size: 1.2rem; letter-spacing: -.01em; }
+    .brand-name em { font-style: italic; }
+    .brand-tag { display: block; font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+
+    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .nav-link {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .5rem .75rem; color: var(--muted);
+      font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+      transition: all var(--dur-fast); border-radius: 2px;
+    }
+    .nav-link:hover { color: var(--ink); background: var(--bone-3); }
+    .nav-link.is-active { color: var(--moss); }
+    .nav-link .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .6; flex-shrink: 0; }
+
+    .sidebar-footer { margin-top: auto; padding: .75rem .5rem; border-top: 1px solid var(--line); }
+    .theme-toggle {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .4rem .75rem; background: var(--bone); border: 1px solid var(--line);
+      border-radius: var(--radius-full); cursor: pointer;
+      font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); transition: all var(--dur-fast);
+    }
+    .theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+
+    .main { padding: 4rem 5rem; max-width: 1200px; width: 100%; }
+
+    .section { margin-bottom: 7rem; scroll-margin-top: 2rem; }
+    .section-header { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: .6rem;
+      font-family: var(--mono); font-size: .65rem; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: .5rem;
+    }
+    .section-eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+    .section-title {
+      font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 400; letter-spacing: -.02em; line-height: 1.1; margin-bottom: .5rem;
+    }
+    .section-desc { color: var(--muted); max-width: 60ch; font-size: .925rem; }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      position: relative; overflow: hidden;
+      padding: 4.5rem 3.5rem 3rem;
+      background: var(--ink-2);
+      border: 1px solid var(--line);
+      margin-bottom: 5rem;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: url("img/hero.png") center/cover no-repeat;
+      opacity: .25; pointer-events: none;
+    }
+    .hero-eyebrow {
+      position: relative;
+      font-family: var(--mono); font-size: .65rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--bone-2);
+      display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.25rem;
+    }
+    .hero-eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+    .hero-title {
+      position: relative;
+      font-family: var(--serif); font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 300; color: var(--bone); line-height: 1.05;
+      letter-spacing: -.02em; margin-bottom: 1rem;
+    }
+    .hero-title em { font-style: italic; font-weight: 400; }
+    .hero-desc { position: relative; font-size: .9rem; color: var(--bone-3); max-width: 55ch; margin-bottom: 2rem; }
+    .hero-meta { position: relative; display: flex; flex-wrap: wrap; gap: 2rem; font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(242,238,230,.55); }
+    .hero-meta strong { color: var(--bone-2); }
+
+    /* ============================================================
+       SWATCHES
+       ============================================================ */
+    .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap: 1rem; }
+    .swatch {
+      background: var(--bone); border: 1px solid var(--line);
+      overflow: hidden; cursor: pointer;
+      transition: transform var(--dur) var(--ease-out), box-shadow var(--dur);
+    }
+    .swatch:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .swatch-preview { height: 80px; position: relative; }
+    .swatch-preview::after {
+      content: "Click to copy"; position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: .65rem; letter-spacing: .1em;
+      color: white; background: rgba(0,0,0,.35); opacity: 0;
+      transition: opacity var(--dur-fast);
+    }
+    .swatch:hover .swatch-preview::after { opacity: 1; }
+    .swatch.copied .swatch-preview::after { content: "Copied ✓"; opacity: 1; background: rgba(58,74,55,.85); }
+    .swatch-info { padding: .65rem .85rem; }
+    .swatch-name { font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px; }
+    .swatch-hex { font-family: var(--mono); font-size: .68rem; color: var(--muted); text-transform: uppercase; }
+
+    .palette-note {
+      margin-top: 1.75rem; padding: 1.25rem 1.5rem;
+      background: var(--bone-2); border-left: 3px solid var(--moss);
+      font-size: .875rem; color: var(--muted); font-style: italic;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+    .type-stack { display: flex; flex-direction: column; gap: 1.5rem; }
+    .type-row {
+      display: grid; grid-template-columns: 140px 1fr; gap: 1.5rem;
+      align-items: baseline; padding-bottom: 1.25rem;
+      border-bottom: 1px dashed var(--line);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-label { font-family: var(--mono); font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .type-label small { display: block; opacity: .75; margin-top: 3px; }
+
+    .t-display { font-family: var(--serif); font-size: 4rem; font-weight: 300; letter-spacing: -.03em; line-height: 1; }
+    .t-h1 { font-family: var(--serif); font-size: 3rem; font-weight: 400; letter-spacing: -.025em; line-height: 1.05; }
+    .t-h2 { font-family: var(--serif); font-size: 2.25rem; font-weight: 400; letter-spacing: -.02em; }
+    .t-h3 { font-family: var(--serif); font-size: 1.75rem; font-weight: 400; font-style: italic; letter-spacing: -.015em; }
+    .t-body { font-size: .9375rem; line-height: 1.7; max-width: 65ch; color: var(--ink); }
+    .t-eyebrow { font-family: var(--mono); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: .5rem; }
+    .t-eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+    .t-caption { font-family: var(--mono); font-size: .65rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+    .t-mono { font-family: var(--mono); font-size: .8rem; background: var(--bone-2); padding: 2px 6px; }
+
+    /* ============================================================
+       NAVBAR DEMO
+       ============================================================ */
+    .demo-card {
+      background: var(--bone); border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: 1rem;
+    }
+    .demo-frame { padding: 1.5rem; background: var(--bone-2); }
+    .demo-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .6rem 1.25rem; background: var(--bone);
+      border-top: 1px solid var(--line); font-family: var(--mono); font-size: .65rem;
+      color: var(--muted); letter-spacing: .08em;
+    }
+
+    .demo-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem 1.25rem; background: var(--ink); color: var(--bone);
+    }
+    .demo-nav-brand { display: flex; align-items: center; gap: .75rem; font-family: var(--serif); font-size: 1.1rem; }
+    .demo-nav-mark { width: 24px; height: 24px; border: 1px solid var(--bone); display: grid; place-items: center; font-family: var(--mono); font-size: .6rem; }
+    .demo-nav-links { display: flex; gap: .25rem; }
+    .demo-nav-links a { font-family: var(--mono); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; padding: .5rem .75rem; color: rgba(242,238,230,.8); transition: color var(--dur-fast); }
+    .demo-nav-links a:hover, .demo-nav-links a.is-active { color: var(--bone); }
+    .demo-nav-cta { font-family: var(--mono); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; padding: .5rem .75rem; border: 1px solid rgba(242,238,230,.5); color: var(--bone); transition: all var(--dur-fast); }
+    .demo-nav-cta:hover { background: var(--bone); color: var(--ink); }
+
+    .demo-nav-scrolled {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem 1.25rem;
+      background: rgba(242,238,230,.92); backdrop-filter: blur(10px);
+      border: 1px solid var(--line); color: var(--ink);
+      margin-top: .75rem;
+    }
+
+    /* ============================================================
+       BUTTONS
+       ============================================================ */
+    .ab-btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      font-family: var(--mono); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
+      padding: .875rem 1.375rem; border: 1px solid var(--ink); color: var(--ink);
+      background: transparent; cursor: pointer;
+      transition: background var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur) var(--ease);
+    }
+    .ab-btn:hover { background: var(--ink); color: var(--bone); }
+    .ab-btn .arrow { display: inline-block; transition: transform var(--dur) var(--ease); }
+    .ab-btn:hover .arrow { transform: translateX(4px); }
+    .ab-btn--light { border-color: var(--bone); color: var(--bone); }
+    .ab-btn--light:hover { background: var(--bone); color: var(--ink); }
+    .ab-btn--fill { background: var(--moss); color: var(--bone); border-color: var(--moss); }
+    .ab-btn--fill:hover { background: var(--moss-lt); border-color: var(--moss-lt); }
+    .ab-btn--terra { background: var(--terra); color: var(--bone); border-color: var(--terra); }
+    .ab-btn--terra:hover { background: var(--terra-lt); border-color: var(--terra-lt); }
+    .ab-btn--sm { padding: .5rem .875rem; font-size: .62rem; }
+    .ab-btn--lg { padding: 1.125rem 1.75rem; font-size: .72rem; }
+
+    .btn-grid { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+    .btn-row-label { font-family: var(--mono); font-size: .62rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .5rem; }
+
+    /* ============================================================
+       CARDS — MODEL CARDS
+       ============================================================ */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.5rem; }
+    .model-card {
+      background: var(--bone); border: 1px solid var(--line);
+      overflow: hidden; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur);
+    }
+    .model-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .model-card-img {
+      aspect-ratio: 4/3; background: var(--bone-3);
+      position: relative; overflow: hidden;
+    }
+    .model-card-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: .65rem; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .model-card-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(26,24,21,.55) 100%);
+    }
+    .model-card-img-label {
+      position: absolute; bottom: 1rem; left: 1rem;
+      font-family: var(--mono); font-size: .6rem; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--bone);
+    }
+    .model-card-body { padding: 1.5rem; }
+    .model-card-eyebrow { font-family: var(--mono); font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+    .model-card-title { font-family: var(--serif); font-size: 1.75rem; font-weight: 400; letter-spacing: -.02em; margin-bottom: .75rem; line-height: 1.2; }
+    .model-card-desc { font-size: .85rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.25rem; }
+    .model-card-rule { height: 1px; background: var(--line); margin: 1rem 0; }
+    .model-card-price { font-family: var(--serif); font-size: 1.5rem; font-style: italic; color: var(--moss); }
+
+    /* ============================================================
+       FORMS
+       ============================================================ */
+    .ab-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; background: var(--bone); padding: 2rem; border: 1px solid var(--line); }
+    .ab-field { display: flex; flex-direction: column; gap: .35rem; }
+    .ab-field-full { grid-column: 1 / -1; }
+    .ab-label { font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    .ab-input, .ab-select, .ab-textarea {
+      width: 100%; padding: .75rem 1rem;
+      background: var(--bone-2); border: 1px solid var(--line);
+      font-family: var(--sans); font-size: .875rem; color: var(--ink);
+      transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+      outline: none;
+    }
+    .ab-input::placeholder, .ab-textarea::placeholder { color: var(--muted); }
+    .ab-input:focus, .ab-select:focus, .ab-textarea:focus { border-color: var(--moss); box-shadow: 0 0 0 3px rgba(58,74,55,.1); }
+    .ab-textarea { resize: vertical; min-height: 90px; font-family: var(--sans); }
+    .ab-hint { font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .ab-hint.error { color: var(--terra); }
+
+    /* ============================================================
+       HUD & BADGES
+       ============================================================ */
+    .ab-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-family: var(--mono); font-size: .62rem; letter-spacing: .12em;
+      text-transform: uppercase; padding: .3rem .65rem; border: 1px solid; border-radius: 2px;
+    }
+    .ab-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .ab-badge--moss { background: rgba(58,74,55,.1); border-color: rgba(58,74,55,.3); color: var(--moss); }
+    .ab-badge--terra { background: rgba(140,74,43,.08); border-color: rgba(140,74,43,.25); color: var(--terra); }
+    .ab-badge--muted { background: var(--bone-2); border-color: var(--line); color: var(--muted); }
+    .ab-badge--bone { background: var(--bone); border-color: var(--line); color: var(--ink); }
+
+    .ab-tag {
+      display: inline-flex; padding: .2rem .5rem;
+      font-family: var(--mono); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase;
+      background: var(--bone-2); color: var(--muted); border: 1px solid var(--line);
+    }
+
+    .stat-row { display: flex; align-items: stretch; border: 1px solid var(--line); background: var(--bone); }
+    .stat-block { flex: 1; padding: 1.5rem 1.25rem; text-align: center; border-right: 1px solid var(--line); }
+    .stat-block:last-child { border-right: none; }
+    .stat-num { font-family: var(--serif); font-size: 2.5rem; font-weight: 400; letter-spacing: -.03em; line-height: 1; }
+    .stat-label { font-family: var(--mono); font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-top: .4rem; }
+
+    /* ============================================================
+       FOOTER DEMO
+       ============================================================ */
+    .ab-footer {
+      background: var(--ink); color: var(--bone);
+      padding: 3rem 2rem 1.5rem;
+    }
+    .footer-top { display: grid; grid-template-columns: 2fr repeat(3,1fr); gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(242,238,230,.12); }
+    .footer-brand p { color: rgba(242,238,230,.55); font-size: .85rem; max-width: 28ch; margin-top: .75rem; }
+    .footer-col h4 { font-family: var(--mono); font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(242,238,230,.45); margin-bottom: .85rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .footer-col a { font-size: .875rem; color: rgba(242,238,230,.65); transition: color var(--dur-fast); }
+    .footer-col a:hover { color: var(--bone); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 1.25rem; font-family: var(--mono); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(242,238,230,.35); }
+
+    /* ============================================================
+       PRINCIPLES
+       ============================================================ */
+    .principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1rem; }
+    .principle {
+      background: var(--bone); border: 1px solid var(--line);
+      padding: 1.5rem; transition: transform var(--dur) var(--ease-out), border-color var(--dur);
+    }
+    .principle:hover { transform: translateY(-2px); border-color: var(--moss); }
+    .principle-num { font-family: var(--mono); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; color: var(--moss); margin-bottom: .75rem; }
+    .principle h3 { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; letter-spacing: -.01em; margin-bottom: .5rem; }
+    .principle p { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+
+    /* ============================================================
+       ANIMATIONS
+       ============================================================ */
+    .anim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 1rem; }
+    .anim-card {
+      background: var(--bone); border: 1px solid var(--line);
+      padding: 1.5rem; text-align: center; cursor: pointer; overflow: hidden;
+    }
+    .anim-card h4 { font-family: var(--serif); font-size: 1rem; margin-bottom: .25rem; font-weight: 400; }
+    .anim-card p { font-family: var(--mono); font-size: .62rem; color: var(--muted); letter-spacing: .08em; }
+    .anim-shape {
+      width: 48px; height: 48px; margin: 0 auto .75rem;
+      background: var(--moss); box-shadow: var(--shadow-sm);
+    }
+
+    .anim-lift:hover .anim-shape { transform: translateY(-10px); transition: transform .3s var(--ease-out); }
+    .anim-scale:hover .anim-shape { transform: scale(1.15); transition: transform .3s var(--ease-out); }
+    .anim-fade:hover .anim-shape { opacity: .4; transition: opacity .3s; }
+    .anim-terra:hover .anim-shape { background: var(--terra); transition: background .3s; }
+
+    @keyframes appear { 0%{opacity:0;transform:translateY(3rem)} 100%{opacity:1;transform:translateY(0)} }
+    .anim-appear .anim-shape { animation: appear 1s var(--ease-out) both; }
+    .anim-appear:hover .anim-shape { animation: appear .8s var(--ease-out) both; }
+
+    @keyframes line-grow { 0%{transform:scaleX(0)} 100%{transform:scaleX(1)} }
+    .anim-underline .anim-shape { height: 2px; width: 80px; transform-origin: left; animation: line-grow 1s var(--ease-out) both; }
+    .anim-underline:hover .anim-shape { animation: line-grow .6s var(--ease-out) both; }
+
+    @keyframes parallax { 0%,100%{background-position:center 0%} 50%{background-position:center 5%} }
+    .anim-parallax .anim-shape {
+      background: url("img/hero.png") center/cover;
+      height: 56px; animation: parallax 8s ease-in-out infinite;
+    }
+
+    /* ============================================================
+       PAGE FOOTER
+       ============================================================ */
+    .page-footer { margin-top: 5rem; padding: 2rem 0; border-top: 1px solid var(--line); text-align: center; font-family: var(--mono); font-size: .62rem; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: relative; height: auto; flex-direction: row; align-items: center; overflow-x: auto; padding: .75rem 1rem; border-right: none; border-bottom: 1px solid var(--line); }
+      .nav-list { flex-direction: row; flex-shrink: 0; }
+      .nav-link { white-space: nowrap; }
+      .sidebar-footer { margin: 0; padding: 0; border: none; flex-shrink: 0; }
+      .main { padding: 2rem 1.25rem; }
+      .footer-top { grid-template-columns: 1fr; gap: 1.5rem; }
+      .type-row { grid-template-columns: 1fr; gap: .5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" aria-label="Navigation">
+    <header class="brand">
+      <div class="brand-mark">AB</div>
+      <div>
+        <span class="brand-name">Arquitectura <em>Bosque</em></span>
+        <span class="brand-tag">Design System</span>
+      </div>
+    </header>
+    <nav>
+      <ul class="nav-list">
+        <li><a class="nav-link is-active" href="#colors"><span class="dot"></span>Colors</a></li>
+        <li><a class="nav-link" href="#typography"><span class="dot"></span>Typography</a></li>
+        <li><a class="nav-link" href="#navbar"><span class="dot"></span>Navbar</a></li>
+        <li><a class="nav-link" href="#buttons"><span class="dot"></span>Buttons</a></li>
+        <li><a class="nav-link" href="#cards"><span class="dot"></span>Model Cards</a></li>
+        <li><a class="nav-link" href="#forms"><span class="dot"></span>Forms</a></li>
+        <li><a class="nav-link" href="#hud"><span class="dot"></span>HUD &amp; Badges</a></li>
+        <li><a class="nav-link" href="#footer"><span class="dot"></span>Footer</a></li>
+        <li><a class="nav-link" href="#principles"><span class="dot"></span>Principles</a></li>
+        <li><a class="nav-link" href="#animations"><span class="dot"></span>Animations</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle" type="button">◐ Dark preview</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-eyebrow">v1.0 · Design System</div>
+      <h1 class="hero-title">Arquitectura<br/><em>Bosque</em></h1>
+      <p class="hero-desc">An editorial design system rooted in natural materials — bone paper, forest moss, and terracotta earth. Built for luxury countryside homes that speak through restraint.</p>
+      <div class="hero-meta">
+        <span><strong>10</strong> Sections</span>
+        <span><strong>Light-first</strong> Editorial</span>
+        <span><strong>WCAG AA</strong> Contrast</span>
+        <span><strong>Cormorant</strong> + <strong>Inter</strong> + <strong>JetBrains Mono</strong></span>
+      </div>
+    </header>
+
+    <!-- 1. COLORS -->
+    <section class="section" id="colors">
+      <header class="section-header">
+        <span class="section-eyebrow">01 — Foundations</span>
+        <h2 class="section-title">Color Palette</h2>
+        <p class="section-desc">An earthy, minimal palette drawn from the forest — bone papers, inky darks, moss greens, and terracotta accents. Click to copy.</p>
+      </header>
+
+      <div class="swatch-grid">
+        <article class="swatch" data-copy="#F2EEE6"><div class="swatch-preview" style="background:#F2EEE6;border-bottom:1px solid #CFC8B9;"></div><div class="swatch-info"><div class="swatch-name">Bone</div><div class="swatch-hex">#F2EEE6</div></div></article>
+        <article class="swatch" data-copy="#E8E2D6"><div class="swatch-preview" style="background:#E8E2D6;"></div><div class="swatch-info"><div class="swatch-name">Bone 2</div><div class="swatch-hex">#E8E2D6</div></div></article>
+        <article class="swatch" data-copy="#DDD7CB"><div class="swatch-preview" style="background:#DDD7CB;"></div><div class="swatch-info"><div class="swatch-name">Bone 3</div><div class="swatch-hex">#DDD7CB</div></div></article>
+        <article class="swatch" data-copy="#CFC8B9"><div class="swatch-preview" style="background:#CFC8B9;"></div><div class="swatch-info"><div class="swatch-name">Line</div><div class="swatch-hex">#CFC8B9</div></div></article>
+        <article class="swatch" data-copy="#6B665C"><div class="swatch-preview" style="background:#6B665C;"></div><div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-hex">#6B665C</div></div></article>
+        <article class="swatch" data-copy="#2B2823"><div class="swatch-preview" style="background:#2B2823;"></div><div class="swatch-info"><div class="swatch-name">Ink 2</div><div class="swatch-hex">#2B2823</div></div></article>
+        <article class="swatch" data-copy="#1A1815"><div class="swatch-preview" style="background:#1A1815;"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#1A1815</div></div></article>
+        <article class="swatch" data-copy="#3A4A37"><div class="swatch-preview" style="background:#3A4A37;"></div><div class="swatch-info"><div class="swatch-name">Moss ★</div><div class="swatch-hex">#3A4A37</div></div></article>
+        <article class="swatch" data-copy="#4f6649"><div class="swatch-preview" style="background:#4f6649;"></div><div class="swatch-info"><div class="swatch-name">Moss Light</div><div class="swatch-hex">#4f6649</div></div></article>
+        <article class="swatch" data-copy="#8C4A2B"><div class="swatch-preview" style="background:#8C4A2B;"></div><div class="swatch-info"><div class="swatch-name">Terra</div><div class="swatch-hex">#8C4A2B</div></div></article>
+      </div>
+
+      <p class="palette-note">The palette maps directly to nature: bone is the paper of architectural drawings, ink is the charcoal of a forest at midnight, moss is the living accent — the only color that breathes — and terra is the warm clay of the land itself.</p>
+    </section>
+
+    <!-- 2. TYPOGRAPHY -->
+    <section class="section" id="typography">
+      <header class="section-header">
+        <span class="section-eyebrow">02 — Foundations</span>
+        <h2 class="section-title">Typography</h2>
+        <p class="section-desc">A three-family system: Cormorant Garamond for soul, Inter for precision, JetBrains Mono for structure.</p>
+      </header>
+
+      <div class="type-stack">
+        <div class="type-row">
+          <div class="type-label">Display<small>Cormorant · 300 · 64px</small></div>
+          <div class="t-display">Casas en el campo</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">H1<small>Cormorant · 400 · 48px</small></div>
+          <div class="t-h1">Arquitectura Bosque</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">H2<small>Cormorant · 400 · 36px</small></div>
+          <div class="t-h2">Modelo Premier</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">H3 Italic<small>Cormorant · 400 italic</small></div>
+          <div class="t-h3">Elegancia natural en cada rincón</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Body<small>Inter · 400 · 15px</small></div>
+          <div class="t-body">Landing page showcasing Arquitectura Bosque — Basic, Premier, and Elite models highlighted dynamically. Clean CSS/HTML with scroll-triggered reveals and a carefully considered type system.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Eyebrow<small>JetBrains Mono · 400</small></div>
+          <div class="t-eyebrow">Nuestros Modelos</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Caption<small>JetBrains Mono · small</small></div>
+          <div class="t-caption">Área · 240m² · Modelo Elite · Coord HX-010</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Mono<small>JetBrains Mono · buttons</small></div>
+          <div><code class="t-mono">Ver modelo completo →</code></div>
+        </div>
+      </div>
+
+      <p class="palette-note" style="margin-top:2rem;"><strong>Cormorant Garamond</strong> gives the brand its gravitas and warmth — a classical serif that evokes architectural blueprints and design books. <strong>Inter</strong> handles all readable body copy with neutral clarity. <strong>JetBrains Mono</strong> disciplines the UI: every label, button text, eyebrow, and navigation item uses it to create a technical, precise counterpoint to the expressive display type.</p>
+    </section>
+
+    <!-- 3. NAVBAR -->
+    <section class="section" id="navbar">
+      <header class="section-header">
+        <span class="section-eyebrow">03 — Navigation</span>
+        <h2 class="section-title">Navbar</h2>
+        <p class="section-desc">Two states — transparent over hero (dark), scrolled glass (light). Underline indicator on active/hover links.</p>
+      </header>
+
+      <div class="demo-card">
+        <div class="demo-frame">
+          <div class="demo-nav">
+            <div class="demo-nav-brand">
+              <div class="demo-nav-mark">AB</div>
+              Arquitectura <em style="font-style:italic;margin-left:4px;">Bosque</em>
+            </div>
+            <div class="demo-nav-links">
+              <a href="#" class="is-active">Nosotros</a>
+              <a href="#">Modelos</a>
+              <a href="#">Galería</a>
+              <a href="#">Contacto</a>
+            </div>
+            <a class="demo-nav-cta" href="#">01·800·9191</a>
+          </div>
+
+          <div class="demo-nav-scrolled">
+            <div class="demo-nav-brand" style="color:var(--ink);">
+              <div class="demo-nav-mark" style="border-color:var(--ink);color:var(--ink);">AB</div>
+              Arquitectura <em style="font-style:italic;margin-left:4px;">Bosque</em>
+            </div>
+            <div class="demo-nav-links">
+              <a href="#" style="color:var(--muted);" class="is-active" onclick="return false;">Nosotros</a>
+              <a href="#" style="color:var(--muted);" onclick="return false;">Modelos</a>
+              <a href="#" style="color:var(--muted);" onclick="return false;">Galería</a>
+            </div>
+            <a class="demo-nav-cta" href="#" style="border-color:var(--ink);color:var(--ink);">01·800·9191</a>
+          </div>
+        </div>
+        <div class="demo-meta"><span>Dark (hero state) → Glass (scrolled state)</span><code>.nav / .nav.scrolled</code></div>
+      </div>
+    </section>
+
+    <!-- 4. BUTTONS -->
+    <section class="section" id="buttons">
+      <header class="section-header">
+        <span class="section-eyebrow">04 — Components</span>
+        <h2 class="section-title">Buttons</h2>
+        <p class="section-desc">Sharp, mono-spaced, no border-radius. Hover inverts the fill. JetBrains Mono at 0.18em tracking throughout.</p>
+      </header>
+
+      <div class="demo-card">
+        <div class="demo-frame" style="display:flex;flex-direction:column;gap:1.5rem;">
+          <div>
+            <div class="btn-row-label">Default — dark border, transparent fill</div>
+            <div class="btn-grid">
+              <button class="ab-btn" type="button">Ver modelos <span class="arrow">→</span></button>
+              <button class="ab-btn" type="button">Contacto <span class="arrow">→</span></button>
+              <button class="ab-btn" type="button" disabled style="opacity:.4;cursor:not-allowed;">Disabled</button>
+            </div>
+          </div>
+          <div style="background:var(--ink-2);padding:1.25rem;">
+            <div class="btn-row-label" style="color:rgba(242,238,230,.5);">Light — for dark backgrounds</div>
+            <div class="btn-grid">
+              <button class="ab-btn ab-btn--light" type="button">Descubrir <span class="arrow">→</span></button>
+              <button class="ab-btn ab-btn--light" type="button">Ver galería <span class="arrow">→</span></button>
+            </div>
+          </div>
+          <div>
+            <div class="btn-row-label">Fill variants</div>
+            <div class="btn-grid">
+              <button class="ab-btn ab-btn--fill" type="button">Moss — Primary <span class="arrow">→</span></button>
+              <button class="ab-btn ab-btn--terra" type="button">Terra — Accent <span class="arrow">→</span></button>
+            </div>
+          </div>
+          <div>
+            <div class="btn-row-label">Sizes</div>
+            <div class="btn-grid" style="align-items:flex-end;">
+              <button class="ab-btn ab-btn--sm" type="button">Small</button>
+              <button class="ab-btn" type="button">Default</button>
+              <button class="ab-btn ab-btn--lg" type="button">Large</button>
+            </div>
+          </div>
+        </div>
+        <div class="demo-meta"><span>No border-radius · JetBrains Mono · 0.18em tracking · hover inverts</span><code>.ab-btn</code></div>
+      </div>
+    </section>
+
+    <!-- 5. MODEL CARDS -->
+    <section class="section" id="cards">
+      <header class="section-header">
+        <span class="section-eyebrow">05 — Components</span>
+        <h2 class="section-title">Model Cards</h2>
+        <p class="section-desc">Three tiers — Básico, Premier, Elite. Each card leads with an image, an eyebrow in mono, a serif title, and a CTA button.</p>
+      </header>
+
+      <div class="cards-grid">
+        <article class="model-card">
+          <div class="model-card-img" style="background:var(--bone-3);">
+            <div class="model-card-img-placeholder">[ Modelo Básico ]</div>
+            <div class="model-card-img-overlay"></div>
+            <div class="model-card-img-label">Básico · Desde $180k</div>
+          </div>
+          <div class="model-card-body">
+            <div class="model-card-eyebrow">Modelo · 01</div>
+            <div class="model-card-title">Casa Básica</div>
+            <p class="model-card-desc">Diseño funcional y elegante. Tres habitaciones, sala amplia y jardín integrado con la naturaleza circundante.</p>
+            <div class="model-card-rule"></div>
+            <div class="model-card-price">Desde $180,000</div>
+            <div style="margin-top:1rem;">
+              <button class="ab-btn ab-btn--sm" type="button">Ver modelo <span class="arrow">→</span></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="model-card">
+          <div class="model-card-img" style="background:var(--moss);opacity:.9;">
+            <div class="model-card-img-placeholder" style="color:rgba(242,238,230,.6);">[ Modelo Premier ]</div>
+            <div class="model-card-img-overlay"></div>
+            <div class="model-card-img-label">Premier · Destacado</div>
+          </div>
+          <div class="model-card-body">
+            <div class="model-card-eyebrow">Modelo · 02</div>
+            <div class="model-card-title">Casa Premier</div>
+            <p class="model-card-desc">Amplios espacios, acabados de primera. Cuatro habitaciones, estudio, terraza panorámica y piscina climatizada.</p>
+            <div class="model-card-rule"></div>
+            <div class="model-card-price" style="color:var(--terra);">Desde $320,000</div>
+            <div style="margin-top:1rem;">
+              <button class="ab-btn ab-btn--fill ab-btn--sm" type="button">Ver modelo <span class="arrow">→</span></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="model-card">
+          <div class="model-card-img" style="background:var(--ink-2);">
+            <div class="model-card-img-placeholder" style="color:rgba(242,238,230,.4);">[ Modelo Elite ]</div>
+            <div class="model-card-img-overlay"></div>
+            <div class="model-card-img-label">Elite · Exclusivo</div>
+          </div>
+          <div class="model-card-body">
+            <div class="model-card-eyebrow">Modelo · 03</div>
+            <div class="model-card-title">Casa Elite</div>
+            <p class="model-card-desc">La cima del lujo rural. Seis habitaciones, spa privado, bodega, establo y acceso directo al bosque.</p>
+            <div class="model-card-rule"></div>
+            <div class="model-card-price">Desde $580,000</div>
+            <div style="margin-top:1rem;">
+              <button class="ab-btn ab-btn--sm" type="button">Ver modelo <span class="arrow">→</span></button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 6. FORMS -->
+    <section class="section" id="forms">
+      <header class="section-header">
+        <span class="section-eyebrow">06 — Components</span>
+        <h2 class="section-title">Forms</h2>
+        <p class="section-desc">Minimal inputs — bone background, line border, mono labels. Moss focus ring. No border-radius.</p>
+      </header>
+
+      <form class="ab-form" onsubmit="return false;">
+        <div class="ab-field">
+          <label class="ab-label" for="nombre">Nombre completo</label>
+          <input class="ab-input" id="nombre" type="text" placeholder="Juan García" />
+        </div>
+        <div class="ab-field">
+          <label class="ab-label" for="email">Correo electrónico</label>
+          <input class="ab-input" id="email" type="email" placeholder="juan@ejemplo.com" />
+        </div>
+        <div class="ab-field">
+          <label class="ab-label" for="tel">Teléfono</label>
+          <input class="ab-input" id="tel" type="tel" placeholder="+57 300 000 0000" />
+          <span class="ab-hint">Opcional — te contactamos con gusto</span>
+        </div>
+        <div class="ab-field">
+          <label class="ab-label" for="modelo">Modelo de interés</label>
+          <select class="ab-select" id="modelo">
+            <option>Básico</option>
+            <option>Premier</option>
+            <option>Elite</option>
+          </select>
+        </div>
+        <div class="ab-field ab-field-full">
+          <label class="ab-label" for="mensaje">Mensaje</label>
+          <textarea class="ab-textarea" id="mensaje" placeholder="Cuéntanos qué buscas en tu futura casa..."></textarea>
+        </div>
+        <div class="ab-field ab-field-full" style="flex-direction:row;gap:.75rem;justify-content:flex-end;padding-top:.5rem;border-top:1px solid var(--line);">
+          <button class="ab-btn ab-btn--sm" type="reset">Cancelar</button>
+          <button class="ab-btn ab-btn--fill ab-btn--sm" type="submit">Enviar consulta <span class="arrow">→</span></button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 7. HUD & BADGES -->
+    <section class="section" id="hud">
+      <header class="section-header">
+        <span class="section-eyebrow">07 — Feedback</span>
+        <h2 class="section-title">HUD &amp; Badges</h2>
+        <p class="section-desc">Tags, status badges, stat counters and project labels — all in JetBrains Mono.</p>
+      </header>
+
+      <h3 style="font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;">Status Badges</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;">
+        <span class="ab-badge ab-badge--moss"><span class="dot"></span>Disponible</span>
+        <span class="ab-badge ab-badge--terra"><span class="dot"></span>Reservado</span>
+        <span class="ab-badge ab-badge--muted"><span class="dot"></span>Consultar</span>
+        <span class="ab-badge ab-badge--bone">Nuevo</span>
+        <span class="ab-badge ab-badge--moss">Elite</span>
+        <span class="ab-badge ab-badge--terra">Premier</span>
+      </div>
+
+      <h3 style="font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;">Project Tags</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:2rem;">
+        <span class="ab-tag">CSS</span>
+        <span class="ab-tag">HTML</span>
+        <span class="ab-tag">Sass</span>
+        <span class="ab-tag">HX-010</span>
+        <span class="ab-tag">Coord</span>
+        <span class="ab-tag">240m²</span>
+        <span class="ab-tag">4 hab.</span>
+      </div>
+
+      <h3 style="font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;">Stats — Property Counters</h3>
+      <div class="stat-row">
+        <div class="stat-block">
+          <div class="stat-num" style="color:var(--moss);">3</div>
+          <div class="stat-label">Modelos</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">240<span style="font-size:1.5rem;">m²</span></div>
+          <div class="stat-label">Área promedio</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num">+12</div>
+          <div class="stat-label">Años experiencia</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-num" style="color:var(--terra);">$180k</div>
+          <div class="stat-label">Desde</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. FOOTER -->
+    <section class="section" id="footer">
+      <header class="section-header">
+        <span class="section-eyebrow">08 — Layout</span>
+        <h2 class="section-title">Footer</h2>
+        <p class="section-desc">Dark footer with bone text, mono labels, and a clean bottom line.</p>
+      </header>
+
+      <div class="ab-footer">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <div style="display:flex;align-items:center;gap:.75rem;font-family:var(--serif);font-size:1.1rem;color:var(--bone);">
+              <div style="width:24px;height:24px;border:1px solid rgba(242,238,230,.4);display:grid;place-items:center;font-family:var(--mono);font-size:.6rem;">AB</div>
+              Arquitectura <em style="font-style:italic;margin-left:4px;">Bosque</em>
+            </div>
+            <p>Casas de campo diseñadas para quienes eligen vivir rodeados de naturaleza.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Modelos</h4>
+            <ul>
+              <li><a href="#">Casa Básica</a></li>
+              <li><a href="#">Casa Premier</a></li>
+              <li><a href="#">Casa Elite</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Empresa</h4>
+            <ul>
+              <li><a href="#">Nosotros</a></li>
+              <li><a href="#">Galería</a></li>
+              <li><a href="#">Blog</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contacto</h4>
+            <ul>
+              <li><a href="#">01·800·9191</a></li>
+              <li><a href="#">info@bosque.co</a></li>
+              <li><a href="#">Bogotá, Colombia</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 Arquitectura Bosque. Todos los derechos reservados.</span>
+          <span>Diseñado con intención</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. PRINCIPLES -->
+    <section class="section" id="principles">
+      <header class="section-header">
+        <span class="section-eyebrow">09 — Philosophy</span>
+        <h2 class="section-title">Design Principles</h2>
+        <p class="section-desc">The constraints that give Arquitectura Bosque its editorial character.</p>
+      </header>
+
+      <div class="principles">
+        <div class="principle">
+          <div class="principle-num">01 — Restraint</div>
+          <h3>Less, but better</h3>
+          <p>Every element earns its place. White space is not empty — it is the breath between ideas. The bone palette exists so that when moss appears, it means something.</p>
+        </div>
+        <div class="principle">
+          <div class="principle-num">02 — Materiality</div>
+          <h3>Textures, not decoration</h3>
+          <p>Colors reference physical materials: bone paper, forest soil, terracotta clay, charcoal ink. The palette is a map of the landscape the houses inhabit.</p>
+        </div>
+        <div class="principle">
+          <div class="principle-num">03 — Editorial rhythm</div>
+          <h3>Type as structure</h3>
+          <p>Cormorant carries the brand's soul. Inter carries information. Mono carries precision. Each family has a job — mixing them creates hierarchy without decorative elements.</p>
+        </div>
+        <div class="principle">
+          <div class="principle-num">04 — Motion with purpose</div>
+          <h3>Reveal, don't entertain</h3>
+          <p>Scroll animations reveal content as if pages of a catalogue are turning. Transitions are slow and intentional — luxury is not in a hurry.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. ANIMATIONS -->
+    <section class="section" id="animations">
+      <header class="section-header">
+        <span class="section-eyebrow">10 — Motion</span>
+        <h2 class="section-title">Animations</h2>
+        <p class="section-desc">Slow, editorial reveals. Motion that whispers rather than shouts. Hover to trigger each demo.</p>
+      </header>
+
+      <div class="anim-grid">
+        <div class="anim-card anim-lift">
+          <div class="anim-shape"></div>
+          <h4>Card Lift</h4>
+          <p>translateY(-10px)</p>
+        </div>
+        <div class="anim-card anim-scale">
+          <div class="anim-shape"></div>
+          <h4>Scale</h4>
+          <p>scale(1.15)</p>
+        </div>
+        <div class="anim-card anim-terra">
+          <div class="anim-shape" style="background:var(--moss);"></div>
+          <h4>Moss → Terra</h4>
+          <p>accent shift</p>
+        </div>
+        <div class="anim-card anim-fade">
+          <div class="anim-shape"></div>
+          <h4>Fade</h4>
+          <p>opacity .4</p>
+        </div>
+        <div class="anim-card anim-appear">
+          <div class="anim-shape"></div>
+          <h4>Scroll Appear</h4>
+          <p>translateY(3rem) → 0</p>
+        </div>
+        <div class="anim-card anim-underline">
+          <div class="anim-shape"></div>
+          <h4>Nav Underline</h4>
+          <p>scaleX(0) → 1</p>
+        </div>
+        <div class="anim-card anim-parallax">
+          <div class="anim-shape"></div>
+          <h4>Hero Parallax</h4>
+          <p>background-position scroll</p>
+        </div>
+        <div class="anim-card">
+          <div class="anim-shape" style="animation: none; background: linear-gradient(90deg, var(--bone-2) 0%, var(--bone-3) 50%, var(--bone-2) 100%); background-size:200% 100%; animation: shimmer-bone 2s linear infinite;"></div>
+          <h4>Shimmer</h4>
+          <p>skeleton loader</p>
+        </div>
+      </div>
+
+      <style>@keyframes shimmer-bone{0%{background-position:-200% 0}100%{background-position:200% 0}}</style>
+    </section>
+
+    <footer class="page-footer">
+      Arquitectura Bosque · Design System · 2026
+    </footer>
+  </main>
+</div>
+
+<script>
+  // Click-to-copy
+  document.querySelectorAll(".swatch").forEach((el) => {
+    el.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(el.dataset.copy);
+        el.classList.add("copied");
+        setTimeout(() => el.classList.remove("copied"), 1200);
+      } catch (e) {}
+    });
+  });
+
+  // Active nav on scroll
+  const sections = document.querySelectorAll(".section");
+  const links = document.querySelectorAll(".nav-link");
+  new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach((l) => l.classList.toggle("is-active", l.getAttribute("href") === "#" + id));
+      }
+    }),
+    { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+  ).forEach ? null : void 0;
+
+  const obs = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (e.isIntersecting) links.forEach((l) => l.classList.toggle("is-active", l.getAttribute("href") === "#" + e.target.id));
+    }),
+    { rootMargin: "-30% 0px -60% 0px" }
+  );
+  sections.forEach((s) => obs.observe(s));
+
+  // Dark preview toggle
+  const toggle = document.getElementById("themeToggle");
+  let dark = false;
+  toggle.addEventListener("click", () => {
+    dark = !dark;
+    document.documentElement.style.setProperty("--bone", dark ? "#1A1815" : "#F2EEE6");
+    document.documentElement.style.setProperty("--bone-2", dark ? "#2B2823" : "#E8E2D6");
+    document.documentElement.style.setProperty("--bone-3", dark ? "#343028" : "#DDD7CB");
+    document.documentElement.style.setProperty("--line", dark ? "rgba(207,200,185,.15)" : "#CFC8B9");
+    document.documentElement.style.setProperty("--ink", dark ? "#F2EEE6" : "#1A1815");
+    document.documentElement.style.setProperty("--ink-2", dark ? "#E8E2D6" : "#2B2823");
+    document.documentElement.style.setProperty("--muted", dark ? "rgba(242,238,230,.55)" : "#6B665C");
+    toggle.textContent = dark ? "◑ Light preview" : "◐ Dark preview";
+  });
+</script>
+</body>
+</html>

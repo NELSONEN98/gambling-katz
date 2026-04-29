@@ -1,134 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400..700&display=swap"
-      rel="stylesheet"
-    />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Animal gambling</title>
-  </head>
-  <body>
-    <main class="main-screen">
-      <section class="player player--0 player--active">
-        <h2 class="name" id="name--0">Player 01</h2>
-        <p class="score" id="score--0">0</p>
-        <div class="current">
-          <p class="current-label">Current</p>
-          <p class="current-score" id="current--0">0</p>
-        </div>
-      </section>
-      <section class="player player--1">
-        <h2 class="name" id="name--1">Player 02</h2>
-        <p class="score" id="score--1">0</p>
-        <div class="current">
-          <p class="current-label">Current</p>
-          <p class="current-score" id="current--1">0</p>
-        </div>
-      </section>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animal Gambling // Dirty Casino</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="table">
 
-      <div class="dice-container">
-        <img src="dices/dice-1.png" alt="Playing dice" class="dice hidden" />
+    <!-- ambient layers -->
+    <div class="smoke">
+      <div class="smoke-wisp"></div>
+      <div class="smoke-wisp"></div>
+      <div class="smoke-wisp"></div>
+    </div>
+
+    <!-- marquee (top center sign) -->
+    <div class="marquee">
+      <div class="marquee-top">— est. 2024 · members only —</div>
+      <div class="marquee-title">ANIMAL <span class="amp">&amp;</span> GAMBLING</div>
+      <div class="marquee-sub">dirty dice · dirtier players</div>
+    </div>
+
+    <!-- top-left HUD -->
+    <div class="top-hud-left">
+      <div class="row"><span class="k">session</span><span class="v live">● LIVE</span></div>
+      <div class="row"><span class="k">rolls</span><span class="v" id="hud-rolls">000</span></div>
+      <div class="row"><span class="k">pot</span><span class="v" id="hud-pot">000</span></div>
+    </div>
+
+    <!-- top-right HUD -->
+    <div class="top-hud">
+      <button class="btn small" id="btn-rules">⚑ Rules</button>
+      <button class="btn small danger" id="btn-new">× New Game</button>
+    </div>
+
+    <!-- ============== CHARACTER SELECT ============== -->
+    <section class="screen select-screen active" id="screen-select">
+      <div class="select-header" id="select-header">
+        <div class="prompt-label">— choose your degenerate —</div>
+        <div class="prompt-title">SELECT <span class="who" id="prompt-who">PLAYER_01</span></div>
       </div>
-      <button class="btn btn--new">New game</button>
-      <div class="reach">Goal: 50</div>
+      <div class="char-grid" id="char-grid"></div>
+      <div class="select-footer">
+        <div class="p1-pick">
+          <span class="pick-dot"></span>
+          <span class="pick-label">P1:</span>
+          <span class="pick-val" id="p1-pick">— none —</span>
+        </div>
+        <div class="sys-msg">[ click a card to lock in your character ]</div>
+        <div class="p2-pick">
+          <span class="pick-label">P2:</span>
+          <span class="pick-val" id="p2-pick">— none —</span>
+          <span class="pick-dot"></span>
+        </div>
+      </div>
+    </section>
 
-      <button class="btn btn--roll">Roll dice</button>
-      <button class="btn btn--hold">Hold</button>
-    </main>
-    <div class="player-character-grid">
-      <h2 class="player-character-text">Select Player 01</h2>
-      <div class="player-character-container">
-        <div class="player-character-bg">
-          <div class="player-character-flex">
-            <img
-              class="player-character-img"
-              src="img/penguin.png"
-              alt="penguinimg"
-              class="player-character"
-              id="penguin"
-            />
-            <div class="player-description-flex">
-              <p class="player-description"><span>Name:</span> Tax Penguin</p>
-              <p class="player-description"><span>Age:</span> 30 years</p>
-              <p class="player-description">
-                <span>Description: </span> Pursued by the government, he seeks
-                refuge in gambling.
-              </p>
+    <!-- ============== GAME SCREEN ============== -->
+    <section class="screen game-screen" id="screen-game">
+      <div class="game-stage">
+
+        <!-- Player 1 panel -->
+        <div class="player-panel p1" id="panel-0">
+          <div class="panel-header">
+            <span class="seat">SEAT_01 // PLAYER_01</span>
+            <span class="status">
+              <span class="status-dot"></span>
+              <span class="panel-status-label">WAITING</span>
+            </span>
+          </div>
+          <div class="panel-body">
+            <div class="panel-character">
+              <div class="char-portrait"><img src="img/penguin.png" alt="" /></div>
+              <div class="char-nametag">—</div>
+            </div>
+            <div class="panel-numbers">
+              <div class="total-score">
+                <div class="lbl">total score</div>
+                <div class="val" id="score-0">0</div>
+              </div>
+              <div class="current-block">
+                <div class="row">
+                  <span class="lbl">current</span>
+                  <span class="val" id="current-0">0</span>
+                </div>
+              </div>
+              <div>
+                <div class="chips-label">chips on hand</div>
+                <div class="chips-row" id="chips-0"></div>
+              </div>
             </div>
           </div>
-          <h1 class="player-character-name">Tax Penguin</h1>
         </div>
-        <div class="player-character-bg">
-          <div class="player-character-flex">
-            <img
-              class="player-character-img"
-              src="img/bear.png"
-              alt="bear"
-              class="player-character"
-              id="bear"
-            />
-            <div class="player-description-flex">
-              <p class="player-description"><span>Name:</span> Bearnardo</p>
-              <p class="player-description"><span>Age:</span> 42 years</p>
-              <p class="player-description">
-                <span>Condition:</span> He started a new life as a butcher to
-                hide from the law.
-              </p>
-            </div>
+
+        <!-- Center stage — dice + controls -->
+        <div class="center-stage">
+          <div class="pot-display">
+            <div class="lbl">— goal —</div>
+            <div class="goal">FIRST TO <span class="num" id="goal-num">50</span></div>
           </div>
-          <h1 class="player-character-name">Bearnardo</h1>
+          <div class="dice-arena">
+            <div class="dice-3d" id="dice-3d">
+              <div class="dice-face face-1"><div class="pip"></div></div>
+              <div class="dice-face face-2"><div class="pip"></div><div class="pip"></div></div>
+              <div class="dice-face face-3"><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+              <div class="dice-face face-4"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+              <div class="dice-face face-5"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+              <div class="dice-face face-6"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+            </div>
+            <div class="snake-eyes-warning" id="snake-warn">× BUSTED ×</div>
+          </div>
+          <div class="controls">
+            <button class="btn primary" id="btn-roll">⚀ Roll Dice <span style="opacity:.5;font-size:.9em">[space]</span></button>
+            <button class="btn" id="btn-hold">⎔ Hold <span style="opacity:.5;font-size:.9em">[enter]</span></button>
+          </div>
         </div>
-        <div class="player-character-bg">
-          <div class="player-character-flex">
-            <img
-              class="player-character-img"
-              src="img/duck.png"
-              alt="duckimg"
-              class="player-character"
-              id="duck"
-            />
-            <div class="player-description-flex">
-              <p class="player-description"><span>Name:</span> Lucky Ducky</p>
-              <p class="player-description"><span>Age:</span> 25 years</p>
-              <p class="player-description">
-                <span>Condition:</span> Just looking for a dopamine hit with the
-                dice.
-              </p>
+
+        <!-- Player 2 panel -->
+        <div class="player-panel p2" id="panel-1">
+          <div class="panel-header">
+            <span class="seat">SEAT_02 // PLAYER_02</span>
+            <span class="status">
+              <span class="status-dot"></span>
+              <span class="panel-status-label">WAITING</span>
+            </span>
+          </div>
+          <div class="panel-body">
+            <div class="panel-character">
+              <div class="char-portrait"><img src="img/bear.png" alt="" /></div>
+              <div class="char-nametag">—</div>
+            </div>
+            <div class="panel-numbers">
+              <div class="total-score">
+                <div class="lbl">total score</div>
+                <div class="val" id="score-1">0</div>
+              </div>
+              <div class="current-block">
+                <div class="row">
+                  <span class="lbl">current</span>
+                  <span class="val" id="current-1">0</span>
+                </div>
+              </div>
+              <div>
+                <div class="chips-label">chips on hand</div>
+                <div class="chips-row" id="chips-1"></div>
+              </div>
             </div>
           </div>
-          <h1 class="player-character-name">Lucky Ducky</h1>
         </div>
-        <div class="player-character-bg">
-          <div class="player-character-flex">
-            <img
-              class="player-character-img"
-              src="img/egg.png"
-              alt="eggimg"
-              class="player-character"
-              id="egg"
-            />
-            <div class="player-description-flex">
-              <p class="player-description"><span>Name:</span> Mystery Egg</p>
-              <p class="player-description"><span>Age:</span> ?</p>
-              <p class="player-description"><span>Condition:</span> ???</p>
+      </div>
+    </section>
+
+    <!-- ============== GAME OVER SCREEN ============== -->
+    <section class="screen gameover-screen" id="screen-gameover">
+      <div class="gameover-banner">
+        <div class="tag">— the house has a winner —</div>
+        <div class="big">GAME OVER</div>
+      </div>
+      <div class="gameover-stage">
+        <div class="go-winner">
+          <div class="go-label">★ WINNER ★</div>
+          <div class="go-portrait"><img id="go-winner-img" src="img/penguin.png" alt="" /></div>
+          <div class="go-name" id="go-winner-name">—</div>
+          <div class="go-score" id="go-winner-score">0</div>
+          <div class="go-quote" id="go-winner-quote"></div>
+        </div>
+        <div class="go-loser">
+          <div class="go-label">† LOSER †</div>
+          <div class="go-portrait"><img id="go-loser-img" src="img/bear.png" alt="" /></div>
+          <div class="go-name" id="go-loser-name">—</div>
+          <div class="go-score" id="go-loser-score">0</div>
+          <div class="go-quote" id="go-loser-quote"></div>
+        </div>
+      </div>
+      <div class="gameover-actions">
+        <button class="btn primary" id="btn-again">⟲ Rematch</button>
+        <button class="btn danger" id="btn-gameover-new">× New Players</button>
+      </div>
+    </section>
+
+    <!-- particles (over everything) -->
+    <div class="particle-layer" id="particles"></div>
+
+    <!-- ============== RULES MODAL ============== -->
+    <div class="rules-overlay" id="rules-overlay">
+      <div class="rules-modal">
+        <div class="rules-header">
+          <div class="rules-tag">— the only rules worth knowing —</div>
+          <div class="rules-title">HOW TO PLAY</div>
+          <button class="rules-close" id="btn-rules-close">✕</button>
+        </div>
+        <div class="rules-body">
+          <div class="rules-rule">
+            <div class="rule-num">01</div>
+            <div class="rule-content">
+              <div class="rule-title">THE GAME</div>
+              <div class="rule-text">Two degenerates. One die. Take turns rolling until someone reaches the goal. Loser buys the drinks.</div>
             </div>
           </div>
-          <h1 class="player-character-name">Mystery Egg</h1>
+          <div class="rules-rule">
+            <div class="rule-num">02</div>
+            <div class="rule-content">
+              <div class="rule-title">ROLL <span class="rule-key">[SPACE]</span></div>
+              <div class="rule-text">Roll the die. The result adds to your current turn total. Keep rolling to stack points.</div>
+            </div>
+          </div>
+          <div class="rules-rule bust">
+            <div class="rule-num">03</div>
+            <div class="rule-content">
+              <div class="rule-title">BUST <span class="rule-badge">× roll a 1 ×</span></div>
+              <div class="rule-text">Snake eye. You lose every point accumulated this turn. Nothing. Zero. Turn passes.</div>
+            </div>
+          </div>
+          <div class="rules-rule">
+            <div class="rule-num">04</div>
+            <div class="rule-content">
+              <div class="rule-title">HOLD <span class="rule-key">[ENTER]</span></div>
+              <div class="rule-text">Bank your current points to your total score and pass the turn. The safe play — if you're a coward.</div>
+            </div>
+          </div>
+          <div class="rules-rule win">
+            <div class="rule-num">05</div>
+            <div class="rule-content">
+              <div class="rule-title">WIN</div>
+              <div class="rule-text">First player to reach or exceed the goal score wins. The house pays out. The loser pays in shame.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rules-footer">
+          <div class="rules-chips-deco">
+            <div class="chip gold"></div>
+            <div class="chip red"></div>
+            <div class="chip blue"></div>
+            <div class="chip red"></div>
+            <div class="chip gold"></div>
+          </div>
+          <div class="rules-footer-text">— good luck. you'll need it. —</div>
         </div>
       </div>
     </div>
-    <div class="selected-character selected-character--player1"></div>
-    <div class="selected-character selected-character--player2"></div>
-    <div class="player-selections">
-      <p>Player 1 selected: <span id="player1-selection">None</span></p>
-      <p>Player 2 selected: <span id="player2-selection">None</span></p>
-    </div>
-    <script src="script.js"></script>
-  </body>
+  </div>
+
+  <!-- scanlines -->
+  <div class="scanlines"></div>
+
+  <!-- tweaks panel -->
+  <div class="tweaks" id="tweaks">
+    <h3>TWEAKS</h3>
+    <label>Goal score: <span id="tweak-goal-val">50</span></label>
+    <input type="range" id="tweak-goal" min="10" max="100" step="5" value="50" />
+    <label>Smoke opacity: <span id="tweak-smoke-val">0.35</span></label>
+    <input type="range" id="tweak-smoke" min="0" max="1" step="0.05" value="0.35" />
+    <label>Effects</label>
+    <button id="tweak-scanlines">SCANLINES</button>
+    <button id="tweak-particles">PARTICLES</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>

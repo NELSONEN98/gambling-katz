@@ -1,0 +1,133 @@
+.about { min-height: 100vh; }
+
+.about__grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 4rem;
+  align-items: center;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+.about__text {
+  p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--ink-dim);
+    margin: 0 0 1.25rem;
+  }
+  strong { color: var(--ink); font-weight: 500; }
+}
+
+.about__stats {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.about__stat {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.about__stat-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+
+.about__stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* === MOON === */
+.moon {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.moon__body {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, #fff, #cfcfd6 30%, #7a7a85 65%, #38384a 100%);
+  box-shadow:
+    inset -30px -30px 80px rgba(0, 0, 0, 0.6),
+    inset 20px 20px 40px rgba(255, 255, 255, 0.08),
+    0 0 60px rgba(255, 228, 94, 0.1);
+  animation: moon-rotate 60s linear infinite;
+}
+
+.moon__crater {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.15));
+  box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.15);
+}
+
+@keyframes moon-rotate {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(15deg); }
+}
+
+.moon__orbit {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 228, 94, 0.25);
+  animation: moon-orbit 20s linear infinite;
+}
+
+.moon__orbit-sat {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 16px var(--accent);
+  transform: translateX(-50%);
+}
+
+@keyframes moon-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.moon__ring {
+  position: absolute;
+  inset: -8%;
+  border-radius: 50%;
+  border: 1px solid rgba(160, 122, 255, 0.18);
+  transform: rotate(-15deg) scaleY(0.2);
+}
+
+.moon__label {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  border-left: 1px solid var(--accent);
+  padding-left: 0.6rem;
+}

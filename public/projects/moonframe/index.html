@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoonFrame — Design System</title>
+  <meta name="description" content="A cinematic slot machine movie rater. Spin · Watch · Rate." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,400;1,9..144,600;1,9..144,800&family=Inter+Tight:wght@400;500;600;700;800&family=Kablammo&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — MOONFRAME (DARK FIRST)
+       ============================================================ */
+    :root {
+      /* Brand colors */
+      --star-gold-bright: #ffe27a;
+      --star-gold:        #ffcb47;
+      --sunset-orange:    #ff9a45;
+      --magic-purple:     #b794f6;
+      --magic-glow:       #ffd6f5;
+      --sunset-rose:      #f3a3a8;
+      --moss-deep:        #1d3826;
+
+      /* Primary interactive = Star Gold */
+      --color-primary:       #ffd866;
+      --color-primary-hover: #ffcb47;
+      --color-primary-active:#ff9a45;
+      --color-primary-rgb:   255, 216, 102;
+
+      --color-secondary: #b794f6;
+      --color-accent:    #ff9a45;
+
+      /* Dark surface scale */
+      --color-bg:           #0e1430;
+      --color-surface:      #1a1f44;
+      --color-surface-2:    #23284e;
+      --color-border:       rgba(183, 148, 246, 0.14);
+      --color-border-strong:rgba(183, 148, 246, 0.28);
+      --color-text:         #fff4dc;
+      --color-text-muted:   rgba(255, 244, 220, 0.6);
+      --color-text-subtle:  rgba(255, 244, 220, 0.35);
+
+      /* Status */
+      --color-success:    #4a8c5a;
+      --color-success-bg: rgba(74, 140, 90, 0.18);
+      --color-warning:    #ffcb47;
+      --color-warning-bg: rgba(255, 203, 71, 0.15);
+      --color-error:      #f43f5e;
+      --color-error-bg:   rgba(244, 63, 94, 0.15);
+      --color-info:       #b794f6;
+      --color-info-bg:    rgba(183, 148, 246, 0.15);
+
+      /* Typography */
+      --font-brand:   "Kablammo", system-ui;
+      --font-display: "Fraunces", Georgia, serif;
+      --font-sans:    "Inter Tight", system-ui, sans-serif;
+      --font-mono:    ui-monospace, "Fira Code", Consolas, monospace;
+
+      /* Spacing */
+      --space-1: .25rem; --space-2: .5rem; --space-3: .75rem;
+      --space-4: 1rem;   --space-5: 1.5rem; --space-6: 2rem;
+      --space-8: 3rem;   --space-10: 4rem; --space-12: 6rem;
+
+      /* Radius */
+      --radius-sm: .375rem; --radius-md: .5rem; --radius-lg: .75rem;
+      --radius-xl: 1rem;    --radius-2xl: 1.5rem; --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-xs:  0 1px 2px rgba(0,0,0,.4);
+      --shadow-sm:  0 2px 8px rgba(0,0,0,.45);
+      --shadow-md:  0 8px 24px rgba(0,0,0,.5);
+      --shadow-lg:  0 24px 56px rgba(0,0,0,.6);
+      --shadow-gold:0 0 0 3px rgba(255,216,102,.25);
+      --shadow-purple:0 0 32px rgba(183,148,246,.18);
+
+      /* Motion */
+      --ease:      cubic-bezier(0.4,0,0.2,1);
+      --ease-out:  cubic-bezier(0.16,1,0.3,1);
+      --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+      --duration-fast: 150ms;
+      --duration: 250ms;
+      --duration-slow: 400ms;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    img, svg { display: block; max-width: 100%; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    a { color: var(--color-primary); text-decoration: none; transition: color var(--duration-fast); }
+    a:hover { color: var(--color-primary-hover); }
+    code, pre { font-family: var(--font-mono); font-size: .875em; }
+    :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: var(--radius-sm); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .app { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+
+    .sidebar {
+      position: sticky; top: 0; height: 100vh;
+      padding: var(--space-6) var(--space-4);
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      display: flex; flex-direction: column; gap: var(--space-5);
+      overflow-y: auto;
+    }
+    .brand { display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--space-2); }
+    .brand-mark {
+      width: 36px; height: 36px; border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--star-gold-bright), var(--sunset-orange));
+      box-shadow: 0 4px 16px rgba(255,154,92,.4);
+      display: grid; place-items: center; font-size: 18px; flex-shrink: 0;
+    }
+    .brand-name { font-family: var(--font-brand); font-size: 1.2rem; font-variation-settings: "MORF" 0; }
+    .brand-tag { display: block; font-size: .7rem; color: var(--color-text-muted); letter-spacing: .12em; text-transform: lowercase; margin-top: 2px; }
+
+    .nav-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-1); }
+    .nav-link {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+      color: var(--color-text-muted); font-size: .875rem; font-weight: 500;
+      transition: all var(--duration-fast);
+    }
+    .nav-link:hover { background: var(--color-surface-2); color: var(--color-text); }
+    .nav-link.is-active { background: rgba(255,216,102,.12); color: var(--color-primary); }
+    .nav-link .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .5; }
+
+    .sidebar-footer { margin-top: auto; padding: var(--space-3) var(--space-2); border-top: 1px solid var(--color-border); }
+    .theme-toggle {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-surface-2); border: 1px solid var(--color-border);
+      border-radius: var(--radius-full); cursor: pointer;
+      font-size: .8rem; color: var(--color-text-muted); transition: all var(--duration-fast);
+    }
+    .theme-toggle:hover { color: var(--color-text); border-color: var(--color-border-strong); }
+
+    .main { padding: var(--space-8) var(--space-10); max-width: 1200px; width: 100%; }
+
+    .section { margin-bottom: var(--space-12); scroll-margin-top: var(--space-6); }
+    .section-header { margin-bottom: var(--space-6); padding-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); }
+    .section-eyebrow { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--color-primary); margin-bottom: var(--space-2); opacity: .8; }
+    .section-title { font-family: var(--font-display); font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 800; letter-spacing: -.025em; line-height: 1.1; margin-bottom: var(--space-2); font-variation-settings: "SOFT" 100, "WONK" 1; }
+    .section-desc { color: var(--color-text-muted); max-width: 60ch; font-size: 1rem; font-family: var(--font-display); font-style: italic; }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      position: relative; overflow: hidden;
+      padding: var(--space-10) var(--space-8);
+      border-radius: var(--radius-2xl);
+      background: linear-gradient(180deg, #0a0e26 0%, #1a1f44 40%, #2d2766 70%, #4a3870 100%);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-lg);
+      margin-bottom: var(--space-10);
+    }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(183,148,246,.2), transparent 60%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(255,154,92,.18), transparent 60%);
+      pointer-events: none;
+    }
+    .hero-moon {
+      position: absolute; top: 10%; right: 8%;
+      width: 80px; height: 80px;
+    }
+    .hero-eyebrow {
+      position: relative;
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      background: rgba(255,216,102,.12); color: var(--color-primary);
+      border: 1px solid rgba(255,216,102,.25);
+      border-radius: var(--radius-full); font-size: .8rem; font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+    .hero-eyebrow .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--color-primary);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(255,216,102,.7); }
+      70%  { box-shadow: 0 0 0 10px rgba(255,216,102,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,216,102,0); }
+    }
+    .hero-title {
+      position: relative;
+      font-family: var(--font-brand);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-variation-settings: "MORF" 0;
+      line-height: 1.05; margin-bottom: var(--space-4);
+    }
+    .hero-title em { font-style: italic; font-family: var(--font-display); color: var(--color-primary); }
+    .hero-desc { position: relative; font-family: var(--font-display); font-style: italic; font-size: 1.1rem; color: var(--color-text-muted); max-width: 55ch; margin-bottom: var(--space-6); }
+    .hero-meta { position: relative; display: flex; flex-wrap: wrap; gap: var(--space-4); font-size: .85rem; color: var(--color-text-muted); }
+    .hero-meta strong { color: var(--color-text); font-weight: 700; }
+
+    /* ============================================================
+       COLOR PALETTE
+       ============================================================ */
+    .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-4); }
+    .swatch {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); overflow: hidden; cursor: pointer;
+      transition: transform var(--duration) var(--ease-out), box-shadow var(--duration);
+    }
+    .swatch:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .swatch-preview { height: 90px; position: relative; }
+    .swatch-preview::after {
+      content: "Click to copy"; position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: .75rem; font-weight: 600;
+      background: rgba(0,0,0,.45); opacity: 0;
+      transition: opacity var(--duration-fast);
+    }
+    .swatch:hover .swatch-preview::after { opacity: 1; }
+    .swatch.copied .swatch-preview::after { content: "Copied ✓"; opacity: 1; background: rgba(74,140,90,.9); }
+    .swatch-info { padding: var(--space-3) var(--space-4); }
+    .swatch-name { font-size: .875rem; font-weight: 600; margin-bottom: 2px; }
+    .swatch-hex { font-family: var(--font-mono); font-size: .75rem; color: var(--color-text-muted); text-transform: uppercase; }
+
+    .palette-note {
+      margin-top: var(--space-6); padding: var(--space-5);
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-primary); border-radius: var(--radius-md);
+      color: var(--color-text-muted); font-family: var(--font-display); font-style: italic;
+    }
+    .gradient-row { display: flex; gap: var(--space-4); margin-top: var(--space-5); flex-wrap: wrap; }
+    .gradient-swatch {
+      flex: 1; min-width: 200px; height: 60px; border-radius: var(--radius-lg);
+      display: flex; align-items: flex-end; padding: var(--space-2) var(--space-3);
+      font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(0,0,0,.7); border: 1px solid rgba(255,255,255,.08);
+    }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+    .type-stack { display: flex; flex-direction: column; gap: var(--space-5); }
+    .type-row {
+      display: grid; grid-template-columns: 140px 1fr; gap: var(--space-5);
+      align-items: baseline; padding-bottom: var(--space-4);
+      border-bottom: 1px dashed var(--color-border);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-label { font-family: var(--font-mono); font-size: .72rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .06em; }
+    .type-label small { display: block; opacity: .7; margin-top: 2px; }
+
+    .t-brand    { font-family: var(--font-brand); font-size: 3.5rem; font-variation-settings: "MORF" 0; }
+    .t-display  { font-family: var(--font-display); font-size: 3rem; font-weight: 800; line-height: 1.05; letter-spacing: -.03em; font-variation-settings: "SOFT" 100, "WONK" 1; }
+    .t-h1       { font-family: var(--font-display); font-size: 2.25rem; font-weight: 800; letter-spacing: -.025em; }
+    .t-h2       { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -.02em; }
+    .t-h3       { font-size: 1.25rem; font-weight: 700; font-family: var(--font-sans); }
+    .t-body     { font-size: 1rem; line-height: 1.7; max-width: 65ch; color: var(--color-text); }
+    .t-italic   { font-family: var(--font-display); font-style: italic; font-size: 1.05rem; color: var(--color-text-muted); }
+    .t-caption  { font-size: .78rem; color: var(--color-text-muted); letter-spacing: .18em; text-transform: uppercase; font-weight: 700; }
+    .t-mono     { font-family: var(--font-mono); font-size: .875rem; background: var(--color-surface-2); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
+
+    /* ============================================================
+       NAVBAR DEMO
+       ============================================================ */
+    .demo-card {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl); box-shadow: var(--shadow-sm);
+      overflow: hidden; margin-bottom: var(--space-4);
+    }
+    .demo-frame { padding: var(--space-6); background: var(--color-bg); }
+    .demo-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: var(--space-3) var(--space-5); background: var(--color-surface-2);
+      border-top: 1px solid var(--color-border); font-size: .78rem; color: var(--color-text-muted);
+    }
+    .demo-meta code { color: var(--color-primary); font-family: var(--font-mono); }
+
+    .demo-navbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--space-3) var(--space-5);
+      background: rgba(26,31,68,.85); backdrop-filter: blur(12px);
+      border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+    }
+    .demo-navbar .brand { padding: 0; }
+    .demo-navbar nav { display: flex; gap: var(--space-1); }
+    .demo-navbar nav a {
+      padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+      font-size: .875rem; font-weight: 500; color: var(--color-text-muted);
+      transition: all var(--duration-fast);
+    }
+    .demo-navbar nav a:hover { color: var(--color-text); background: rgba(255,244,220,.06); }
+    .demo-navbar nav a.is-active { color: var(--color-primary); }
+
+    /* ============================================================
+       BUTTONS
+       ============================================================ */
+    .mf-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+      border-radius: var(--radius-full); font-family: var(--font-sans); font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase; cursor: pointer;
+      border: none; outline: none; transition: all var(--duration) var(--ease-spring);
+      white-space: nowrap;
+    }
+    .mf-btn-primary {
+      background: linear-gradient(135deg, var(--star-gold-bright), var(--sunset-orange));
+      color: #15192e; padding: 14px 32px; font-size: .8rem;
+      box-shadow: 0 12px 32px rgba(255,154,92,.4), inset 0 1px 0 rgba(255,255,255,.35);
+    }
+    .mf-btn-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 18px 40px rgba(255,154,92,.55); }
+    .mf-btn-secondary {
+      background: rgba(20,16,50,.55); border: 1px solid rgba(183,148,246,.25);
+      color: rgba(255,244,220,.85); padding: 10px 22px; font-size: .75rem;
+      backdrop-filter: blur(8px);
+    }
+    .mf-btn-secondary:hover { border-color: rgba(183,148,246,.5); color: #fff4dc; }
+    .mf-btn-ghost {
+      background: transparent; border: 1px solid rgba(255,244,220,.18);
+      color: rgba(255,244,220,.7); padding: 8px 18px; font-size: .72rem;
+    }
+    .mf-btn-ghost:hover { border-color: rgba(255,244,220,.4); color: #fff4dc; }
+    .mf-btn-danger {
+      background: transparent; border: 1px solid rgba(244,63,94,.3);
+      color: rgba(244,63,94,.85); padding: 10px 18px; font-size: .72rem;
+    }
+    .mf-btn-danger:hover { border-color: rgba(244,63,94,.7); color: #f43f5e; box-shadow: 0 0 12px rgba(244,63,94,.25); }
+    .mf-btn-reel {
+      background: linear-gradient(135deg, rgba(255,226,122,.18), rgba(255,154,69,.12));
+      border: 1px solid rgba(255,216,102,.55); color: #ffd866;
+      padding: 8px 18px; font-size: .72rem;
+      box-shadow: 0 0 16px rgba(255,216,102,.15);
+    }
+    .mf-btn-signout {
+      background: transparent; border: 1px solid rgba(255,244,220,.12);
+      color: rgba(255,244,220,.45); padding: 6px 14px; font-size: .68rem;
+    }
+
+    .btn-grid { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-5); }
+    .btn-row-label { font-family: var(--font-mono); font-size: .7rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: var(--space-2); }
+
+    /* ============================================================
+       MOVIE CARDS
+       ============================================================ */
+    .card-row { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; }
+
+    .mf-card-classic {
+      width: 220px; border-radius: 20px; overflow: hidden;
+      border: 2px solid rgba(255,244,220,.15);
+      background: linear-gradient(145deg, rgba(35,28,70,.92), rgba(20,16,45,.95));
+      box-shadow: 0 24px 48px rgba(0,0,0,.55), 0 0 48px rgba(183,148,246,.15), inset 0 1px 0 rgba(255,255,255,.07);
+      backdrop-filter: blur(12px);
+      animation: cardDrop .8s cubic-bezier(0.18,0.9,0.3,1.25) both;
+    }
+    @keyframes cardDrop {
+      0%   { opacity: 0; transform: translateY(-60px) scale(.88) rotate(-3deg); filter: blur(6px); }
+      60%  { opacity: 1; transform: translateY(6px) scale(1.02) rotate(.5deg); filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+    }
+    .mf-card-sticker {
+      width: 200px; border-radius: 28px; overflow: hidden;
+      border: 4px solid #fff4dc;
+      background: linear-gradient(145deg, #fff4dc, #f5e9c9);
+      color: #15192e;
+      box-shadow: 10px 10px 0 rgba(15,19,46,.85), 0 20px 40px rgba(0,0,0,.4);
+      transform: rotate(-1.5deg);
+    }
+    .mf-card-ticket {
+      width: 200px; border-radius: 8px; overflow: hidden;
+      border: 1px dashed rgba(255,211,102,.5);
+      background:
+        repeating-linear-gradient(45deg, rgba(255,211,102,.04), rgba(255,211,102,.04) 10px, transparent 10px, transparent 20px),
+        linear-gradient(145deg, rgba(45,35,90,.95), rgba(25,20,55,.95));
+      box-shadow: 0 20px 40px rgba(0,0,0,.5), 0 0 32px rgba(255,211,102,.1);
+    }
+
+    .card-poster {
+      width: 100%; aspect-ratio: 2/3; background: #0a0e26;
+      position: relative; overflow: hidden;
+    }
+    .card-poster-img {
+      width: 100%; height: 100%; object-fit: cover;
+      background: linear-gradient(180deg, #1a1f44, #2d2766 60%, #4a3870);
+    }
+    .card-poster-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(180deg, #1a1f44 0%, #2d2766 60%, #4a3870 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; opacity: .4;
+    }
+    .card-year {
+      position: absolute; top: 10px; right: 10px;
+      background: #fff4dc; color: #15192e;
+      font-family: var(--font-display); font-size: .72rem; font-weight: 700;
+      padding: 3px 8px; border-radius: var(--radius-full);
+    }
+    .card-year-dark { background: #15192e; color: #fff4dc; }
+    .card-body-mf { padding: 14px 16px 16px; }
+    .card-runtime {
+      display: flex; gap: 6px; font-size: .67rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px;
+      color: rgba(255,244,220,.55);
+    }
+    .card-runtime-dark { color: #5a4a8a; }
+    .card-title-mf {
+      font-family: var(--font-display); font-weight: 800; font-size: 1rem;
+      line-height: 1.1; letter-spacing: -.015em; margin-bottom: 8px;
+      font-variation-settings: "SOFT" 100, "WONK" 1;
+    }
+    .genre-chip {
+      display: inline-block;
+      font-size: .65rem; font-weight: 600; padding: 3px 8px;
+      border-radius: var(--radius-full); border: 1px solid rgba(183,148,246,.3);
+      background: rgba(183,148,246,.15); color: #d6c0ff; letter-spacing: .04em;
+      margin-right: 4px; margin-bottom: 4px;
+    }
+    .genre-chip-dark { border-color: rgba(45,39,102,.3); background: rgba(45,39,102,.15); color: #2d2766; }
+
+    /* ============================================================
+       STAR RATING
+       ============================================================ */
+    .star-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .star {
+      width: 44px; height: 44px; cursor: pointer;
+      transition: transform .25s var(--ease-spring);
+      filter: drop-shadow(0 4px 12px rgba(255,211,102,.6));
+    }
+    .star:hover { transform: translateY(-4px) scale(1.12); }
+    .star-empty { filter: none; opacity: .35; }
+    .star-label { font-size: .8rem; font-weight: 600; letter-spacing: .06em; color: var(--color-primary); min-height: 20px; }
+    .confirm-btn {
+      border: none; outline: none;
+      padding: 12px 28px; border-radius: var(--radius-full);
+      font-family: var(--font-sans); font-size: .78rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+      background: linear-gradient(135deg, #ffcb47, #ff9a45); color: #15192e;
+      box-shadow: 0 8px 24px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.2);
+      transition: background .3s var(--ease-spring), color .2s;
+    }
+
+    /* ============================================================
+       STATS BAR
+       ============================================================ */
+    .stats-bar {
+      display: flex; align-items: center; gap: 16px;
+      background: rgba(20,16,50,.65); border: 1px solid rgba(183,148,246,.2);
+      border-radius: 18px; padding: 16px 24px;
+      backdrop-filter: blur(12px); box-shadow: var(--shadow-md);
+    }
+    .stat-block { text-align: center; flex: 1; }
+    .stat-big { font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+    .stat-sub { font-size: .58rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--color-text-muted); margin-top: 5px; }
+    .stat-divider { width: 1px; height: 40px; background: rgba(183,148,246,.18); flex-shrink: 0; }
+
+    /* ============================================================
+       FORMS — DARK GLASS STYLE
+       ============================================================ */
+    .mf-form { display: flex; flex-direction: column; gap: 14px; }
+    .mf-field-label { font-size: .62rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 4px; padding-left: 2px; }
+    .mf-input-wrap {
+      display: flex; align-items: center;
+      background: rgba(10,14,38,.55); border: 1.5px solid rgba(183,148,246,.25);
+      border-radius: 13px; padding: 0 14px; transition: all .3s;
+    }
+    .mf-input-wrap:focus-within { border-color: #ffd866; box-shadow: 0 0 0 3px rgba(255,216,102,.14); }
+    .mf-input-icon { font-size: 14px; color: rgba(183,148,246,.6); width: 20px; }
+    .mf-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      padding: 12px 10px; font-family: var(--font-sans); font-size: .875rem;
+      color: var(--color-text); font-weight: 500;
+    }
+    .mf-input::placeholder { color: var(--color-text-subtle); }
+
+    .mf-tabs {
+      position: relative; display: grid; grid-template-columns: 1fr 1fr;
+      background: rgba(10,14,38,.6); border: 1px solid rgba(183,148,246,.12);
+      border-radius: var(--radius-full); padding: 4px;
+    }
+    .mf-tab {
+      position: relative; z-index: 2; background: transparent; border: none;
+      padding: 9px; font-family: var(--font-sans); font-size: .72rem;
+      font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,244,220,.55); cursor: pointer; border-radius: var(--radius-full);
+      transition: color .3s;
+    }
+    .mf-tab.active { color: #15192e; }
+    .mf-tab-indicator {
+      position: absolute; top: 4px; left: 4px;
+      width: calc(50% - 4px); height: calc(100% - 8px);
+      background: linear-gradient(135deg, #ffe27a, #ff9a45);
+      border-radius: var(--radius-full); z-index: 1;
+      box-shadow: 0 4px 12px rgba(255,154,92,.4);
+      transition: transform .4s var(--ease-spring);
+    }
+
+    /* Search */
+    .mf-search {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(10,14,38,.55); border: 1.5px solid rgba(183,148,246,.2);
+      border-radius: 13px; padding: 0 14px;
+    }
+    .mf-search-icon { opacity: .45; font-size: 13px; }
+    .mf-search input {
+      flex: 1; background: transparent; border: none; outline: none;
+      padding: 11px 8px; font-family: var(--font-sans); font-size: .8rem;
+      color: var(--color-text);
+    }
+    .mf-search input::placeholder { color: var(--color-text-subtle); }
+
+    /* ============================================================
+       HUD / BADGES
+       ============================================================ */
+    .mf-badge-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-5); }
+    .mf-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: var(--radius-full); font-size: .7rem;
+      font-weight: 600; letter-spacing: .04em; border: 1px solid;
+    }
+    .mf-chip-genre { background: rgba(183,148,246,.15); border-color: rgba(183,148,246,.3); color: #d6c0ff; }
+    .mf-chip-active { background: linear-gradient(135deg, #ffe27a, #ff9a45); border-color: transparent; color: #15192e; font-weight: 800; box-shadow: 0 4px 12px rgba(255,154,92,.35); }
+    .mf-chip-filter { background: rgba(20,16,50,.5); border-color: rgba(183,148,246,.2); color: rgba(255,244,220,.7); }
+    .mf-chip-date  { background: rgba(15,19,46,.7); border-color: rgba(255,244,220,.15); color: #fff4dc; font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; }
+    .mf-chip-year  { background: #fff4dc; border-color: transparent; color: #15192e; }
+    .mf-chip-reel  {
+      background: linear-gradient(135deg, rgba(255,226,122,.18), rgba(255,154,69,.12));
+      border-color: rgba(255,216,102,.55); color: #ffd866;
+      box-shadow: 0 0 12px rgba(255,216,102,.15);
+    }
+
+    .mf-hud {
+      display: flex; align-items: flex-start; gap: var(--space-3);
+      padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid;
+      margin-bottom: var(--space-3);
+    }
+    .mf-hud-icon { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: .875rem; font-weight: 700; flex-shrink: 0; }
+    .mf-hud.success { background: var(--color-success-bg); border-color: rgba(74,140,90,.3); color: #6acd8a; }
+    .mf-hud.error   { background: var(--color-error-bg); border-color: rgba(244,63,94,.3); color: #f87191; }
+    .mf-hud.gold    { background: rgba(255,216,102,.1); border-color: rgba(255,216,102,.3); color: #ffd866; }
+    .mf-hud.info    { background: var(--color-info-bg); border-color: rgba(183,148,246,.3); color: #c4b5fd; }
+
+    /* Paginator */
+    .mf-paginator { display: flex; align-items: center; gap: 6px; }
+    .mf-page-btn {
+      width: 34px; height: 34px; border-radius: 10px;
+      border: 1px solid rgba(183,148,246,.2); background: rgba(20,16,50,.55);
+      color: rgba(255,244,220,.75); font-family: var(--font-sans); font-size: .8rem;
+      font-weight: 600; cursor: pointer; display: grid; place-items: center;
+      transition: all .2s; outline: none;
+    }
+    .mf-page-btn.active {
+      background: linear-gradient(135deg, #ffe27a, #ff9a45); border-color: transparent;
+      color: #15192e; font-weight: 800; box-shadow: 0 4px 14px rgba(255,154,92,.4);
+    }
+    .mf-page-btn:hover:not(.active) { border-color: rgba(183,148,246,.4); }
+
+    /* History chips */
+    .history-chip { width: 60px; text-align: center; }
+    .history-poster {
+      width: 60px; height: 84px; border-radius: 6px; object-fit: cover;
+      background: linear-gradient(180deg, #1a1f44, #2d2766);
+      border: 1px solid rgba(183,148,246,.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+    }
+    .history-stars { font-size: .6rem; color: #ffd866; margin-top: 4px; letter-spacing: .04em; }
+
+    /* ============================================================
+       FOOTER DEMO
+       ============================================================ */
+    .mf-footer {
+      background: rgba(20,16,50,.4); border: 1px solid rgba(183,148,246,.14);
+      border-radius: var(--radius-2xl); padding: var(--space-8) var(--space-6) var(--space-5);
+      backdrop-filter: blur(12px);
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr repeat(3,1fr);
+      gap: var(--space-6); padding-bottom: var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .footer-brand p { color: var(--color-text-muted); font-family: var(--font-display); font-style: italic; font-size: .9rem; max-width: 28ch; margin-top: var(--space-3); }
+    .footer-col h4 { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-3); }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+    .footer-col a { color: var(--color-text-muted); font-size: .875rem; transition: color .2s; }
+    .footer-col a:hover { color: var(--color-primary); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: var(--space-4); font-size: .78rem; color: var(--color-text-subtle); }
+
+    /* ============================================================
+       PRINCIPLES
+       ============================================================ */
+    .principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: var(--space-4); }
+    .principle {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); padding: var(--space-5);
+      transition: transform var(--duration) var(--ease-out), border-color var(--duration);
+    }
+    .principle:hover { transform: translateY(-3px); border-color: rgba(255,216,102,.3); }
+    .principle-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      background: rgba(255,216,102,.12); color: var(--color-primary);
+      font-family: var(--font-mono); font-weight: 700; font-size: .8rem; margin-bottom: var(--space-3);
+    }
+    .principle h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: var(--space-2); }
+    .principle p { color: var(--color-text-muted); font-size: .875rem; line-height: 1.6; }
+
+    /* ============================================================
+       ANIMATIONS
+       ============================================================ */
+    .anim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: var(--space-4); }
+    .anim-card {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); padding: var(--space-5); text-align: center;
+      cursor: pointer; overflow: hidden;
+    }
+    .anim-card h4 { font-size: .9rem; margin-bottom: 4px; font-weight: 600; }
+    .anim-card p { font-size: .72rem; color: var(--color-text-muted); font-family: var(--font-mono); }
+    .anim-shape {
+      width: 52px; height: 52px; border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, var(--star-gold-bright), var(--sunset-orange));
+      margin: 0 auto var(--space-3);
+      box-shadow: 0 8px 24px rgba(255,154,92,.35);
+    }
+
+    .anim-lift:hover .anim-shape { transform: translateY(-10px); transition: transform .3s var(--ease-spring); }
+    .anim-scale:hover .anim-shape { transform: scale(1.18); transition: transform .3s var(--ease-spring); }
+    .anim-rotate:hover .anim-shape { transform: rotate(-12deg); transition: transform .35s var(--ease-out); }
+    .anim-glow:hover .anim-shape { box-shadow: 0 0 32px rgba(255,216,102,.7), 0 8px 24px rgba(255,154,92,.35); transition: box-shadow .3s; }
+
+    @keyframes moonFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .anim-float .anim-shape { animation: moonFloat 2.5s ease-in-out infinite; }
+
+    @keyframes slotEnter { 0%{opacity:0;transform:translateY(-110%)} 20%{opacity:1} 100%{opacity:1;transform:translateY(0)} }
+    .anim-slot .anim-shape { animation: slotEnter .6s cubic-bezier(0.22,1,0.36,1) both; }
+    .anim-slot:hover .anim-shape { animation: slotEnter .5s cubic-bezier(0.22,1,0.36,1) both; }
+
+    @keyframes shimmerLoad { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .anim-shimmer .anim-shape {
+      background: linear-gradient(90deg, rgba(183,148,246,.06) 0%, rgba(183,148,246,.18) 50%, rgba(183,148,246,.06) 100%);
+      background-size: 400px 100%;
+      animation: shimmerLoad 1.6s linear infinite;
+    }
+
+    @keyframes dotPulse { 0%,100%{opacity:.3} 50%{opacity:1} }
+    .anim-pulse .anim-shape { animation: dotPulse 1.4s ease-in-out infinite; }
+
+    /* ============================================================
+       PAGE FOOTER
+       ============================================================ */
+    .page-footer { margin-top: var(--space-12); padding: var(--space-6) 0; border-top: 1px solid var(--color-border); text-align: center; color: var(--color-text-subtle); font-size: .8rem; font-family: var(--font-display); font-style: italic; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: relative; height: auto; flex-direction: row; align-items: center; overflow-x: auto; padding: var(--space-3) var(--space-4); border-right: none; border-bottom: 1px solid var(--color-border); }
+      .nav-list { flex-direction: row; flex-shrink: 0; }
+      .nav-link { white-space: nowrap; }
+      .sidebar-footer { margin: 0; padding: 0; border: none; flex-shrink: 0; }
+      .main { padding: var(--space-5); }
+      .footer-top { grid-template-columns: 1fr; gap: var(--space-4); }
+      .card-row { gap: var(--space-4); }
+      .type-row { grid-template-columns: 1fr; gap: var(--space-2); }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <aside class="sidebar" aria-label="Navigation">
+    <header class="brand">
+      <div class="brand-mark" aria-hidden="true">🌙</div>
+      <div>
+        <span class="brand-name">MoonFrame</span>
+        <span class="brand-tag">Design System</span>
+      </div>
+    </header>
+
+    <nav>
+      <ul class="nav-list">
+        <li><a class="nav-link is-active" href="#colors"><span class="dot"></span>Colors</a></li>
+        <li><a class="nav-link" href="#typography"><span class="dot"></span>Typography</a></li>
+        <li><a class="nav-link" href="#navbar"><span class="dot"></span>Navbar</a></li>
+        <li><a class="nav-link" href="#buttons"><span class="dot"></span>Buttons</a></li>
+        <li><a class="nav-link" href="#cards"><span class="dot"></span>Movie Cards</a></li>
+        <li><a class="nav-link" href="#rating"><span class="dot"></span>Star Rating</a></li>
+        <li><a class="nav-link" href="#forms"><span class="dot"></span>Forms</a></li>
+        <li><a class="nav-link" href="#hud"><span class="dot"></span>HUD &amp; Badges</a></li>
+        <li><a class="nav-link" href="#footer"><span class="dot"></span>Footer</a></li>
+        <li><a class="nav-link" href="#principles"><span class="dot"></span>Principles</a></li>
+        <li><a class="nav-link" href="#animations"><span class="dot"></span>Animations</a></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light mode">
+        <span id="themeIcon">☀</span>
+        <span id="themeLabel">Light mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       MAIN
+       ============================================================ -->
+  <main class="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <svg class="hero-moon" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <mask id="cres"><rect width="80" height="80" fill="white"/><circle cx="54" cy="28" r="32" fill="black"/></mask>
+        </defs>
+        <circle cx="38" cy="44" r="30" fill="#ffd866" mask="url(#cres)" style="filter:drop-shadow(0 0 16px rgba(255,216,102,.5))"/>
+      </svg>
+      <div class="hero-eyebrow"><span class="pulse"></span>v1.0 · Living Design System</div>
+      <h1 class="hero-title">MoonFrame<br/><em>Design Language</em></h1>
+      <p class="hero-desc">A cinematic slot machine movie rater. Every token, component, and motion principle that makes MoonFrame feel like cinema — documented in one file.</p>
+      <div class="hero-meta">
+        <span><strong>11</strong> Sections</span>
+        <span><strong>Dark-first</strong> Theme</span>
+        <span><strong>WCAG AA</strong> Contrast</span>
+        <span><strong>Kablammo</strong> + <strong>Fraunces</strong> + <strong>Inter Tight</strong></span>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         1. COLORS
+         ============================================================ -->
+    <section class="section" id="colors">
+      <header class="section-header">
+        <span class="section-eyebrow">01 — Foundations</span>
+        <h2 class="section-title">Color Palette</h2>
+        <p class="section-desc">A dusk nocturnal palette — deep navy skies, twilight purples, firefly golds. Click any swatch to copy.</p>
+      </header>
+
+      <div class="swatch-grid">
+        <article class="swatch" data-copy="#0e1430"><div class="swatch-preview" style="background:#0e1430;"></div><div class="swatch-info"><div class="swatch-name">Night Deep</div><div class="swatch-hex">#0e1430</div></div></article>
+        <article class="swatch" data-copy="#1a1f44"><div class="swatch-preview" style="background:#1a1f44;"></div><div class="swatch-info"><div class="swatch-name">Night</div><div class="swatch-hex">#1a1f44</div></div></article>
+        <article class="swatch" data-copy="#2d2766"><div class="swatch-preview" style="background:#2d2766;"></div><div class="swatch-info"><div class="swatch-name">Twilight</div><div class="swatch-hex">#2d2766</div></div></article>
+        <article class="swatch" data-copy="#b794f6"><div class="swatch-preview" style="background:#b794f6;"></div><div class="swatch-info"><div class="swatch-name">Magic Purple</div><div class="swatch-hex">#b794f6</div></div></article>
+        <article class="swatch" data-copy="#ffd6f5"><div class="swatch-preview" style="background:#ffd6f5;"></div><div class="swatch-info"><div class="swatch-name">Magic Glow</div><div class="swatch-hex">#ffd6f5</div></div></article>
+        <article class="swatch" data-copy="#fff4dc"><div class="swatch-preview" style="background:#fff4dc;"></div><div class="swatch-info"><div class="swatch-name">Cream</div><div class="swatch-hex">#fff4dc</div></div></article>
+        <article class="swatch" data-copy="#ffd866"><div class="swatch-preview" style="background:#ffd866;"></div><div class="swatch-info"><div class="swatch-name">Star Gold ★</div><div class="swatch-hex">#ffd866</div></div></article>
+        <article class="swatch" data-copy="#ffe27a"><div class="swatch-preview" style="background:#ffe27a;"></div><div class="swatch-info"><div class="swatch-name">Star Gold Bright</div><div class="swatch-hex">#ffe27a</div></div></article>
+        <article class="swatch" data-copy="#ffcb47"><div class="swatch-preview" style="background:#ffcb47;"></div><div class="swatch-info"><div class="swatch-name">Star Gold Deep</div><div class="swatch-hex">#ffcb47</div></div></article>
+        <article class="swatch" data-copy="#ff9a45"><div class="swatch-preview" style="background:#ff9a45;"></div><div class="swatch-info"><div class="swatch-name">Sunset Orange</div><div class="swatch-hex">#ff9a45</div></div></article>
+        <article class="swatch" data-copy="#f3a3a8"><div class="swatch-preview" style="background:#f3a3a8;"></div><div class="swatch-info"><div class="swatch-name">Sunset Rose</div><div class="swatch-hex">#f3a3a8</div></div></article>
+        <article class="swatch" data-copy="#1d3826"><div class="swatch-preview" style="background:#1d3826;"></div><div class="swatch-info"><div class="swatch-name">Moss Deep</div><div class="swatch-hex">#1d3826</div></div></article>
+        <article class="swatch" data-copy="#4a8c5a"><div class="swatch-preview" style="background:#4a8c5a;"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-hex">#4a8c5a</div></div></article>
+        <article class="swatch" data-copy="#f43f5e"><div class="swatch-preview" style="background:#f43f5e;"></div><div class="swatch-info"><div class="swatch-name">Danger</div><div class="swatch-hex">#f43f5e</div></div></article>
+        <article class="swatch" data-copy="#15192e"><div class="swatch-preview" style="background:#15192e; border: 1px solid rgba(255,244,220,.1);"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#15192e</div></div></article>
+      </div>
+
+      <h3 style="margin: 2rem 0 .75rem; font-family: var(--font-display); font-size: 1rem; font-weight: 700; opacity:.7;">Gradients</h3>
+      <div class="gradient-row">
+        <div class="gradient-swatch" style="background:linear-gradient(135deg,#ffe27a,#ff9a45);">Primary CTA</div>
+        <div class="gradient-swatch" style="background:linear-gradient(180deg,#0a0e26,#1a1f44,#2d2766,#4a3870,#6b4870);color:rgba(255,244,220,.6);">Dusk Sky</div>
+        <div class="gradient-swatch" style="background:linear-gradient(145deg,rgba(35,28,70,.95),rgba(20,16,45,.95));color:rgba(255,244,220,.7);border:1px solid rgba(255,244,220,.15);">Card Classic</div>
+      </div>
+
+      <p class="palette-note">The palette flows from the night sky down to the treeline: <strong>navy depths</strong> anchor surfaces, <strong>twilight purples</strong> carry hierarchy and magic, and <strong>firefly golds</strong> ignite every interactive moment. The warm cream text against dark backgrounds passes WCAG AA at all sizes.</p>
+    </section>
+
+    <!-- ============================================================
+         2. TYPOGRAPHY
+         ============================================================ -->
+    <section class="section" id="typography">
+      <header class="section-header">
+        <span class="section-eyebrow">02 — Foundations</span>
+        <h2 class="section-title">Typography</h2>
+        <p class="section-desc">Three families, each with a distinct role: brand identity, cinematic display, and precise UI.</p>
+      </header>
+
+      <div class="type-stack">
+        <div class="type-row">
+          <div class="type-label">Brand<small>Kablammo · 400 · MORF 0</small></div>
+          <div class="t-brand">MoonFrame</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Display<small>Fraunces · 800 · SOFT 100</small></div>
+          <div class="t-display">spin the reels</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">H1<small>Fraunces · 800</small></div>
+          <div class="t-h1">tonight's pick is…</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">H2<small>Fraunces · 700</small></div>
+          <div class="t-h2" style="color:var(--color-primary);">your <em style="color:var(--star-gold-bright)">reel</em></div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">UI / H3<small>Inter Tight · 700</small></div>
+          <div class="t-h3">lock in rating</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Body<small>Inter Tight · 400–500</small></div>
+          <div class="t-body">We pluck a random film from the canon. You watch it. You rate it. The reels spin again.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Italic Copy<small>Fraunces · italic</small></div>
+          <div class="t-italic">A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Label<small>Inter Tight · 700 · uppercase</small></div>
+          <div class="t-caption">movies rated · avg ★ · watched</div>
+        </div>
+        <div class="type-row">
+          <div class="type-label">Mono<small>ui-monospace</small></div>
+          <div><code class="t-mono">const catalog = await fetchCatalog(MOVIE_IDS);</code></div>
+        </div>
+      </div>
+
+      <p class="palette-note" style="margin-top:2rem;"><strong>Kablammo</strong> is the face of the brand — playful, cinematic, impossible to mistake. <strong>Fraunces</strong> carries all editorial weight: titles, plots, ratings, and all italic copy that evokes the feeling of a film review. <strong>Inter Tight</strong> handles every UI element where clarity and precision matter most — buttons, labels, chips, and inputs.</p>
+    </section>
+
+    <!-- ============================================================
+         3. NAVBAR
+         ============================================================ -->
+    <section class="section" id="navbar">
+      <header class="section-header">
+        <span class="section-eyebrow">03 — Navigation</span>
+        <h2 class="section-title">Navbar</h2>
+        <p class="section-desc">Glass-morphism header — backdrop blur, subtle purple border, gold accent for interactive elements.</p>
+      </header>
+
+      <div class="demo-card">
+        <div class="demo-frame">
+          <div class="demo-navbar">
+            <div class="brand" style="padding:0;">
+              <div class="brand-mark" style="width:30px;height:30px;font-size:16px;">🌙</div>
+              <div>
+                <span class="brand-name" style="font-size:1rem;">MoonFrame</span>
+                <span class="brand-tag">spin · watch · rate</span>
+              </div>
+            </div>
+            <nav>
+              <a href="#" class="is-active">Spinning</a>
+              <a href="#">My Reel <span style="background:linear-gradient(135deg,#ffe27a,#ff9a45);color:#15192e;border-radius:999px;padding:1px 7px;font-size:.65rem;font-weight:800;margin-left:4px;">8</span></a>
+              <a href="#">Settings</a>
+            </nav>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-family:var(--font-display);font-style:italic;font-size:.8rem;color:var(--color-text-muted);">hey, critic</span>
+              <button class="mf-btn mf-btn-signout" type="button">sign out</button>
+            </div>
+          </div>
+        </div>
+        <div class="demo-meta"><span>Backdrop blur · gold "My Reel" chip · Fraunces italic greeting</span><code>.demo-navbar</code></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. BUTTONS
+         ============================================================ -->
+    <section class="section" id="buttons">
+      <header class="section-header">
+        <span class="section-eyebrow">04 — Components</span>
+        <h2 class="section-title">Buttons</h2>
+        <p class="section-desc">Six variants reflecting the cinematic hierarchy — gold CTAs command attention, ghost buttons whisper.</p>
+      </header>
+
+      <div class="demo-card">
+        <div class="demo-frame" style="display:flex;flex-direction:column;gap:var(--space-5);">
+          <div>
+            <div class="btn-row-label">Primary CTA</div>
+            <div class="btn-grid">
+              <button class="mf-btn mf-btn-primary" type="button">spin the reels →</button>
+              <button class="mf-btn mf-btn-primary" type="button">lock in rating</button>
+              <button class="mf-btn mf-btn-primary" type="button" disabled style="opacity:.5;cursor:not-allowed;">loading...</button>
+            </div>
+          </div>
+          <div>
+            <div class="btn-row-label">Secondary / Outlined</div>
+            <div class="btn-grid">
+              <button class="mf-btn mf-btn-secondary" type="button">← back to spinning</button>
+              <button class="mf-btn mf-btn-secondary" type="button">view all →</button>
+            </div>
+          </div>
+          <div>
+            <div class="btn-row-label">Ghost / Skip</div>
+            <div class="btn-grid">
+              <button class="mf-btn mf-btn-ghost" type="button">↻ haven't seen it · spin again</button>
+              <button class="mf-btn mf-btn-ghost" type="button">↻ skip</button>
+            </div>
+          </div>
+          <div>
+            <div class="btn-row-label">Reel (Yellow) · Danger · Sign Out</div>
+            <div class="btn-grid">
+              <button class="mf-btn mf-btn-reel" type="button">my reel <span style="background:linear-gradient(135deg,#ffe27a,#ff9a45);color:#15192e;border-radius:999px;padding:1px 7px;font-size:.65rem;font-weight:800;">4</span></button>
+              <button class="mf-btn mf-btn-danger" type="button">clear all</button>
+              <button class="mf-btn mf-btn-signout" type="button">sign out</button>
+            </div>
+          </div>
+        </div>
+        <div class="demo-meta"><span>All pills — border-radius: 999px · Inter Tight 700 · 0.12–0.16em tracking · uppercase</span><code>.mf-btn</code></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. MOVIE CARDS
+         ============================================================ -->
+    <section class="section" id="cards">
+      <header class="section-header">
+        <span class="section-eyebrow">05 — Components</span>
+        <h2 class="section-title">Movie Cards</h2>
+        <p class="section-desc">Three card personalities — Classic glass, Sticker paper, Ticket perforated. Same content, three moods.</p>
+      </header>
+
+      <div class="card-row">
+        <!-- Classic -->
+        <div>
+          <div class="btn-row-label" style="margin-bottom:12px;">Classic (default)</div>
+          <div class="mf-card-classic">
+            <div class="card-poster">
+              <div class="card-poster-placeholder">🎬</div>
+              <div class="card-year">2010</div>
+            </div>
+            <div class="card-body-mf">
+              <div class="card-runtime"><span>●</span><span>148 min</span><span>●</span><span>Christopher Nolan</span></div>
+              <div class="card-title-mf">Inception</div>
+              <div><span class="genre-chip">Sci-Fi</span><span class="genre-chip">Thriller</span></div>
+              <p style="font-family:var(--font-display);font-style:italic;font-size:.78rem;color:rgba(255,244,220,.7);line-height:1.5;margin-top:8px;">A thief who steals corporate secrets through dream-sharing technology...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticker -->
+        <div>
+          <div class="btn-row-label" style="margin-bottom:12px;">Sticker</div>
+          <div class="mf-card-sticker">
+            <div class="card-poster">
+              <div class="card-poster-placeholder" style="background:linear-gradient(180deg,#f5e9c9,#eeddc4);">🎬</div>
+              <div class="card-year card-year-dark">1994</div>
+            </div>
+            <div class="card-body-mf">
+              <div class="card-runtime card-runtime-dark"><span>●</span><span>154 min</span><span>●</span><span>Tarantino</span></div>
+              <div class="card-title-mf" style="color:#15192e;">Pulp Fiction</div>
+              <div><span class="genre-chip genre-chip-dark">Crime</span><span class="genre-chip genre-chip-dark">Drama</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticket -->
+        <div>
+          <div class="btn-row-label" style="margin-bottom:12px;">Ticket</div>
+          <div class="mf-card-ticket" style="position:relative;">
+            <div style="position:absolute;top:50%;left:-10px;width:20px;height:20px;border-radius:50%;background:var(--color-bg);z-index:2;transform:translateY(-50%);"></div>
+            <div style="position:absolute;top:50%;right:-10px;width:20px;height:20px;border-radius:50%;background:var(--color-bg);z-index:2;transform:translateY(-50%);"></div>
+            <div class="card-poster">
+              <div class="card-poster-placeholder">🎬</div>
+              <div class="card-year">1999</div>
+            </div>
+            <div class="card-body-mf">
+              <div class="card-runtime"><span>●</span><span>136 min</span></div>
+              <div class="card-title-mf">The Matrix</div>
+              <div><span class="genre-chip">Sci-Fi</span><span class="genre-chip">Action</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. STAR RATING
+         ============================================================ -->
+    <section class="section" id="rating">
+      <header class="section-header">
+        <span class="section-eyebrow">06 — Components</span>
+        <h2 class="section-title">Star Rating</h2>
+        <p class="section-desc">5 stars with gold gradient fill, hover lift animation, and a confirm CTA below. Hover the stars.</p>
+      </header>
+
+      <div class="demo-card">
+        <div class="demo-frame" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px;">
+          <div class="star-row" id="starRow">
+            <svg class="star" viewBox="0 0 32 32" width="44" height="44" onclick="setRating(1)" onmouseenter="hoverRating(1)" onmouseleave="hoverRating(0)"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe27a"/><stop offset="50%" stop-color="#ffcb47"/><stop offset="100%" stop-color="#ff9a45"/></linearGradient></defs><path d="M16 3 L20 12 L30 13 L22 20 L24.5 30 L16 24.5 L7.5 30 L10 20 L2 13 L12 12 Z" fill="url(#sg)" stroke="#ffe27a" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            <svg class="star" viewBox="0 0 32 32" width="44" height="44" onclick="setRating(2)" onmouseenter="hoverRating(2)" onmouseleave="hoverRating(0)"><path d="M16 3 L20 12 L30 13 L22 20 L24.5 30 L16 24.5 L7.5 30 L10 20 L2 13 L12 12 Z" fill="url(#sg)" stroke="#ffe27a" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            <svg class="star" viewBox="0 0 32 32" width="44" height="44" onclick="setRating(3)" onmouseenter="hoverRating(3)" onmouseleave="hoverRating(0)"><path d="M16 3 L20 12 L30 13 L22 20 L24.5 30 L16 24.5 L7.5 30 L10 20 L2 13 L12 12 Z" fill="url(#sg)" stroke="#ffe27a" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            <svg class="star star-empty" viewBox="0 0 32 32" width="44" height="44" onclick="setRating(4)" onmouseenter="hoverRating(4)" onmouseleave="hoverRating(0)"><path d="M16 3 L20 12 L30 13 L22 20 L24.5 30 L16 24.5 L7.5 30 L10 20 L2 13 L12 12 Z" fill="rgba(255,244,220,0.12)" stroke="rgba(255,244,220,0.25)" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            <svg class="star star-empty" viewBox="0 0 32 32" width="44" height="44" onclick="setRating(5)" onmouseenter="hoverRating(5)" onmouseleave="hoverRating(0)"><path d="M16 3 L20 12 L30 13 L22 20 L24.5 30 L16 24.5 L7.5 30 L10 20 L2 13 L12 12 Z" fill="rgba(255,244,220,0.12)" stroke="rgba(255,244,220,0.25)" stroke-width="1.2" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="star-label" id="starLabel">3/5 · <em style="font-style:italic;opacity:.85;">decent</em></div>
+          <button class="confirm-btn" type="button">lock in rating</button>
+        </div>
+        <div class="demo-meta"><span>Click to rate · hover to preview · gold gradient fill · Inter Tight 700 uppercase</span><code>.star-rating</code></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. FORMS
+         ============================================================ -->
+    <section class="section" id="forms">
+      <header class="section-header">
+        <span class="section-eyebrow">07 — Components</span>
+        <h2 class="section-title">Forms</h2>
+        <p class="section-desc">Dark glass inputs — rgba blur backgrounds, purple borders, gold focus glow. Built for the Login screen.</p>
+      </header>
+
+      <div class="demo-card">
+        <div class="demo-frame" style="max-width:440px;margin:0 auto;">
+          <!-- Tabs -->
+          <div class="mf-tabs" style="margin-bottom:20px;">
+            <button class="mf-tab active" type="button" onclick="switchTab(this,'si')">sign in</button>
+            <button class="mf-tab" type="button" onclick="switchTab(this,'su')">create account</button>
+            <div class="mf-tab-indicator" id="tabInd"></div>
+          </div>
+
+          <div class="mf-form">
+            <div>
+              <div class="mf-field-label">email</div>
+              <div class="mf-input-wrap">
+                <span class="mf-input-icon">✉</span>
+                <input class="mf-input" type="email" placeholder="you@cinema.club" />
+              </div>
+            </div>
+            <div>
+              <div class="mf-field-label">password</div>
+              <div class="mf-input-wrap">
+                <span class="mf-input-icon">◌</span>
+                <input class="mf-input" type="password" placeholder="••••••••" />
+                <button type="button" style="background:transparent;border:none;color:rgba(255,244,220,.45);font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;">show</button>
+              </div>
+            </div>
+            <!-- Error state -->
+            <div>
+              <div class="mf-field-label">name (error state)</div>
+              <div class="mf-input-wrap" style="border-color:rgba(244,63,94,.6);box-shadow:0 0 0 3px rgba(244,63,94,.1);">
+                <span class="mf-input-icon" style="color:rgba(244,63,94,.7);">✦</span>
+                <input class="mf-input" type="text" placeholder="moonlight critic" value="" />
+              </div>
+              <div style="font-size:.67rem;color:rgba(244,63,94,.9);font-family:var(--font-sans);padding-left:4px;margin-top:4px;">we need something to call you</div>
+            </div>
+          </div>
+
+          <!-- Search -->
+          <div style="margin-top:20px;">
+            <div class="mf-field-label">search (your reel)</div>
+            <div class="mf-search">
+              <span class="mf-search-icon">🔍</span>
+              <input type="text" placeholder="search rated movies..." />
+            </div>
+          </div>
+        </div>
+        <div class="demo-meta"><span>rgba(10,14,38,.55) bg · purple border · gold focus ring · Fraunces italic placeholders</span><code>.mf-input-wrap</code></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         8. HUD & BADGES
+         ============================================================ -->
+    <section class="section" id="hud">
+      <header class="section-header">
+        <span class="section-eyebrow">08 — Feedback</span>
+        <h2 class="section-title">HUD &amp; Badges</h2>
+        <p class="section-desc">Genre chips, filter pills, history chips, stats bar, paginators, and status messages.</p>
+      </header>
+
+      <h3 style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:14px;">Genre Chips</h3>
+      <div class="mf-badge-row">
+        <span class="mf-chip mf-chip-genre">Sci-Fi</span>
+        <span class="mf-chip mf-chip-genre">Thriller</span>
+        <span class="mf-chip mf-chip-genre">Drama</span>
+        <span class="mf-chip mf-chip-genre">Crime</span>
+        <span class="mf-chip mf-chip-genre">Animation</span>
+        <span class="mf-chip mf-chip-genre">Fantasy</span>
+        <span class="mf-chip mf-chip-active">Action ✓</span>
+      </div>
+
+      <h3 style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:20px 0 14px;">Filter Chips + Paginator</h3>
+      <div class="mf-badge-row" style="margin-bottom:14px;">
+        <span class="mf-chip mf-chip-active">all</span>
+        <span class="mf-chip mf-chip-filter">1★</span>
+        <span class="mf-chip mf-chip-filter">2★</span>
+        <span class="mf-chip mf-chip-filter">3★</span>
+        <span class="mf-chip mf-chip-filter">4★</span>
+        <span class="mf-chip mf-chip-filter">5★</span>
+      </div>
+      <div class="mf-paginator">
+        <button class="mf-page-btn" style="opacity:.3;" disabled>←</button>
+        <button class="mf-page-btn active">1</button>
+        <button class="mf-page-btn">2</button>
+        <button class="mf-page-btn">3</button>
+        <span style="width:34px;text-align:center;color:var(--color-text-subtle);">…</span>
+        <button class="mf-page-btn">8</button>
+        <button class="mf-page-btn">→</button>
+      </div>
+
+      <h3 style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:24px 0 14px;">Stats Bar</h3>
+      <div class="stats-bar">
+        <div class="stat-block"><div class="stat-big">12</div><div class="stat-sub">rated</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat-block"><div class="stat-big" style="color:#ffd866;">★ 3.8</div><div class="stat-sub">avg ★</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat-block"><div class="stat-big">0</div><div class="stat-sub">skipped</div></div>
+      </div>
+
+      <h3 style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:24px 0 14px;">History Chips</h3>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div class="history-chip">
+          <div class="history-poster">🎬</div>
+          <div class="history-stars">★★★★☆</div>
+        </div>
+        <div class="history-chip">
+          <div class="history-poster">🎬</div>
+          <div class="history-stars">★★★☆☆</div>
+        </div>
+        <div class="history-chip">
+          <div class="history-poster">🎬</div>
+          <div class="history-stars">★★★★★</div>
+        </div>
+        <div class="history-chip">
+          <div class="history-poster" style="opacity:.5;">🎬</div>
+          <div class="history-stars" style="opacity:.5;">★★☆☆☆</div>
+        </div>
+      </div>
+
+      <h3 style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:24px 0 14px;">Status Messages</h3>
+      <div class="mf-hud success"><div class="mf-hud-icon" style="background:#4a8c5a;color:#fff;">✓</div><div><strong>account created!</strong><br/><small style="opacity:.8;">welcome to MoonFrame</small></div></div>
+      <div class="mf-hud error"><div class="mf-hud-icon" style="background:#f43f5e;color:#fff;">✕</div><div><strong>we need something to call you</strong><br/><small style="opacity:.8;">name field is required</small></div></div>
+      <div class="mf-hud gold"><div class="mf-hud-icon" style="background:#ffd866;color:#15192e;">★</div><div><strong>✏ editing rating</strong><br/><small style="opacity:.8;">Inception · currently 4★</small></div></div>
+      <div class="mf-hud info"><div class="mf-hud-icon" style="background:#b794f6;color:#fff;">◐</div><div><strong>loading cinema...</strong><br/><small style="opacity:.8;">fetching 40 films from OMDB</small></div></div>
+    </section>
+
+    <!-- ============================================================
+         9. FOOTER
+         ============================================================ -->
+    <section class="section" id="footer">
+      <header class="section-header">
+        <span class="section-eyebrow">09 — Layout</span>
+        <h2 class="section-title">Footer</h2>
+        <p class="section-desc">Glass-morphism footer with brand tagline, product links, and legal line.</p>
+      </header>
+
+      <div class="mf-footer">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <div class="brand" style="padding:0;margin-bottom:4px;">
+              <div class="brand-mark" style="width:30px;height:30px;font-size:16px;">🌙</div>
+              <span class="brand-name">MoonFrame</span>
+            </div>
+            <p>A cinematic slot machine movie rater. Spin · Watch · Rate.</p>
+          </div>
+          <div class="footer-col">
+            <h4>App</h4>
+            <ul>
+              <li><a href="#">Spin the Reels</a></li>
+              <li><a href="#">My Reel</a></li>
+              <li><a href="#">Settings</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Design</h4>
+            <ul>
+              <li><a href="#">Style Guide</a></li>
+              <li><a href="#">Components</a></li>
+              <li><a href="#">Principles</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Connect</h4>
+            <ul>
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Portfolio</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 MoonFrame. Built with cinema in mind.</span>
+          <span style="font-family:var(--font-display);font-style:italic;opacity:.6;">spin · watch · rate</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         10. PRINCIPLES
+         ============================================================ -->
+    <section class="section" id="principles">
+      <header class="section-header">
+        <span class="section-eyebrow">10 — Philosophy</span>
+        <h2 class="section-title">Design Principles</h2>
+        <p class="section-desc">The constraints that give MoonFrame its character. Hover to feel the lift.</p>
+      </header>
+
+      <div class="principles">
+        <div class="principle">
+          <div class="principle-num">01</div>
+          <h3>Concepts Before Code</h3>
+          <p>Don't touch a single line without understanding the why. Every component in MoonFrame traces back to a clear mental model — slot machine, cinema ticket, firefly glow.</p>
+        </div>
+        <div class="principle">
+          <div class="principle-num">02</div>
+          <h3>Cinema, Not Software</h3>
+          <p>Every interaction should feel like a scene — the reel spinning, the card dropping, the stars catching light. UI that performs, not just functions.</p>
+        </div>
+        <div class="principle">
+          <div class="principle-num">03</div>
+          <h3>Nocturnal &amp; Immersive</h3>
+          <p>Dark skies, firefly accents, and crescent moons. The palette evokes a dusk landscape — you're not using an app, you're watching a film under the stars.</p>
+        </div>
+        <div class="principle">
+          <div class="principle-num">04</div>
+          <h3>Solid Foundations First</h3>
+          <p>Tokens before components, components before pages. The design system is the source of truth — nothing ships that isn't anchored to a CSS variable.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         11. ANIMATIONS
+         ============================================================ -->
+    <section class="section" id="animations">
+      <header class="section-header">
+        <span class="section-eyebrow">11 — Motion</span>
+        <h2 class="section-title">Animations</h2>
+        <p class="section-desc">Purposeful motion — each keyframe tells the user something. Hover to trigger.</p>
+      </header>
+
+      <div class="anim-grid">
+        <div class="anim-card anim-lift">
+          <div class="anim-shape"></div>
+          <h4>Lift</h4>
+          <p>history chip hover</p>
+        </div>
+        <div class="anim-card anim-scale">
+          <div class="anim-shape"></div>
+          <h4>Scale Spring</h4>
+          <p>CTA button hover</p>
+        </div>
+        <div class="anim-card anim-rotate">
+          <div class="anim-shape"></div>
+          <h4>Sticker Tilt</h4>
+          <p>card variant rotate(-1.5deg)</p>
+        </div>
+        <div class="anim-card anim-glow">
+          <div class="anim-shape"></div>
+          <h4>Gold Glow</h4>
+          <p>filled star drop-shadow</p>
+        </div>
+        <div class="anim-card anim-float">
+          <div class="anim-shape"></div>
+          <h4>Moon Float</h4>
+          <p>empty state / orbs</p>
+        </div>
+        <div class="anim-card anim-slot">
+          <div class="anim-shape"></div>
+          <h4>Slot Enter</h4>
+          <p>card drop from above — hover</p>
+        </div>
+        <div class="anim-card anim-shimmer">
+          <div class="anim-shape"></div>
+          <h4>Shimmer</h4>
+          <p>loading card skeleton</p>
+        </div>
+        <div class="anim-card anim-pulse">
+          <div class="anim-shape"></div>
+          <h4>Dot Pulse</h4>
+          <p>live indicator · reel dots</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      MoonFrame Design System · 2026 · spin · watch · rate
+    </footer>
+  </main>
+</div>
+
+<script>
+  // ── Click-to-copy swatches ──────────────────────────────────────
+  document.querySelectorAll(".swatch").forEach((el) => {
+    el.addEventListener("click", async () => {
+      const val = el.dataset.copy;
+      try {
+        await navigator.clipboard.writeText(val);
+        el.classList.add("copied");
+        setTimeout(() => el.classList.remove("copied"), 1200);
+      } catch (e) {}
+    });
+  });
+
+  // ── Theme toggle (light mode overlay) ──────────────────────────
+  const root = document.documentElement;
+  const toggle = document.getElementById("themeToggle");
+  const icon = document.getElementById("themeIcon");
+  const label = document.getElementById("themeLabel");
+  let isLight = false;
+  toggle.addEventListener("click", () => {
+    isLight = !isLight;
+    if (isLight) {
+      root.style.setProperty("--color-bg", "#f5f0e8");
+      root.style.setProperty("--color-surface", "#fff8ec");
+      root.style.setProperty("--color-surface-2", "#ede8d8");
+      root.style.setProperty("--color-border", "rgba(45,39,102,.15)");
+      root.style.setProperty("--color-text", "#15192e");
+      root.style.setProperty("--color-text-muted", "rgba(21,25,46,.6)");
+      root.style.setProperty("--color-text-subtle", "rgba(21,25,46,.35)");
+      icon.textContent = "◐"; label.textContent = "Dark mode";
+    } else {
+      root.style.setProperty("--color-bg", "#0e1430");
+      root.style.setProperty("--color-surface", "#1a1f44");
+      root.style.setProperty("--color-surface-2", "#23284e");
+      root.style.setProperty("--color-border", "rgba(183,148,246,.14)");
+      root.style.setProperty("--color-text", "#fff4dc");
+      root.style.setProperty("--color-text-muted", "rgba(255,244,220,.6)");
+      root.style.setProperty("--color-text-subtle", "rgba(255,244,220,.35)");
+      icon.textContent = "☀"; label.textContent = "Light mode";
+    }
+  });
+
+  // ── Active nav on scroll ────────────────────────────────────────
+  const sections = document.querySelectorAll(".section");
+  const links = document.querySelectorAll(".nav-link");
+  const obs = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach((l) => l.classList.toggle("is-active", l.getAttribute("href") === "#" + id));
+      }
+    }),
+    { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+  );
+  sections.forEach((s) => obs.observe(s));
+
+  // ── Navbar active ───────────────────────────────────────────────
+  document.querySelectorAll(".demo-navbar nav a").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.querySelectorAll(".demo-navbar nav a").forEach((x) => x.classList.remove("is-active"));
+      a.classList.add("is-active");
+    });
+  });
+
+  // ── Star rating interactive ─────────────────────────────────────
+  const labels = ["", "skip it", "meh", "decent", "great", "masterpiece"];
+  let currentRating = 3;
+  const stars = document.querySelectorAll("#starRow .star");
+  const starLabel = document.getElementById("starLabel");
+
+  function renderStars(n) {
+    stars.forEach((s, i) => {
+      const path = s.querySelector("path");
+      const filled = i < n;
+      if (filled) {
+        path.setAttribute("fill", "url(#sg)");
+        path.setAttribute("stroke", "#ffe27a");
+        s.classList.remove("star-empty");
+        s.style.filter = "drop-shadow(0 4px 12px rgba(255,211,102,.65))";
+      } else {
+        path.setAttribute("fill", "rgba(255,244,220,0.12)");
+        path.setAttribute("stroke", "rgba(255,244,220,0.25)");
+        s.classList.add("star-empty");
+        s.style.filter = "none";
+      }
+    });
+    if (n > 0) starLabel.innerHTML = n + "/5 · <em style='font-style:italic;opacity:.85;'>" + labels[n] + "</em>";
+    else starLabel.textContent = "tap a star to rate";
+  }
+
+  function setRating(n) { currentRating = n; renderStars(n); }
+  function hoverRating(n) { renderStars(n || currentRating); }
+  renderStars(currentRating);
+
+  // ── Tab switcher ────────────────────────────────────────────────
+  function switchTab(btn, mode) {
+    document.querySelectorAll(".mf-tab").forEach((t) => t.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tabInd").style.transform = mode === "su" ? "translateX(100%)" : "translateX(0)";
+  }
+</script>
+</body>
+</html>

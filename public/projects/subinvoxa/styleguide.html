@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palopa — Sistema de Diseño</title>
+  <meta name="description" content="Sistema de diseño y librería de componentes de Palopa, plataforma de facturación electrónica DIAN." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — PALOPA
+       Pulled from app/globals.css — single source of truth
+       ============================================================ */
+    :root {
+      /* Brand — colores institucionales */
+      --brand-blue: #102A71;
+      --brand-blue-rgb: 16, 42, 113;
+      --brand-yellow: #F5C400;
+      --brand-yellow-rgb: 245, 196, 0;
+      --cream: #FCFBF7;
+
+      /* Surfaces — Dark (modo default del producto) */
+      --background: oklch(0.129 0.042 264.695);
+      --foreground: oklch(0.984 0.003 247.858);
+      --card: oklch(0.208 0.042 265.755);
+      --card-foreground: oklch(0.984 0.003 247.858);
+      --popover: oklch(0.208 0.042 265.755);
+      --muted: oklch(0.279 0.041 260.031);
+      --muted-foreground: oklch(0.704 0.04 256.788);
+      --border: oklch(0.279 0.041 260.031);
+      --input: oklch(0.279 0.041 260.031);
+
+      /* Action */
+      --primary: oklch(48.495% 0.15405 258.955);
+      --primary-foreground: oklch(1 0 0);
+      --primary-hover: oklch(54% 0.16 259);
+      --primary-active: oklch(42% 0.14 259);
+      --ring: oklch(0.546 0.245 262.887);
+
+      /* Semantic */
+      --success: oklch(0.627 0.194 149.214);
+      --success-bg: oklch(0.627 0.194 149.214 / 0.15);
+      --warning: oklch(0.769 0.188 70.08);
+      --warning-bg: oklch(0.769 0.188 70.08 / 0.15);
+      --destructive: oklch(0.577 0.245 27.325);
+      --destructive-bg: oklch(0.577 0.245 27.325 / 0.15);
+      --info: oklch(0.546 0.245 262.887);
+      --info-bg: oklch(0.546 0.245 262.887 / 0.15);
+
+      /* Typography */
+      --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "Geist Mono", "JetBrains Mono", Consolas, monospace;
+
+      /* Spacing */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.5rem;
+      --space-6: 2rem;
+      --space-8: 3rem;
+      --space-10: 4rem;
+      --space-12: 6rem;
+
+      /* Radius */
+      --radius: 0.5rem;
+      --radius-sm: calc(var(--radius) - 4px);
+      --radius-md: calc(var(--radius) - 2px);
+      --radius-lg: var(--radius);
+      --radius-xl: 0.75rem;
+      --radius-2xl: 1rem;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 0 4px oklch(0.546 0.245 262.887 / 0.3);
+      --shadow-yellow: 0 10px 30px rgba(var(--brand-yellow-rgb), 0.25);
+
+      /* Motion */
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --duration-fast: 150ms;
+      --duration: 250ms;
+      --duration-slow: 400ms;
+    }
+
+    [data-theme="light"] {
+      --background: oklch(0.984 0.003 247.858);
+      --foreground: oklch(0.208 0.042 265.755);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.208 0.042 265.755);
+      --popover: oklch(1 0 0);
+      --muted: oklch(0.968 0.007 247.896);
+      --muted-foreground: oklch(0.554 0.046 257.417);
+      --border: oklch(0.929 0.013 255.508);
+      --input: oklch(0.929 0.013 255.508);
+      --primary: oklch(36.405% 0.15554 262.833);
+      --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 6px 18px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 18px 40px rgba(15, 23, 42, 0.10);
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--background);
+      color: var(--foreground);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+    }
+    img, svg { display: block; max-width: 100%; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    a { color: var(--brand-yellow); text-decoration: none; transition: color var(--duration-fast) var(--ease); }
+    a:hover { color: oklch(0.85 0.18 95); }
+    code, pre { font-family: var(--font-mono); font-size: 0.875em; }
+    :focus-visible {
+      outline: 2px solid var(--brand-yellow);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: var(--space-6) var(--space-4);
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: 0 var(--space-2);
+    }
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--brand-blue);
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      top: -50%; right: -50%;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle, rgba(var(--brand-yellow-rgb), 0.4), transparent 60%);
+      filter: blur(12px);
+    }
+    .brand-mark-letter {
+      position: relative;
+      z-index: 1;
+      font-family: var(--font-sans);
+      font-weight: 900;
+      color: var(--brand-yellow);
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .brand-tag {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted-foreground);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      color: var(--muted-foreground);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all var(--duration-fast) var(--ease);
+    }
+    .nav-link:hover {
+      background: var(--muted);
+      color: var(--foreground);
+    }
+    .nav-link.is-active {
+      background: rgba(var(--brand-yellow-rgb), 0.1);
+      color: var(--brand-yellow);
+    }
+    .nav-link .num {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      opacity: 0.6;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: var(--space-3) var(--space-2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--muted-foreground);
+      transition: all var(--duration-fast) var(--ease);
+    }
+    .theme-toggle:hover {
+      color: var(--foreground);
+      border-color: var(--brand-yellow);
+    }
+
+    .main {
+      padding: var(--space-8) var(--space-10);
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .section {
+      margin-bottom: var(--space-12);
+      scroll-margin-top: var(--space-6);
+    }
+    .section-header {
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--border);
+    }
+    .section-eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brand-yellow);
+      margin-bottom: var(--space-2);
+    }
+    .section-title {
+      font-size: clamp(1.875rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: var(--space-2);
+    }
+    .section-desc {
+      color: var(--muted-foreground);
+      max-width: 65ch;
+      font-size: 1.025rem;
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      padding: var(--space-10) var(--space-8);
+      border-radius: var(--radius-2xl);
+      background: var(--brand-blue);
+      color: white;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: var(--space-10);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -10rem; right: -10rem;
+      width: 28rem; height: 28rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--brand-yellow-rgb), 0.35), transparent 65%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      pointer-events: none;
+    }
+    .hero > * { position: relative; z-index: 1; }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+      box-shadow: var(--shadow-yellow);
+    }
+    .hero-eyebrow .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--brand-blue);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+      margin-bottom: var(--space-4);
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--brand-yellow);
+    }
+    .hero-desc {
+      font-size: 1.125rem;
+      color: rgba(255, 255, 255, 0.75);
+      max-width: 60ch;
+      margin-bottom: var(--space-6);
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .hero-meta strong { color: var(--brand-yellow); font-weight: 700; }
+
+    /* ============================================================
+       1. COLOR PALETTE
+       ============================================================ */
+    .palette-group { margin-bottom: var(--space-6); }
+    .palette-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-yellow);
+      margin-bottom: var(--space-3);
+    }
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: var(--space-3);
+    }
+    .swatch {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform var(--duration) var(--ease-out), box-shadow var(--duration) var(--ease), border-color var(--duration) var(--ease);
+    }
+    .swatch:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--brand-yellow);
+    }
+    .swatch-preview {
+      height: 100px;
+      position: relative;
+    }
+    .swatch-preview::after {
+      content: "Click para copiar";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity var(--duration-fast) var(--ease);
+    }
+    .swatch:hover .swatch-preview::after { opacity: 1; }
+    .swatch.copied .swatch-preview::after {
+      content: "Copiado ✓";
+      opacity: 1;
+      background: oklch(0.627 0.194 149.214 / 0.95);
+    }
+    .swatch-info { padding: var(--space-3) var(--space-4); }
+    .swatch-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .swatch-token {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted-foreground);
+    }
+    .palette-rationale {
+      margin-top: var(--space-6);
+      padding: var(--space-5);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--brand-yellow);
+      border-radius: var(--radius-md);
+      color: var(--muted-foreground);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .palette-rationale strong { color: var(--foreground); }
+
+    /* ============================================================
+       2. TYPOGRAPHY
+       ============================================================ */
+    .type-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+    .type-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: var(--space-5);
+      align-items: baseline;
+      padding-bottom: var(--space-4);
+      border-bottom: 1px dashed var(--border);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .type-label small { display: block; opacity: 0.7; margin-top: 2px; font-weight: 400; }
+
+    .display-1 { font-size: 3.75rem; font-weight: 800; line-height: 1.05; letter-spacing: -0.035em; }
+    .h1 { font-size: 3rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; }
+    .h2 { font-size: 2.25rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.025em; }
+    .h3 { font-size: 1.75rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+    .h4 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; }
+    .h5 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; }
+    .h6 { font-size: 0.95rem; font-weight: 700; line-height: 1.4; text-transform: uppercase; letter-spacing: 0.05em; }
+    .body-text { font-size: 1rem; line-height: 1.7; max-width: 65ch; }
+    .caption { font-size: 0.8rem; color: var(--muted-foreground); }
+    .mono {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      background: var(--muted);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      color: var(--brand-yellow);
+    }
+
+    /* ============================================================
+       DEMO FRAME
+       ============================================================ */
+    .demo-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: var(--space-4);
+    }
+    .demo-frame { padding: var(--space-6); }
+    .demo-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-3) var(--space-5);
+      background: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted-foreground);
+    }
+    .demo-meta code { color: var(--brand-yellow); font-weight: 500; }
+
+    /* ============================================================
+       3. NAVBAR
+       ============================================================ */
+    .demo-navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-5);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+    }
+    .demo-navbar nav {
+      display: flex;
+      gap: var(--space-1);
+    }
+    .demo-navbar nav a {
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      transition: all var(--duration-fast) var(--ease);
+      position: relative;
+    }
+    .demo-navbar nav a:hover {
+      color: var(--foreground);
+      background: var(--muted);
+    }
+    .demo-navbar nav a.is-active { color: var(--brand-yellow); }
+    .demo-navbar nav a.is-active::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: var(--space-3);
+      right: var(--space-3);
+      height: 2px;
+      background: var(--brand-yellow);
+      border-radius: 2px;
+    }
+
+    /* ============================================================
+       4. BUTTONS
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn:disabled, .btn.is-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Primary = brand-yellow on brand-blue. Maximum pop. */
+    .btn-primary {
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      box-shadow: var(--shadow-yellow);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: oklch(0.88 0.20 95);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 36px rgba(var(--brand-yellow-rgb), 0.35);
+    }
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    /* Secondary = brand-blue */
+    .btn-secondary {
+      background: var(--brand-blue);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: oklch(0.32 0.15 259);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+    }
+    .btn-outline:hover:not(:disabled) {
+      background: rgba(var(--brand-yellow-rgb), 0.1);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--foreground);
+    }
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--muted);
+    }
+
+    .btn-destructive {
+      background: var(--destructive);
+      color: white;
+    }
+    .btn-destructive:hover:not(:disabled) {
+      background: oklch(0.50 0.22 27);
+    }
+
+    .btn-sm { padding: var(--space-2) var(--space-3); font-size: 0.8rem; }
+    .btn-lg { padding: var(--space-4) var(--space-6); font-size: 1rem; }
+
+    .btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      align-items: center;
+    }
+    .btn-row { margin-bottom: var(--space-4); }
+    .btn-row:last-child { margin-bottom: 0; }
+    .btn-row-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      margin-bottom: var(--space-2);
+      letter-spacing: 0.05em;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ============================================================
+       5. CARDS — Including the org card pattern
+       ============================================================ */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-5);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      transition: transform var(--duration) var(--ease-out), box-shadow var(--duration) var(--ease), border-color var(--duration) var(--ease);
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--brand-yellow);
+    }
+    .card-image {
+      aspect-ratio: 16/9;
+      background: var(--brand-blue);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-image::before {
+      content: "";
+      position: absolute;
+      top: -30%; right: -30%;
+      width: 80%; height: 80%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--brand-yellow-rgb), 0.45), transparent 60%);
+      filter: blur(30px);
+    }
+    .card-tag {
+      position: absolute;
+      top: var(--space-3);
+      left: var(--space-3);
+      padding: var(--space-1) var(--space-3);
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      z-index: 1;
+    }
+    .card-image-icon {
+      position: absolute;
+      bottom: var(--space-4);
+      left: var(--space-4);
+      color: rgba(255, 255, 255, 0.85);
+      z-index: 1;
+    }
+    .card-body {
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      flex: 1;
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
+    }
+    .card-desc {
+      color: var(--muted-foreground);
+      font-size: 0.9rem;
+      flex: 1;
+    }
+    .card-actions {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    /* ============================================================
+       Organization card V4 — anillos de progreso + acento lateral
+       ============================================================ */
+    .tone-ok      { --tone: var(--success); }
+    .tone-warning { --tone: var(--warning); }
+    .tone-danger  { --tone: var(--destructive); }
+
+    .v4-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+      max-width: 460px;
+    }
+    .v4-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--brand-yellow), transparent);
+    }
+
+    .v4-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .v4-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--muted-foreground);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .v4-yellow-bar {
+      width: 16px;
+      height: 2px;
+      background: var(--brand-yellow);
+      border-radius: 2px;
+    }
+    .v4-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--foreground);
+    }
+    .v4-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .v4-chip {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(var(--brand-yellow-rgb), 0.12);
+      color: var(--brand-yellow);
+      border-radius: var(--radius-full);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .v4-nit {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--muted-foreground);
+    }
+    .v4-icobtn {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted-foreground);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 150ms var(--ease);
+    }
+    .v4-icobtn:hover {
+      color: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+    }
+
+    .v4-divider {
+      height: 1px;
+      background: var(--border);
+    }
+    .v4-section-title {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brand-yellow);
+    }
+
+    .v4-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .v4-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 12px 10px 6px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: border-color 150ms var(--ease);
+    }
+    .v4-row:hover {
+      border-color: rgba(var(--brand-yellow-rgb), 0.3);
+    }
+
+    /* Anillo SVG */
+    .v4-ring {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+    }
+    .v4-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .v4-ring-track { stroke: var(--border); fill: none; stroke-width: 6; }
+    .v4-ring-fill {
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke: var(--tone);
+      transition: stroke-dashoffset 600ms var(--ease-out);
+    }
+    .v4-ring-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .v4-ring-used {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--foreground);
+      letter-spacing: -0.02em;
+    }
+    .v4-ring-total {
+      font-size: 0.6rem;
+      color: var(--muted-foreground);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .v4-row-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .v4-row-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+    .v4-row-ico {
+      color: var(--muted-foreground);
+      display: inline-flex;
+    }
+    .v4-row-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      color: var(--tone);
+      font-weight: 500;
+    }
+    .v4-status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--tone);
+    }
+    .v4-buy {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 11px;
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      border: none;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 150ms var(--ease);
+    }
+    .v4-buy:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(var(--brand-yellow-rgb), 0.35);
+    }
+
+    /* ============================================================
+       6. FORMS
+       ============================================================ */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-5);
+      background: var(--card);
+      padding: var(--space-6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-sm);
+    }
+    .field { display: flex; flex-direction: column; gap: var(--space-2); }
+    .field-full { grid-column: 1 / -1; }
+    .label { font-size: 0.85rem; font-weight: 500; }
+    .label .req { color: var(--destructive); }
+    .hint { font-size: 0.78rem; color: var(--muted-foreground); }
+    .input, .select, .textarea {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      color: var(--foreground);
+      transition: border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
+    }
+    .input::placeholder, .textarea::placeholder { color: var(--muted-foreground); opacity: 0.6; }
+    .input:hover, .select:hover, .textarea:hover { border-color: var(--muted-foreground); }
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 0 4px rgba(var(--brand-yellow-rgb), 0.15);
+    }
+    .textarea { resize: vertical; min-height: 96px; font-family: inherit; }
+    .select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23a1a1aa' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--space-4) center;
+      padding-right: var(--space-8);
+    }
+
+    .field.is-error .input,
+    .field.is-error .select,
+    .field.is-error .textarea { border-color: var(--destructive); }
+    .field.is-error .input:focus { box-shadow: 0 0 0 4px oklch(0.577 0.245 27.325 / 0.15); }
+    .field.is-error .hint { color: var(--destructive); }
+
+    .field.is-success .input,
+    .field.is-success .select { border-color: var(--success); }
+    .field.is-success .input:focus { box-shadow: 0 0 0 4px oklch(0.627 0.194 149.214 / 0.15); }
+    .field.is-success .hint { color: var(--success); }
+
+    .check-row { display: flex; flex-direction: column; gap: var(--space-2); }
+    .check {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .check input[type="checkbox"], .check input[type="radio"] {
+      appearance: none;
+      width: 18px; height: 18px;
+      border: 1.5px solid var(--muted-foreground);
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .check input[type="radio"] { border-radius: 50%; }
+    .check input:hover { border-color: var(--brand-yellow); }
+    .check input:checked {
+      background: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+    }
+    .check input[type="checkbox"]:checked::after {
+      content: "";
+      position: absolute;
+      left: 5px; top: 1px;
+      width: 5px; height: 10px;
+      border: solid var(--brand-blue);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .check input[type="radio"]:checked::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: var(--brand-blue);
+    }
+
+    /* ============================================================
+       7. BADGES & HUD
+       ============================================================ */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .badge-success { background: var(--success-bg); color: var(--success); }
+    .badge-warning { background: var(--warning-bg); color: var(--warning); }
+    .badge-error { background: var(--destructive-bg); color: var(--destructive); }
+    .badge-info { background: var(--info-bg); color: var(--info); }
+    .badge-neutral { background: var(--muted); color: var(--muted-foreground); }
+    .badge-brand {
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hud-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    .hud {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      border: 1px solid;
+    }
+    .hud-icon {
+      width: 28px; height: 28px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: white;
+    }
+    .hud-text strong { display: block; margin-bottom: 2px; color: var(--foreground); }
+    .hud-text small { font-size: 0.82rem; line-height: 1.45; }
+    .hud.success { background: var(--success-bg); border-color: oklch(0.627 0.194 149.214 / 0.3); color: var(--success); }
+    .hud.success .hud-icon { background: var(--success); }
+    .hud.warning { background: var(--warning-bg); border-color: oklch(0.769 0.188 70.08 / 0.3); color: var(--warning); }
+    .hud.warning .hud-icon { background: var(--warning); color: var(--brand-blue); }
+    .hud.error { background: var(--destructive-bg); border-color: oklch(0.577 0.245 27.325 / 0.3); color: var(--destructive); }
+    .hud.error .hud-icon { background: var(--destructive); }
+    .hud.info { background: var(--info-bg); border-color: oklch(0.546 0.245 262.887 / 0.3); color: var(--info); }
+    .hud.info .hud-icon { background: var(--info); }
+
+    .notif-row { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; }
+    .icon-btn {
+      position: relative;
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      color: var(--foreground);
+      transition: all var(--duration-fast) var(--ease);
+    }
+    .icon-btn:hover { border-color: var(--brand-yellow); color: var(--brand-yellow); }
+    .notif-badge {
+      position: absolute;
+      top: -4px; right: -4px;
+      min-width: 18px; height: 18px;
+      padding: 0 5px;
+      border-radius: var(--radius-full);
+      background: var(--destructive);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--background);
+    }
+
+    /* ============================================================
+       8. FOOTER
+       ============================================================ */
+    .demo-footer {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8) var(--space-6) var(--space-5);
+      position: relative;
+      overflow: hidden;
+    }
+    .demo-footer::before {
+      content: "";
+      position: absolute;
+      top: 0; right: 0;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(var(--brand-yellow-rgb), 0.08), transparent 60%);
+      filter: blur(40px);
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: var(--space-6);
+      padding-bottom: var(--space-6);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .footer-brand p {
+      color: var(--muted-foreground);
+      font-size: 0.9rem;
+      max-width: 32ch;
+      margin-top: var(--space-3);
+    }
+    .footer-col h4 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-yellow);
+      margin-bottom: var(--space-3);
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+    .footer-col a { color: var(--foreground); font-size: 0.9rem; }
+    .footer-col a:hover { color: var(--brand-yellow); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--space-4);
+      font-size: 0.8rem;
+      color: var(--muted-foreground);
+      position: relative;
+    }
+    .footer-social { display: flex; gap: var(--space-2); }
+    .footer-social a {
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      background: var(--muted);
+      border-radius: var(--radius-full);
+      color: var(--muted-foreground);
+      transition: all var(--duration-fast) var(--ease);
+    }
+    .footer-social a:hover { color: var(--brand-blue); background: var(--brand-yellow); }
+
+    /* ============================================================
+       9. PRINCIPLES
+       ============================================================ */
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    .principle {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      transition: transform var(--duration) var(--ease-out), border-color var(--duration) var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .principle:hover {
+      transform: translateY(-2px);
+      border-color: var(--brand-yellow);
+    }
+    .principle-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      background: var(--brand-blue);
+      color: var(--brand-yellow);
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 0.9rem;
+      margin-bottom: var(--space-3);
+    }
+    .principle h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+    }
+    .principle p {
+      color: var(--muted-foreground);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    /* ============================================================
+       10. ANIMATIONS DEMO
+       ============================================================ */
+    .anim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+    .anim-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      text-align: center;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+    .anim-card h4 { font-size: 0.95rem; margin-bottom: var(--space-2); }
+    .anim-card p {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      font-family: var(--font-mono);
+    }
+    .anim-shape {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-md);
+      background: var(--brand-blue);
+      box-shadow: var(--shadow-md);
+      margin: 0 auto var(--space-3);
+      position: relative;
+      overflow: hidden;
+    }
+    .anim-shape::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 30%, rgba(var(--brand-yellow-rgb), 0.5), transparent 60%);
+    }
+
+    .anim-lift:hover .anim-shape { transform: translateY(-8px); transition: transform var(--duration) var(--ease-out); }
+    .anim-rotate:hover .anim-shape { transform: rotate(15deg); transition: transform var(--duration) var(--ease-out); }
+    .anim-scale:hover .anim-shape { transform: scale(1.15); transition: transform var(--duration) var(--ease-spring); }
+    .anim-glow:hover .anim-shape {
+      box-shadow: 0 0 32px rgba(var(--brand-yellow-rgb), 0.6), var(--shadow-md);
+      transition: box-shadow var(--duration) var(--ease);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .anim-float .anim-shape { animation: float 3s ease-in-out infinite; }
+
+    @keyframes aurora {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+      50% { transform: translate(8px, -8px) scale(1.15); opacity: 0.9; }
+    }
+    .anim-aurora .anim-shape::after { animation: aurora 4s ease-in-out infinite; }
+
+    @keyframes bar-fill { from { width: 0%; } to { width: var(--target, 75%); } }
+    .anim-bar .anim-shape {
+      height: 8px;
+      width: 100%;
+      background: var(--muted);
+      box-shadow: none;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: var(--space-4);
+    }
+    .anim-bar .anim-shape::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 0;
+      background: var(--brand-yellow);
+      animation: bar-fill 2s var(--ease-out) infinite alternate;
+      --target: 85%;
+    }
+
+    /* ============================================================
+       PAGE FOOTER
+       ============================================================ */
+    .page-footer {
+      margin-top: var(--space-12);
+      padding: var(--space-6) 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted-foreground);
+      font-size: 0.85rem;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        overflow-x: auto;
+        padding: var(--space-3) var(--space-4);
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-list { flex-direction: row; flex-shrink: 0; }
+      .nav-link { white-space: nowrap; }
+      .sidebar-footer { margin: 0; padding: 0; border: none; flex-shrink: 0; }
+      .main { padding: var(--space-5); }
+      .footer-top { grid-template-columns: 1fr; gap: var(--space-5); }
+      .demo-navbar { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+      .demo-navbar nav { flex-wrap: wrap; }
+      .footer-bottom { flex-direction: column; gap: var(--space-3); }
+      .type-row { grid-template-columns: 1fr; gap: var(--space-2); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- ========================================================
+         SIDEBAR
+         ======================================================== -->
+    <aside class="sidebar" aria-label="Navegación de secciones">
+      <header class="brand">
+        <div class="brand-mark">
+          <span class="brand-mark-letter">P</span>
+        </div>
+        <div>
+          <span class="brand-name">Nelson Arango</span>
+          <span class="brand-tag">Sistema de diseño</span>
+        </div>
+      </header>
+
+      <nav>
+        <ul class="nav-list">
+          <li><a class="nav-link is-active" href="#colors"><span class="num">01</span>Paleta</a></li>
+          <li><a class="nav-link" href="#typography"><span class="num">02</span>Tipografía</a></li>
+          <li><a class="nav-link" href="#navbar"><span class="num">03</span>Navbar</a></li>
+          <li><a class="nav-link" href="#buttons"><span class="num">04</span>Botones</a></li>
+          <li><a class="nav-link" href="#cards"><span class="num">05</span>Cards</a></li>
+          <li><a class="nav-link" href="#forms"><span class="num">06</span>Formularios</a></li>
+          <li><a class="nav-link" href="#hud"><span class="num">07</span>Estados &amp; Badges</a></li>
+          <li><a class="nav-link" href="#footer"><span class="num">08</span>Footer</a></li>
+          <li><a class="nav-link" href="#principles"><span class="num">09</span>Principios</a></li>
+          <li><a class="nav-link" href="#animations"><span class="num">10</span>Animaciones</a></li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">
+          <span id="themeIcon">☀</span>
+          <span id="themeLabel">Claro</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========================================================
+         MAIN
+         ======================================================== -->
+    <main class="main">
+      <!-- HERO -->
+      <header class="hero">
+        <div class="hero-eyebrow">
+          <span class="pulse"></span>
+          v1.0 · Sistema vivo
+        </div>
+        <h1 class="hero-title">Nelson Arango<br /><em>Lenguaje de diseño</em></h1>
+        <p class="hero-desc">
+          Plataforma de facturación electrónica DIAN. Este documento es la fuente única
+          de verdad para el lenguaje visual del producto: tokens, componentes, estados y
+          principios que mantienen la experiencia consistente.
+        </p>
+        <div class="hero-meta">
+          <span><strong>10</strong> secciones</span>
+          <span><strong>Geist</strong> · Geist Mono</span>
+          <span><strong>WCAG AA</strong> accesible</span>
+          <span><strong>Dark</strong> · Light</span>
+        </div>
+      </header>
+
+      <!-- ========================================================
+           1. COLORS
+           ======================================================== -->
+      <section class="section" id="colors">
+        <header class="section-header">
+          <span class="section-eyebrow">01 — Fundamentos</span>
+          <h2 class="section-title">Paleta de colores</h2>
+          <p class="section-desc">
+            Tokens reales tomados de <code class="mono">app/globals.css</code>. Click en cualquier swatch para copiar el valor.
+          </p>
+        </header>
+
+        <!-- Brand -->
+        <div class="palette-group">
+          <h3 class="palette-group-title">Marca</h3>
+          <div class="swatch-grid">
+            <article class="swatch" data-copy="#102A71">
+              <div class="swatch-preview" style="background: #102A71;"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Brand Blue</div>
+                <div class="swatch-token">--brand-blue · #102A71</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="#F5C400">
+              <div class="swatch-preview" style="background: #F5C400;"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Brand Yellow</div>
+                <div class="swatch-token">--brand-yellow · #F5C400</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(0.992 0.006 106.5)">
+              <div class="swatch-preview" style="background: #FCFBF7;"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Cream</div>
+                <div class="swatch-token">--cream</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Surfaces -->
+        <div class="palette-group">
+          <h3 class="palette-group-title">Superficies · Dark (default)</h3>
+          <div class="swatch-grid">
+            <article class="swatch" data-copy="oklch(0.129 0.042 264.695)">
+              <div class="swatch-preview" style="background: oklch(0.129 0.042 264.695);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Background</div>
+                <div class="swatch-token">--background</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(0.208 0.042 265.755)">
+              <div class="swatch-preview" style="background: oklch(0.208 0.042 265.755);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Card / Popover</div>
+                <div class="swatch-token">--card</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(0.279 0.041 260.031)">
+              <div class="swatch-preview" style="background: oklch(0.279 0.041 260.031);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Muted / Border</div>
+                <div class="swatch-token">--muted, --border</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(0.704 0.04 256.788)">
+              <div class="swatch-preview" style="background: oklch(0.704 0.04 256.788);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Muted Foreground</div>
+                <div class="swatch-token">--muted-foreground</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Action -->
+        <div class="palette-group">
+          <h3 class="palette-group-title">Acción</h3>
+          <div class="swatch-grid">
+            <article class="swatch" data-copy="oklch(48.495% 0.15405 258.955)">
+              <div class="swatch-preview" style="background: oklch(48.495% 0.15405 258.955);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Primary (dark)</div>
+                <div class="swatch-token">--primary</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(36.405% 0.15554 262.833)">
+              <div class="swatch-preview" style="background: oklch(36.405% 0.15554 262.833);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Primary (light)</div>
+                <div class="swatch-token">--primary · light</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(0.546 0.245 262.887)">
+              <div class="swatch-preview" style="background: oklch(0.546 0.245 262.887);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Ring / Focus</div>
+                <div class="swatch-token">--ring</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Semantic -->
+        <div class="palette-group">
+          <h3 class="palette-group-title">Estados semánticos</h3>
+          <div class="swatch-grid">
+            <article class="swatch" data-copy="oklch(0.627 0.194 149.214)">
+              <div class="swatch-preview" style="background: oklch(0.627 0.194 149.214);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Success</div>
+                <div class="swatch-token">--success</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(0.769 0.188 70.08)">
+              <div class="swatch-preview" style="background: oklch(0.769 0.188 70.08);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Warning</div>
+                <div class="swatch-token">--warning</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(0.577 0.245 27.325)">
+              <div class="swatch-preview" style="background: oklch(0.577 0.245 27.325);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Destructive</div>
+                <div class="swatch-token">--destructive</div>
+              </div>
+            </article>
+            <article class="swatch" data-copy="oklch(0.546 0.245 262.887)">
+              <div class="swatch-preview" style="background: oklch(0.546 0.245 262.887);"></div>
+              <div class="swatch-info">
+                <div class="swatch-name">Info</div>
+                <div class="swatch-token">--info</div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <p class="palette-rationale">
+          <strong>Azul + amarillo = autoridad institucional + energía.</strong> Es la dupla
+          visual de la DIAN, banca, y entes oficiales — exactamente lo que el usuario
+          espera de una herramienta de facturación electrónica. El amarillo brand evita
+          que la paleta caiga en lo frío o burocrático, y se reserva para los puntos de
+          mayor jerarquía: CTAs principales, badges destacados y acentos críticos.
+          Los grises usan tono azulado (<code class="mono">hue ~260</code>) para que
+          armonicen perceptualmente con el brand-blue en lugar de chocar con grises neutros.
+        </p>
+      </section>
+
+      <!-- ========================================================
+           2. TYPOGRAPHY
+           ======================================================== -->
+      <section class="section" id="typography">
+        <header class="section-header">
+          <span class="section-eyebrow">02 — Fundamentos</span>
+          <h2 class="section-title">Tipografía</h2>
+          <p class="section-desc">
+            Sistema de dos familias: <strong>Geist</strong> para todo el sistema (UI + display),
+            <strong>Geist Mono</strong> para código, números técnicos y etiquetas mono.
+          </p>
+        </header>
+
+        <div class="type-stack">
+          <div class="type-row">
+            <div class="type-label">Display<small>Geist · 60/63 · 800</small></div>
+            <div class="display-1">Facturá sin fricción.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H1<small>Geist · 48/53 · 700</small></div>
+            <div class="h1">Tu organización, tus folios</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H2<small>Geist · 36/41 · 700</small></div>
+            <div class="h2">Crear factura electrónica</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H3<small>Geist · 28/34 · 600</small></div>
+            <div class="h3">Resolución de numeración</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H4<small>Geist · 22/29 · 600</small></div>
+            <div class="h4">Datos del cliente</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H5<small>Geist · 18/25 · 600</small></div>
+            <div class="h5">Folios disponibles</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">H6<small>Geist · 15/21 · 700 · upper</small></div>
+            <div class="h6">Folios por tipo</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">Body<small>Geist · 16/27 · 400</small></div>
+            <div class="body-text">
+              Nelson Arango conecta tu negocio con la DIAN sin que tengas que pelearte con XML,
+              CUFE, ni resoluciones. La idea es simple: cargás tu cliente, elegís un
+              concepto, y la factura se emite, se firma y se envía. El diseño tiene
+              que respetar esa promesa — claridad antes que decoración.
+            </div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">Caption<small>Geist · 13/19 · 400</small></div>
+            <div class="caption">Última sincronización: hace 2 minutos · DIAN PROD</div>
+          </div>
+          <div class="type-row">
+            <div class="type-label">Mono<small>Geist Mono · 14/22 · 500</small></div>
+            <div><span class="mono">SETP990081529 · folio #00042 · CUFE válido</span></div>
+          </div>
+        </div>
+
+        <p class="palette-rationale">
+          <strong>Geist es una sans neogrotesque diseñada por Vercel</strong> para
+          interfaces densas en datos — exactamente lo nuestro. Tiene números
+          tabulares nativos (críticos para columnas de pesos, folios y NITs),
+          un peso 800 con personalidad para titulares, y proporciones humanistas
+          que sostienen la lectura larga sin cansar. Reservamos
+          <code class="mono">tabular-nums</code> para todas las cantidades para
+          que las columnas no bailen al cambiar valores.
+        </p>
+      </section>
+
+      <!-- ========================================================
+           3. NAVBAR
+           ======================================================== -->
+      <section class="section" id="navbar">
+        <header class="section-header">
+          <span class="section-eyebrow">03 — Navegación</span>
+          <h2 class="section-title">Navbar</h2>
+          <p class="section-desc">
+            Barra superior responsiva con estados hover y activo. El indicador amarillo
+            ancla la página actual sin gritar.
+          </p>
+        </header>
+
+        <div class="demo-card">
+          <div class="demo-frame">
+            <div class="demo-navbar">
+              <div class="brand">
+                <div class="brand-mark" style="width:32px;height:32px;">
+                  <span class="brand-mark-letter" style="font-size:0.9rem;">P</span>
+                </div>
+                <span class="brand-name" style="font-size:0.95rem;">Nelson Arango</span>
+              </div>
+              <nav>
+                <a href="#" class="is-active">Dashboard</a>
+                <a href="#">Facturas</a>
+                <a href="#">Clientes</a>
+                <a href="#">Catálogo</a>
+                <a href="#">Folios</a>
+              </nav>
+              <div style="display:flex; gap: var(--space-2);">
+                <button class="btn btn-ghost btn-sm" type="button">Soporte</button>
+                <button class="btn btn-primary btn-sm" type="button">Nueva factura</button>
+              </div>
+            </div>
+          </div>
+          <div class="demo-meta">
+            <span>Hover items · click para activar</span>
+            <code>.demo-navbar</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           4. BUTTONS
+           ======================================================== -->
+      <section class="section" id="buttons">
+        <header class="section-header">
+          <span class="section-eyebrow">04 — Componentes</span>
+          <h2 class="section-title">Botones</h2>
+          <p class="section-desc">
+            Cinco variantes × tres tamaños. Estados hover, active, focus y disabled
+            cableados. Primary es <strong>amarillo sobre azul</strong> — máxima jerarquía.
+          </p>
+        </header>
+
+        <div class="demo-card">
+          <div class="demo-frame">
+            <div class="btn-row">
+              <div class="btn-row-label">Variantes</div>
+              <div class="btn-grid">
+                <button class="btn btn-primary" type="button">Primary</button>
+                <button class="btn btn-secondary" type="button">Secondary</button>
+                <button class="btn btn-outline" type="button">Outline</button>
+                <button class="btn btn-ghost" type="button">Ghost</button>
+                <button class="btn btn-destructive" type="button">Destructive</button>
+                <button class="btn btn-primary" type="button" disabled>Disabled</button>
+                <button class="btn btn-primary" type="button"><span class="spinner" aria-hidden="true"></span>Cargando</button>
+              </div>
+            </div>
+            <div class="btn-row">
+              <div class="btn-row-label">Tamaños</div>
+              <div class="btn-grid">
+                <button class="btn btn-primary btn-sm" type="button">Pequeño</button>
+                <button class="btn btn-primary" type="button">Por defecto</button>
+                <button class="btn btn-primary btn-lg" type="button">Grande</button>
+              </div>
+            </div>
+            <div class="btn-row">
+              <div class="btn-row-label">Con iconos</div>
+              <div class="btn-grid">
+                <button class="btn btn-primary" type="button">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                  Emitir factura
+                </button>
+                <button class="btn btn-secondary" type="button">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                  Descargar PDF
+                </button>
+                <button class="btn btn-outline" type="button">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+                  Nuevo cliente
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           5. CARDS
+           ======================================================== -->
+      <section class="section" id="cards">
+        <header class="section-header">
+          <span class="section-eyebrow">05 — Componentes</span>
+          <h2 class="section-title">Cards</h2>
+          <p class="section-desc">
+            Contenedores versátiles. El card de organización es el patrón estrella
+            del dashboard — fondo brand-blue con glow amarillo y badge de rol destacado.
+          </p>
+        </header>
+
+        <h3 class="h5" style="margin-bottom: var(--space-3);">Card de organización V4 (patrón estrella)</h3>
+        <section class="v4-card" aria-label="Tu organización y folios">
+          <header class="v4-head">
+            <div>
+              <div class="v4-eyebrow">
+                <span class="v4-yellow-bar"></span>
+                Organización
+              </div>
+              <h3 class="v4-name">Nelson Arango</h3>
+              <div class="v4-meta">
+                <span class="v4-chip">Member</span>
+                <span class="v4-nit">NIT 900.123.456-7</span>
+              </div>
+            </div>
+            <button class="v4-icobtn" type="button" aria-label="Configuración">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </button>
+          </header>
+
+          <div class="v4-divider"></div>
+
+          <div class="v4-section-title">Folios por tipo</div>
+
+          <div class="v4-rows">
+            <!-- Factura · 78% used → warning -->
+            <div class="v4-row">
+              <div class="v4-ring">
+                <svg viewBox="0 0 80 80">
+                  <circle class="v4-ring-track" cx="40" cy="40" r="34"/>
+                  <circle class="v4-ring-fill tone-warning" cx="40" cy="40" r="34"
+                    stroke-dasharray="213.63"
+                    stroke-dashoffset="47.00"/>
+                </svg>
+                <div class="v4-ring-label">
+                  <span class="v4-ring-used">78</span>
+                  <span class="v4-ring-total">/ 100</span>
+                </div>
+              </div>
+              <div class="v4-row-info">
+                <div class="v4-row-label">
+                  <span class="v4-row-ico">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <line x1="9" y1="13" x2="15" y2="13"/>
+                      <line x1="9" y1="17" x2="13" y2="17"/>
+                    </svg>
+                  </span>
+                  Factura
+                </div>
+                <div class="v4-row-status tone-warning">
+                  <span class="v4-status-dot"></span>
+                  22 disponibles
+                </div>
+              </div>
+              <button class="v4-buy" type="button">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Comprar
+              </button>
+            </div>
+
+            <!-- Doc. Soporte · 93% used → danger -->
+            <div class="v4-row">
+              <div class="v4-ring">
+                <svg viewBox="0 0 80 80">
+                  <circle class="v4-ring-track" cx="40" cy="40" r="34"/>
+                  <circle class="v4-ring-fill tone-danger" cx="40" cy="40" r="34"
+                    stroke-dasharray="213.63"
+                    stroke-dashoffset="14.95"/>
+                </svg>
+                <div class="v4-ring-label">
+                  <span class="v4-ring-used">93</span>
+                  <span class="v4-ring-total">/ 100</span>
+                </div>
+              </div>
+              <div class="v4-row-info">
+                <div class="v4-row-label">
+                  <span class="v4-row-ico">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <circle cx="12" cy="15" r="2"/>
+                    </svg>
+                  </span>
+                  Doc. Soporte
+                </div>
+                <div class="v4-row-status tone-danger">
+                  <span class="v4-status-dot"></span>
+                  7 disponibles · crítico
+                </div>
+              </div>
+              <button class="v4-buy" type="button">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Comprar
+              </button>
+            </div>
+
+            <!-- Nota crédito · 35% used → ok (saludable) -->
+            <div class="v4-row">
+              <div class="v4-ring">
+                <svg viewBox="0 0 80 80">
+                  <circle class="v4-ring-track" cx="40" cy="40" r="34"/>
+                  <circle class="v4-ring-fill tone-ok" cx="40" cy="40" r="34"
+                    stroke-dasharray="213.63"
+                    stroke-dashoffset="138.86"/>
+                </svg>
+                <div class="v4-ring-label">
+                  <span class="v4-ring-used">17</span>
+                  <span class="v4-ring-total">/ 50</span>
+                </div>
+              </div>
+              <div class="v4-row-info">
+                <div class="v4-row-label">
+                  <span class="v4-row-ico">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18M3 12h18M3 18h12"/>
+                    </svg>
+                  </span>
+                  Nota crédito
+                </div>
+                <div class="v4-row-status tone-ok">
+                  <span class="v4-status-dot"></span>
+                  33 disponibles
+                </div>
+              </div>
+              <button class="v4-buy" type="button">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Comprar
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <h3 class="h5" style="margin: var(--space-8) 0 var(--space-3);">Cards de contenido</h3>
+        <div class="card-grid">
+          <article class="card">
+            <div class="card-image">
+              <span class="card-tag">Destacado</span>
+              <svg class="card-image-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Cómo emitir tu primera factura</h3>
+              <p class="card-desc">Guía paso a paso desde la creación del cliente hasta el envío DIAN.</p>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" type="button">Leer guía</button>
+                <button class="btn btn-ghost btn-sm" type="button">Guardar</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-image">
+              <span class="card-tag">Nuevo</span>
+              <svg class="card-image-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Resoluciones DIAN</h3>
+              <p class="card-desc">Cargá tu rango y prefijo. El sistema lleva el contador y avisa cuando se agota.</p>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" type="button">Ver</button>
+                <button class="btn btn-ghost btn-sm" type="button">Guardar</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-image">
+              <span class="card-tag">Premium</span>
+              <svg class="card-image-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/>
+              </svg>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Documento Soporte</h3>
+              <p class="card-desc">Compras a no obligados. Numeración separada, mismo flujo simple.</p>
+              <div class="card-actions">
+                <button class="btn btn-primary btn-sm" type="button">Activar</button>
+                <button class="btn btn-ghost btn-sm" type="button">Saber más</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           6. FORMS
+           ======================================================== -->
+      <section class="section" id="forms">
+        <header class="section-header">
+          <span class="section-eyebrow">06 — Componentes</span>
+          <h2 class="section-title">Formularios</h2>
+          <p class="section-desc">
+            Inputs, selects, checkboxes y radios con estados de validación
+            (default, focus, success, error). El focus ring usa
+            <code class="mono">brand-yellow</code> para alta visibilidad.
+          </p>
+        </header>
+
+        <form class="form-grid" onsubmit="event.preventDefault();">
+          <div class="field">
+            <label class="label" for="razon-social">Razón social <span class="req">*</span></label>
+            <input class="input" id="razon-social" type="text" placeholder="Mi Empresa SAS" />
+            <span class="hint">Tal como aparece en el RUT.</span>
+          </div>
+
+          <div class="field is-success">
+            <label class="label" for="nit">NIT</label>
+            <input class="input" id="nit" type="text" value="900123456-7" />
+            <span class="hint">✓ NIT válido en DIAN</span>
+          </div>
+
+          <div class="field is-error">
+            <label class="label" for="email">Email</label>
+            <input class="input" id="email" type="email" value="cliente@" />
+            <span class="hint">Email inválido. Verificá el dominio.</span>
+          </div>
+
+          <div class="field">
+            <label class="label" for="regimen">Régimen tributario</label>
+            <select class="select" id="regimen">
+              <option>Responsable de IVA</option>
+              <option>No responsable de IVA</option>
+              <option>Régimen simple</option>
+              <option>Gran contribuyente</option>
+            </select>
+          </div>
+
+          <div class="field field-full">
+            <label class="label" for="direccion">Dirección fiscal</label>
+            <textarea class="textarea" id="direccion" placeholder="Calle 100 #15-20, oficina 304, Bogotá"></textarea>
+            <span class="hint">Dirección registrada ante la DIAN.</span>
+          </div>
+
+          <div class="field">
+            <span class="label">Notificaciones</span>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" checked /> Factura emitida</label>
+              <label class="check"><input type="checkbox" checked /> Folios bajos</label>
+              <label class="check"><input type="checkbox" /> Resumen mensual</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label">Plan</span>
+            <div class="check-row">
+              <label class="check"><input type="radio" name="plan" /> Starter · 50 folios</label>
+              <label class="check"><input type="radio" name="plan" checked /> Pro · 500 folios</label>
+              <label class="check"><input type="radio" name="plan" /> Empresa · ilimitado</label>
+            </div>
+          </div>
+
+          <div class="field field-full" style="flex-direction: row; gap: var(--space-3); justify-content: flex-end; padding-top: var(--space-3); border-top: 1px solid var(--border);">
+            <button class="btn btn-ghost" type="button">Cancelar</button>
+            <button class="btn btn-primary" type="submit">Guardar cambios</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ========================================================
+           7. HUD STATES & BADGES
+           ======================================================== -->
+      <section class="section" id="hud">
+        <header class="section-header">
+          <span class="section-eyebrow">07 — Feedback</span>
+          <h2 class="section-title">Estados &amp; Badges</h2>
+          <p class="section-desc">
+            Mensajes de estado, indicadores inline, y badges de notificación.
+            Comunicar estado sin romper el flujo del usuario.
+          </p>
+        </header>
+
+        <h3 class="h5" style="margin-bottom: var(--space-3);">Mensajes de estado</h3>
+        <div class="hud-grid">
+          <div class="hud success">
+            <div class="hud-icon">✓</div>
+            <div class="hud-text"><strong>Factura emitida</strong><small>Enviada a DIAN. CUFE válido.</small></div>
+          </div>
+          <div class="hud warning">
+            <div class="hud-icon">!</div>
+            <div class="hud-text"><strong>Folios bajos</strong><small>Te quedan 7 folios en Doc. Soporte.</small></div>
+          </div>
+          <div class="hud error">
+            <div class="hud-icon">×</div>
+            <div class="hud-text"><strong>Rechazo DIAN</strong><small>Regla 90: documento duplicado. Reintentar.</small></div>
+          </div>
+          <div class="hud info">
+            <div class="hud-icon">i</div>
+            <div class="hud-text"><strong>Sincronizando</strong><small>Validando con DIAN PROD…</small></div>
+          </div>
+        </div>
+
+        <h3 class="h5" style="margin: var(--space-6) 0 var(--space-3);">Badges</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-6);">
+          <span class="badge badge-success"><span class="dot"></span>Aceptada</span>
+          <span class="badge badge-warning"><span class="dot"></span>Pendiente</span>
+          <span class="badge badge-error"><span class="dot"></span>Rechazada</span>
+          <span class="badge badge-info"><span class="dot"></span>Borrador</span>
+          <span class="badge badge-neutral"><span class="dot"></span>Anulada</span>
+          <span class="badge badge-brand">Member</span>
+          <span class="badge badge-brand">Admin</span>
+          <span class="badge badge-info">Beta</span>
+        </div>
+
+        <h3 class="h5" style="margin-bottom: var(--space-3);">Notificaciones</h3>
+        <div class="notif-row">
+          <button class="icon-btn" type="button" aria-label="3 notificaciones">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notif-badge">3</span>
+          </button>
+          <button class="icon-btn" type="button" aria-label="12 mensajes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="notif-badge">12</span>
+          </button>
+          <button class="icon-btn" type="button" aria-label="99+ pendientes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span class="notif-badge">99+</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           8. FOOTER
+           ======================================================== -->
+      <section class="section" id="footer">
+        <header class="section-header">
+          <span class="section-eyebrow">08 — Layout</span>
+          <h2 class="section-title">Footer</h2>
+          <p class="section-desc">
+            Footer estructurado con marca, columnas de enlaces, sociales y línea legal.
+          </p>
+        </header>
+
+        <div class="demo-footer">
+          <div class="footer-top">
+            <div class="footer-brand">
+              <div class="brand">
+                <div class="brand-mark" style="width:32px;height:32px;">
+                  <span class="brand-mark-letter" style="font-size:0.9rem;">P</span>
+                </div>
+                <span class="brand-name">Nelson Arango</span>
+              </div>
+              <p>Facturación electrónica DIAN para empresas que prefieren facturar antes que pelearse con el SOAP.</p>
+            </div>
+            <div class="footer-col">
+              <h4>Producto</h4>
+              <ul>
+                <li><a href="#">Facturación</a></li>
+                <li><a href="#">Doc. Soporte</a></li>
+                <li><a href="#">Folios</a></li>
+                <li><a href="#">Precios</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Empresa</h4>
+              <ul>
+                <li><a href="#">Nosotros</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contacto</a></li>
+                <li><a href="#">Soporte</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Legal</h4>
+              <ul>
+                <li><a href="#">Términos</a></li>
+                <li><a href="#">Privacidad</a></li>
+                <li><a href="#">Habeas Data</a></li>
+                <li><a href="#">DIAN PROD</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <span>© 2026 Palopa. Todos los derechos reservados.</span>
+            <div class="footer-social">
+              <a href="#" aria-label="Twitter"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.8a8.5 8.5 0 0 1-2.36.64 4.13 4.13 0 0 0 1.81-2.27 8.21 8.21 0 0 1-2.61 1 4.1 4.1 0 0 0-7 3.74A11.64 11.64 0 0 1 3.39 4.62a4.16 4.16 0 0 0 1.27 5.49A4.09 4.09 0 0 1 2.8 9.6v.05a4.1 4.1 0 0 0 3.3 4.03 4.1 4.1 0 0 1-1.86.07 4.11 4.11 0 0 0 3.83 2.85A8.22 8.22 0 0 1 2 18.29a11.6 11.6 0 0 0 6.29 1.84c7.55 0 11.67-6.25 11.67-11.67l-.01-.53A8.34 8.34 0 0 0 22 5.8z"/></svg></a>
+              <a href="#" aria-label="GitHub"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1-.02-1.96-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.16 1.18a10.94 10.94 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13 0 1.54-.01 2.79-.01 3.17 0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg></a>
+              <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zM7.12 20H3.56V9h3.56v11zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM20.45 20h-3.56v-5.6c0-1.34-.03-3.06-1.86-3.06-1.87 0-2.16 1.46-2.16 2.96V20H9.32V9h3.41v1.5h.05c.48-.9 1.64-1.86 3.38-1.86 3.61 0 4.28 2.38 4.28 5.47V20z"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           9. PRINCIPLES
+           ======================================================== -->
+      <section class="section" id="principles">
+        <header class="section-header">
+          <span class="section-eyebrow">09 — Filosofía</span>
+          <h2 class="section-title">Principios de diseño</h2>
+          <p class="section-desc">
+            Decisiones tomadas a propósito. Cada principio es una restricción que
+            le da forma al sistema.
+          </p>
+        </header>
+
+        <div class="principles">
+          <div class="principle">
+            <div class="principle-num">01</div>
+            <h3>Claridad antes que decoración</h3>
+            <p>El usuario está facturando, no admirando UI. Los datos son el héroe;
+              la interfaz, el escenario. Si un elemento decorativo distrae de un
+              número o estado crítico, se va.</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">02</div>
+            <h3>El amarillo es sagrado</h3>
+            <p>Brand-yellow se reserva para CTAs primarios, badges destacados y
+              acentos críticos. Si lo usás para todo, deja de tener significado.
+              La economía del color es jerarquía.</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">03</div>
+            <h3>Números tabulares siempre</h3>
+            <p>Pesos, folios, NITs, CUFE — todo número va con
+              <code class="mono">tabular-nums</code>. Las columnas no bailan.
+              <code class="mono">font-black</code> en cantidades clave para que se lean
+              de un vistazo.</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">04</div>
+            <h3>Dark por default, light por elección</h3>
+            <p>El producto se usa horas en oficina. Dark mode reduce fatiga visual
+              y combina mejor con el azul institucional. Light está disponible para
+              quien lo prefiera, pero la identidad vive en el oscuro.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           10. ANIMATIONS
+           ======================================================== -->
+      <section class="section" id="animations">
+        <header class="section-header">
+          <span class="section-eyebrow">10 — Movimiento</span>
+          <h2 class="section-title">Animaciones</h2>
+          <p class="section-desc">
+            Microinteracciones que confirman intención. Suaves, con propósito,
+            y respetando <code class="mono">prefers-reduced-motion</code>.
+          </p>
+        </header>
+
+        <div class="anim-grid">
+          <div class="anim-card anim-lift">
+            <div class="anim-shape"></div>
+            <h4>Lift</h4>
+            <p>translateY(-8px)</p>
+          </div>
+          <div class="anim-card anim-rotate">
+            <div class="anim-shape"></div>
+            <h4>Tilt</h4>
+            <p>rotate(15deg)</p>
+          </div>
+          <div class="anim-card anim-scale">
+            <div class="anim-shape"></div>
+            <h4>Scale spring</h4>
+            <p>scale(1.15)</p>
+          </div>
+          <div class="anim-card anim-glow">
+            <div class="anim-shape"></div>
+            <h4>Glow</h4>
+            <p>halo amarillo</p>
+          </div>
+          <div class="anim-card anim-float">
+            <div class="anim-shape"></div>
+            <h4>Float</h4>
+            <p>infinite ease</p>
+          </div>
+          <div class="anim-card anim-aurora">
+            <div class="anim-shape"></div>
+            <h4>Aurora</h4>
+            <p>--animate-aurora</p>
+          </div>
+          <div class="anim-card anim-bar" style="grid-column: span 2;">
+            <h4 style="margin-bottom: var(--space-1);">Bar fill (folios usados)</h4>
+            <p>--animate-bar-fill · 600ms ease-out</p>
+            <div class="anim-shape"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <p>Palopa Design System · Generado en abril 2026 · Hecho con cuidado.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ============================================================
+    // Click-to-copy color swatches
+    // ============================================================
+    document.querySelectorAll(".swatch").forEach((el) => {
+      el.addEventListener("click", async () => {
+        const value = el.dataset.copy;
+        try {
+          await navigator.clipboard.writeText(value);
+          el.classList.add("copied");
+          setTimeout(() => el.classList.remove("copied"), 1200);
+        } catch (e) {
+          console.warn("Clipboard not available", e);
+        }
+      });
+    });
+
+    // ============================================================
+    // Theme toggle
+    // ============================================================
+    const root = document.documentElement;
+    const toggle = document.getElementById("themeToggle");
+    const icon = document.getElementById("themeIcon");
+    const label = document.getElementById("themeLabel");
+    const stored = localStorage.getItem("palopa-theme");
+    if (stored === "light") {
+      root.setAttribute("data-theme", "light");
+      icon.textContent = "◐";
+      label.textContent = "Oscuro";
+    }
+    toggle.addEventListener("click", () => {
+      const isLight = root.getAttribute("data-theme") === "light";
+      if (isLight) {
+        root.setAttribute("data-theme", "dark");
+        icon.textContent = "☀";
+        label.textContent = "Claro";
+        localStorage.setItem("palopa-theme", "dark");
+      } else {
+        root.setAttribute("data-theme", "light");
+        icon.textContent = "◐";
+        label.textContent = "Oscuro";
+        localStorage.setItem("palopa-theme", "light");
+      }
+    });
+
+    // ============================================================
+    // Active nav link on scroll
+    // ============================================================
+    const sections = document.querySelectorAll(".section");
+    const links = document.querySelectorAll(".nav-link");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            links.forEach((l) => {
+              l.classList.toggle("is-active", l.getAttribute("href") === "#" + id);
+            });
+          }
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => observer.observe(s));
+
+    // ============================================================
+    // Demo navbar: click to set active
+    // ============================================================
+    document.querySelectorAll(".demo-navbar nav a").forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.querySelectorAll(".demo-navbar nav a").forEach((x) => x.classList.remove("is-active"));
+        a.classList.add("is-active");
+      });
+    });
+  </script>
+</body>
+</html>

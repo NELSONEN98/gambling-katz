@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arquitectura Bosque — Casas en el campo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ---------- TOKENS ---------- */
+:root{
+  --bone:#F2EEE6;
+  --bone-2:#E8E2D6;
+  --ink:#1A1815;
+  --ink-2:#2B2823;
+  --muted:#6B665C;
+  --line:#CFC8B9;
+  --moss:#3A4A37;       /* verde bosque profundo */
+  --terra:#8C4A2B;      /* acento terracota */
+  --accent: var(--moss);
+
+  --serif:"Cormorant Garamond", "Times New Roman", serif;
+  --sans:"Inter", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, monospace;
+
+  --max: 1440px;
+  --pad: clamp(20px, 4vw, 56px);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--bone);
+  color:var(--ink);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ---------- REUSABLES ---------- */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+.eyebrow::before{
+  content:"";
+  width:22px;height:1px;background:currentColor;
+}
+.serif{font-family:var(--serif);font-weight:400;letter-spacing:-.015em}
+.rule{height:1px;background:var(--line);border:0;margin:0}
+
+.btn{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  padding:14px 22px;border:1px solid var(--ink);color:var(--ink);background:transparent;
+  transition:background .25s ease, color .25s ease, transform .25s ease;
+  cursor:pointer;
+}
+.btn:hover{background:var(--ink);color:var(--bone)}
+.btn--light{border-color:var(--bone);color:var(--bone)}
+.btn--light:hover{background:var(--bone);color:var(--ink)}
+.btn--fill{background:var(--accent);color:var(--bone);border-color:var(--accent)}
+.btn--fill:hover{filter:brightness(1.1)}
+.btn .arrow{display:inline-block;transition:transform .25s ease}
+.btn:hover .arrow{transform:translateX(4px)}
+
+/* ---------- NAV ---------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px var(--pad);
+  color:var(--bone);
+  transition:background .3s ease, color .3s ease, border-color .3s ease, backdrop-filter .3s ease;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{
+  background:rgba(242,238,230,.92);
+  backdrop-filter:blur(10px);
+  color:var(--ink);
+  border-bottom-color:var(--line);
+}
+.nav__brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:22px;letter-spacing:-.01em}
+.nav__brand .mark{
+  width:26px;height:26px;border:1px solid currentColor;display:grid;place-items:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+}
+.nav__links{display:flex;gap:4px;align-items:center}
+.nav__links a{
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  padding:10px 14px;position:relative;opacity:.85;
+}
+.nav__links a:hover{opacity:1}
+.nav__links a::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:6px;height:1px;background:currentColor;
+  transform:scaleX(0);transform-origin:left;transition:transform .3s ease;
+}
+.nav__links a:hover::after{transform:scaleX(1)}
+.nav__cta{
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  padding:10px 14px;border:1px solid currentColor;
+}
+.nav__menu{display:none;width:40px;height:40px;border:1px solid currentColor;background:transparent;cursor:pointer;align-items:center;justify-content:center}
+.nav__menu span{display:block;width:16px;height:1px;background:currentColor;position:relative}
+.nav__menu span::before,.nav__menu span::after{content:"";position:absolute;left:0;width:16px;height:1px;background:currentColor}
+.nav__menu span::before{top:-5px}.nav__menu span::after{top:5px}
+
+@media (max-width: 900px){
+  .nav__links,.nav__cta{display:none}
+  .nav__menu{display:flex}
+}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;min-height:100vh;color:var(--bone);overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:120px var(--pad) 56px;
+}
+.hero__bg{position:absolute;inset:0;background:url("img/hero.jpg") center/cover no-repeat;transform:scale(1.02)}
+.hero__bg::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(180deg, rgba(26,24,21,.35) 0%, rgba(26,24,21,.15) 35%, rgba(26,24,21,.75) 100%);
+}
+.hero__grid{
+  position:relative;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;
+}
+.hero h1{
+  font-family:var(--serif);font-weight:300;
+  font-size:clamp(56px, 9vw, 148px);
+  line-height:.95;letter-spacing:-.02em;margin:0 0 24px;
+}
+.hero h1 em{font-style:italic;font-weight:400}
+.hero__sub{
+  max-width:420px;font-size:15px;line-height:1.6;color:rgba(242,238,230,.85);margin:0 0 32px;
+}
+.hero__meta{
+  font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(242,238,230,.7);
+  display:grid;gap:12px;text-align:right;min-width:200px;
+}
+.hero__meta div{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid rgba(242,238,230,.2);padding-bottom:8px}
+.hero__meta span:first-child{opacity:.5}
+.hero__scroll{
+  position:absolute;left:var(--pad);bottom:56px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(242,238,230,.7);writing-mode:vertical-rl;transform:rotate(180deg);
+  display:flex;align-items:center;gap:14px;
+}
+.hero__scroll::after{content:"";width:1px;height:60px;background:currentColor;opacity:.5}
+
+.hero__index{
+  position:absolute;top:50%;right:var(--pad);transform:translateY(-50%);
+  display:grid;gap:14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:rgba(242,238,230,.5);
+}
+.hero__index a{display:flex;align-items:center;gap:10px;transition:color .2s}
+.hero__index a:hover{color:var(--bone)}
+.hero__index a::before{content:"";width:12px;height:1px;background:currentColor}
+
+@media (max-width:900px){
+  .hero__grid{grid-template-columns:1fr}
+  .hero__meta{text-align:left}
+  .hero__scroll,.hero__index{display:none}
+}
+
+/* ---------- MARQUEE / TICKER ---------- */
+.ticker{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  overflow:hidden;padding:18px 0;background:var(--bone);
+}
+.ticker__track{
+  display:flex;gap:64px;white-space:nowrap;
+  animation:marquee 45s linear infinite;
+  font-family:var(--serif);font-style:italic;font-size:28px;color:var(--ink);
+}
+.ticker__track span{display:inline-flex;align-items:center;gap:64px}
+.ticker__track span::after{content:"✦";color:var(--accent);font-style:normal;font-size:18px;font-family:var(--sans)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ---------- NOSOTROS ---------- */
+.nosotros{padding:120px 0;position:relative}
+.nosotros__grid{display:grid;grid-template-columns:5fr 7fr;gap:80px;align-items:start}
+@media (max-width:900px){.nosotros__grid{grid-template-columns:1fr;gap:40px}}
+.nosotros__head .num{
+  font-family:var(--serif);font-size:180px;line-height:.85;font-weight:300;color:var(--accent);
+  letter-spacing:-.04em;
+}
+.nosotros__head h2{
+  font-family:var(--serif);font-weight:300;font-size:clamp(40px,4.5vw,68px);
+  line-height:1.02;letter-spacing:-.02em;margin:24px 0 0;
+}
+.nosotros__head h2 em{font-style:italic}
+.nosotros__body p{font-size:17px;line-height:1.7;margin:0 0 20px;color:var(--ink-2);max-width:52ch}
+.nosotros__body p:first-child::first-letter{
+  font-family:var(--serif);font-size:72px;line-height:.8;float:left;padding:6px 12px 0 0;font-weight:400;color:var(--accent);
+}
+.nosotros__stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px;
+  padding-top:32px;border-top:1px solid var(--line);
+}
+.nosotros__stats .k{font-family:var(--serif);font-size:48px;line-height:1;font-weight:400}
+.nosotros__stats .l{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+
+/* ---------- MODELOS ---------- */
+.modelos{padding:40px 0 120px;background:var(--bone)}
+.modelos__head{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:56px}
+.modelos__head h2{
+  font-family:var(--serif);font-weight:300;font-size:clamp(40px,5vw,72px);
+  letter-spacing:-.02em;margin:16px 0 0;line-height:1;
+}
+.modelos__head h2 em{font-style:italic}
+.modelos__head p{max-width:360px;color:var(--muted);font-size:14px;margin:0}
+
+.modelo{
+  display:grid;grid-template-columns:6fr 6fr;gap:0;
+  border-top:1px solid var(--line);
+  padding:48px 0;align-items:center;
+}
+.modelo:last-child{border-bottom:1px solid var(--line)}
+.modelo__media{position:relative;overflow:hidden;aspect-ratio:4/3;background:var(--bone-2)}
+.modelo__media img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease;filter:saturate(.95)}
+.modelo:hover .modelo__media img{transform:scale(1.04)}
+.modelo__media .tag{
+  position:absolute;top:16px;left:16px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  background:var(--bone);padding:6px 10px;color:var(--ink);
+}
+
+.modelo__body{padding:0 0 0 64px}
+.modelo:nth-child(even){grid-template-columns:6fr 6fr}
+.modelo:nth-child(even) .modelo__media{order:2}
+.modelo:nth-child(even) .modelo__body{padding:0 64px 0 0}
+
+.modelo__num{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted)}
+.modelo__title{
+  font-family:var(--serif);font-weight:300;font-size:clamp(38px,4.2vw,64px);
+  letter-spacing:-.02em;line-height:1;margin:16px 0 20px;
+}
+.modelo__title em{font-style:italic;color:var(--accent)}
+.modelo__desc{font-size:15px;line-height:1.7;color:var(--ink-2);max-width:44ch;margin:0 0 28px}
+.modelo__specs{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:28px;
+}
+.modelo__specs .s{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.modelo__specs .v{font-family:var(--serif);font-size:24px;line-height:1;margin-top:6px;font-weight:400}
+.modelo__price{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+.modelo__price .from{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.modelo__price .amount{font-family:var(--serif);font-size:32px;font-weight:400}
+
+@media (max-width:900px){
+  .modelo,.modelo:nth-child(even){grid-template-columns:1fr;gap:28px}
+  .modelo__body,.modelo:nth-child(even) .modelo__body{padding:0}
+  .modelo:nth-child(even) .modelo__media{order:0}
+}
+
+/* ---------- GALERIA ---------- */
+.galeria{padding:120px 0;background:var(--ink);color:var(--bone)}
+.galeria__head{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:56px}
+.galeria__head .eyebrow{color:rgba(242,238,230,.6)}
+.galeria__head h2{
+  font-family:var(--serif);font-weight:300;font-size:clamp(40px,5vw,72px);
+  letter-spacing:-.02em;margin:16px 0 0;line-height:1;
+}
+.galeria__head h2 em{font-style:italic}
+/* Galería en 3 filas tipo "strip". Cada fila es flex; los items tienen
+   flex-grow según su aspect-ratio para que la fila cierre perfecto
+   al mismo alto, sin huecos. */
+.galeria__grid{display:grid;gap:12px}
+.galeria__row{display:flex;gap:12px}
+.galeria__row .g{
+  position:relative;overflow:hidden;background:#000;
+  flex:1 1 0;min-width:0;
+}
+.galeria__row.h-tall  .g{height: clamp(280px, 34vw, 520px)}
+.galeria__row.h-med   .g{height: clamp(200px, 22vw, 340px)}
+.galeria__row.h-wide  .g{height: clamp(220px, 26vw, 420px)}
+
+/* Aspect-ratios para que flex-grow equilibre anchos correctamente.
+   Usamos flex-basis proporcional al ratio: ancho = alto × ratio. */
+.g[data-ratio="3/2"]{flex-grow: 1.5}
+.g[data-ratio="2/3"]{flex-grow: 0.6667}
+.g[data-ratio="3/1"]{flex-grow: 3}
+
+.g img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease, filter .4s ease;filter:saturate(.9)}
+.g:hover img{transform:scale(1.05);filter:saturate(1.05)}
+.g .meta{
+  position:absolute;left:12px;bottom:12px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--bone);
+  opacity:0;transform:translateY(6px);transition:opacity .3s, transform .3s;
+  background:rgba(26,24,21,.6);padding:6px 10px;backdrop-filter:blur(4px);
+}
+.g:hover .meta{opacity:1;transform:translateY(0)}
+
+@media (max-width:760px){
+  .galeria__row{flex-wrap:wrap}
+  .galeria__row .g{flex:1 1 45% !important;height:180px !important}
+}
+
+/* ---------- CONTACTO / CTA ---------- */
+.cta{
+  position:relative;padding:160px 0;color:var(--bone);overflow:hidden;
+  background:linear-gradient(rgba(26,24,21,.6),rgba(26,24,21,.85)), url("img/footer_bg.jpg") center/cover no-repeat;
+}
+.cta__inner{max-width:900px}
+.cta h2{
+  font-family:var(--serif);font-weight:300;font-size:clamp(48px,7vw,112px);
+  line-height:.95;letter-spacing:-.02em;margin:20px 0 32px;
+}
+.cta h2 em{font-style:italic}
+.cta p{font-size:17px;line-height:1.7;max-width:520px;color:rgba(242,238,230,.85);margin:0 0 40px}
+
+.cta__form{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;max-width:640px;
+  border-top:1px solid rgba(242,238,230,.3);
+}
+.cta__form label{
+  display:block;padding:20px 0;border-bottom:1px solid rgba(242,238,230,.3);
+}
+.cta__form label:nth-child(1),.cta__form label:nth-child(3){padding-right:24px;border-right:1px solid rgba(242,238,230,.3)}
+.cta__form label:nth-child(2),.cta__form label:nth-child(4){padding-left:24px}
+.cta__form .l{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,238,230,.6);display:block;margin-bottom:8px}
+.cta__form input, .cta__form select{
+  width:100%;background:transparent;border:0;color:var(--bone);
+  font-family:var(--serif);font-size:20px;outline:none;padding:0;
+}
+.cta__form input::placeholder{color:rgba(242,238,230,.4)}
+.cta__form select option{color:#111}
+.cta__submit{margin-top:28px}
+
+@media (max-width:640px){
+  .cta__form{grid-template-columns:1fr}
+  .cta__form label{padding:18px 0 !important;border-right:0 !important}
+}
+
+/* ---------- FOOTER ---------- */
+.footer{background:var(--ink);color:var(--bone);padding:80px 0 24px}
+.footer__grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-bottom:64px;border-bottom:1px solid rgba(242,238,230,.15)}
+.footer h3{font-family:var(--serif);font-weight:300;font-size:44px;margin:0 0 18px;letter-spacing:-.02em;line-height:1}
+.footer h3 em{font-style:italic}
+.footer p{color:rgba(242,238,230,.6);max-width:36ch;font-size:14px;margin:0}
+.footer h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,238,230,.5);margin:0 0 18px;font-weight:500}
+.footer ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.footer ul a{color:rgba(242,238,230,.85);font-size:14px;transition:color .2s}
+.footer ul a:hover{color:var(--bone)}
+.footer__bottom{
+  display:flex;justify-content:space-between;align-items:center;padding-top:24px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(242,238,230,.5);
+  flex-wrap:wrap;gap:12px;
+}
+@media (max-width:900px){.footer__grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media (max-width:560px){.footer__grid{grid-template-columns:1fr}}
+
+/* ---------- SECTION HEAD helper ---------- */
+.section-head .eyebrow{display:inline-flex}
+
+/* ---------- Reveal-on-scroll ---------- */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease, transform .9s ease}
+.reveal.visible{opacity:1;transform:none}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <span class="mark">AB</span>
+    <span>Arquitectura <em style="font-style:italic">Bosque</em></span>
+  </a>
+  <div class="nav__links">
+    <a href="#nosotros">Nosotros</a>
+    <a href="#modelos">Modelos</a>
+    <a href="#galeria">Galería</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <a class="nav__cta" href="tel:018009191">01·800·9191</a>
+  <button class="nav__menu" aria-label="Menú"><span></span></button>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero__bg"></div>
+
+  <div class="hero__index">
+    <a href="#nosotros">01 · Nosotros</a>
+    <a href="#modelos">02 · Modelos</a>
+    <a href="#galeria">03 · Galería</a>
+    <a href="#contacto">04 · Contacto</a>
+  </div>
+
+  <div class="hero__scroll">Desplazar ↓</div>
+
+  <div class="wrap hero__grid">
+    <div>
+      <div class="eyebrow" style="color:rgba(242,238,230,.7);margin-bottom:28px">Est. 2011 · Casas en el bosque</div>
+      <h1>
+        Vivir entre<br/>
+        árboles, <em>sin</em><br/>
+        renunciar al<br/>
+        confort.
+      </h1>
+      <p class="hero__sub">
+        Diseñamos y construimos casas de campo en madera y piedra, pensadas para durar generaciones y dialogar con el paisaje.
+      </p>
+      <a class="btn btn--light" href="#modelos">
+        Ver modelos <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <aside class="hero__meta">
+      <div><span>Lat</span><span>47.4569° N</span></div>
+      <div><span>Lon</span><span>11.8567° E</span></div>
+      <div><span>Altura</span><span>1 820 m</span></div>
+      <div><span>Edición</span><span>MMXXVI</span></div>
+    </aside>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span>Madera maciza</span>
+    <span>Piedra local</span>
+    <span>Aislamiento pasivo</span>
+    <span>Arquitectura lenta</span>
+    <span>Hecho a mano</span>
+    <span>Diseño a medida</span>
+    <span>Madera maciza</span>
+    <span>Piedra local</span>
+    <span>Aislamiento pasivo</span>
+    <span>Arquitectura lenta</span>
+    <span>Hecho a mano</span>
+    <span>Diseño a medida</span>
+  </div>
+</div>
+
+<!-- NOSOTROS -->
+<section class="nosotros" id="nosotros">
+  <div class="wrap">
+    <div class="nosotros__grid">
+      <div class="nosotros__head reveal">
+        <div class="eyebrow">01 / Nosotros</div>
+        <div class="num serif">01</div>
+        <h2>Una casa no<br/>se construye,<br/><em>se cultiva.</em></h2>
+      </div>
+
+      <div class="nosotros__body reveal">
+        <p>
+          Desde hace más de una década, levantamos casas que respetan el ritmo del bosque. Cada proyecto nace de un terreno concreto, de su luz, su pendiente y su silencio — no al revés. Usamos madera certificada, piedra del lugar y técnicas pasivas que reducen el consumo al mínimo.
+        </p>
+        <p>
+          Trabajamos con un equipo pequeño de arquitectos, carpinteros y canteros. Cada casa tarda en construirse, pero dura siglos.
+        </p>
+
+        <div class="nosotros__stats">
+          <div>
+            <div class="k serif">142</div>
+            <div class="l">Casas entregadas</div>
+          </div>
+          <div>
+            <div class="k serif">14</div>
+            <div class="l">Años construyendo</div>
+          </div>
+          <div>
+            <div class="k serif">0</div>
+            <div class="l">Residuos al bosque</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODELOS -->
+<section class="modelos" id="modelos">
+  <div class="wrap">
+    <div class="modelos__head reveal">
+      <div>
+        <div class="eyebrow">02 / Modelos</div>
+        <h2>Tres maneras<br/>de <em>habitar</em> el bosque.</h2>
+      </div>
+      <p>Tres tipologías base, infinitas adaptaciones. Cada modelo se ajusta al terreno, orientación y número de habitantes.</p>
+    </div>
+
+    <!-- MODELO 1 -->
+    <article class="modelo reveal">
+      <div class="modelo__media">
+        <span class="tag">Modelo 01</span>
+        <img src="img/modelo_basico.jpg" alt="Modelo básico" />
+      </div>
+      <div class="modelo__body">
+        <div class="modelo__num">Modelo 01 — Básico</div>
+        <h3 class="modelo__title">Refugio <em>Aire</em></h3>
+        <p class="modelo__desc">
+          Una planta abierta, techo a dos aguas y orientación sur. Pensada para parejas o estancias largas en soledad. Construcción en madera laminada con cimentación sobre pilotes.
+        </p>
+        <div class="modelo__specs">
+          <div><div class="s">Superficie</div><div class="v serif">62 m²</div></div>
+          <div><div class="s">Habitaciones</div><div class="v serif">1+1</div></div>
+          <div><div class="s">Entrega</div><div class="v serif">4 meses</div></div>
+        </div>
+        <div class="modelo__price">
+          <span class="from">Desde</span>
+          <span class="amount serif">€ 148 000</span>
+        </div>
+        <a class="btn" href="#">Ver plano completo <span class="arrow">→</span></a>
+      </div>
+    </article>
+
+    <!-- MODELO 2 -->
+    <article class="modelo reveal">
+      <div class="modelo__media">
+        <span class="tag">Modelo 02</span>
+        <img src="img/modelo_premier.jpg" alt="Modelo premier" />
+      </div>
+      <div class="modelo__body">
+        <div class="modelo__num">Modelo 02 — Premier</div>
+        <h3 class="modelo__title">Cabaña <em>Umbral</em></h3>
+        <p class="modelo__desc">
+          La versión familiar. Dos plantas, cubierta de teja cerámica y chimenea central de piedra. Terraza elevada que se adentra entre los árboles sin talar uno solo.
+        </p>
+        <div class="modelo__specs">
+          <div><div class="s">Superficie</div><div class="v serif">108 m²</div></div>
+          <div><div class="s">Habitaciones</div><div class="v serif">3+2</div></div>
+          <div><div class="s">Entrega</div><div class="v serif">7 meses</div></div>
+        </div>
+        <div class="modelo__price">
+          <span class="from">Desde</span>
+          <span class="amount serif">€ 246 000</span>
+        </div>
+        <a class="btn" href="#">Ver plano completo <span class="arrow">→</span></a>
+      </div>
+    </article>
+
+    <!-- MODELO 3 -->
+    <article class="modelo reveal">
+      <div class="modelo__media">
+        <span class="tag">Modelo 03</span>
+        <img src="img/modelo_elite.jpg" alt="Modelo elite" />
+      </div>
+      <div class="modelo__body">
+        <div class="modelo__num">Modelo 03 — Elite</div>
+        <h3 class="modelo__title">Casa <em>Linde</em></h3>
+        <p class="modelo__desc">
+          Proyecto a medida. Dos volúmenes conectados por un patio interior, materiales seleccionados en obra y sistema geotérmico. Cada casa es única; ninguna se repite.
+        </p>
+        <div class="modelo__specs">
+          <div><div class="s">Superficie</div><div class="v serif">180+ m²</div></div>
+          <div><div class="s">Habitaciones</div><div class="v serif">A medida</div></div>
+          <div><div class="s">Entrega</div><div class="v serif">12 meses</div></div>
+        </div>
+        <div class="modelo__price">
+          <span class="from">Desde</span>
+          <span class="amount serif">€ 420 000</span>
+        </div>
+        <a class="btn" href="#">Ver plano completo <span class="arrow">→</span></a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- GALERIA -->
+<section class="galeria" id="galeria">
+  <div class="wrap">
+    <div class="galeria__head reveal">
+      <div>
+        <div class="eyebrow">03 / Galería</div>
+        <h2>Obras recientes,<br/><em>entre</em> el bosque.</h2>
+      </div>
+      <p style="color:rgba(242,238,230,.6);max-width:320px;font-size:14px;margin:0">
+        Siete lugares, siete casas. Cada una responde a su terreno — y a las personas que la habitan.
+      </p>
+    </div>
+
+    <div class="galeria__grid">
+      <!-- Fila 1: vertical + 2 horizontales (altura alta) -->
+      <div class="galeria__row h-tall">
+        <a class="g" data-ratio="2/3" href="#"><img src="img/imagen_2.jpg" alt="" /><span class="meta">Interior · Estudio</span></a>
+        <a class="g" data-ratio="3/2" href="#"><img src="img/imagen_1.jpg" alt="" /><span class="meta">Valle · Tirol — 2024</span></a>
+        <a class="g" data-ratio="3/2" href="#"><img src="img/imagen_3.jpg" alt="" /><span class="meta">Porche · Roble</span></a>
+      </div>
+      <!-- Fila 2: 2 horizontales + vertical (espejo, altura alta) -->
+      <div class="galeria__row h-tall">
+        <a class="g" data-ratio="3/2" href="#"><img src="img/imagen_5.jpg" alt="" /><span class="meta">Lago · Berna</span></a>
+        <a class="g" data-ratio="3/2" href="#"><img src="img/imagen_7.jpg" alt="" /><span class="meta">Bosque · Alberta</span></a>
+        <a class="g" data-ratio="2/3" href="#"><img src="img/imagen_6.jpg" alt="" /><span class="meta">Colorado · 2023</span></a>
+      </div>
+      <!-- Fila 3: banner horizontal de cierre -->
+      <div class="galeria__row h-wide">
+        <a class="g" data-ratio="3/1" href="#"><img src="img/imagen_4.jpg" alt="" /><span class="meta">Exterior · Hoguera</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / CONTACTO -->
+<section class="cta" id="contacto">
+  <div class="wrap cta__inner">
+    <div class="eyebrow" style="color:rgba(242,238,230,.7)">04 / Contacto</div>
+    <h2>¿Dónde <em>imaginas</em><br/>tu próxima casa?</h2>
+    <p>Cuéntanos el terreno, el momento de vida y lo que te trajo hasta aquí. Respondemos a mano, en no más de 48 horas.</p>
+
+    <form class="cta__form" onsubmit="event.preventDefault(); alert('Gracias, nos pondremos en contacto.');">
+      <label>
+        <span class="l">Nombre</span>
+        <input type="text" placeholder="Cómo te llamas" required />
+      </label>
+      <label>
+        <span class="l">Correo</span>
+        <input type="email" placeholder="tu@correo.com" required />
+      </label>
+      <label>
+        <span class="l">Modelo de interés</span>
+        <select>
+          <option>Refugio Aire · 01</option>
+          <option>Cabaña Umbral · 02</option>
+          <option>Casa Linde · 03</option>
+          <option>Aún no lo sé</option>
+        </select>
+      </label>
+      <label>
+        <span class="l">Ubicación del terreno</span>
+        <input type="text" placeholder="Región / país" />
+      </label>
+    </form>
+    <button class="btn btn--fill cta__submit" type="submit" onclick="document.querySelector('.cta__form').requestSubmit()">
+      Empezar conversación <span class="arrow">→</span>
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div>
+        <h3>Arquitectura <em>Bosque</em></h3>
+        <p>Casas de campo hechas a mano, en diálogo con el paisaje. Desde 2011.</p>
+      </div>
+      <div>
+        <h4>Navegar</h4>
+        <ul>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#modelos">Modelos</a></li>
+          <li><a href="#galeria">Galería</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Estudio</h4>
+        <ul>
+          <li><a href="#">Proceso</a></li>
+          <li><a href="#">Materiales</a></li>
+          <li><a href="#">Diario</a></li>
+          <li><a href="#">Prensa</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="tel:018009191">01 · 800 · 9191</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#422a2d2e2302233033372b36272136373023202d313337276c212d2f"><span class="__cf_email__" data-cfemail="cba3a4a7aa8baab9babea2bfaea8bfbeb9aaa9a4b8babeaee5a8a4a6">[email&#160;protected]</span></a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Pinterest</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© MMXXVI Arquitectura Bosque</span>
+      <span>Hecho a mano · Entre árboles</span>
+    </div>
+  </div>
+</footer>
+
+<!-- TWEAKS PANEL -->
+<div id="tweaks-root"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ---------- Sticky nav ----------
+const nav = document.getElementById('nav');
+const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 60);
+window.addEventListener('scroll', onScroll); onScroll();
+
+// ---------- Reveal on scroll ----------
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, {threshold:.12});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ---------- Tweaks ----------
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "accent": "moss",
+  "heroTreatment": "dark-gradient",
+  "ticker": true
+}/*EDITMODE-END*/;
+
+const accentMap = {
+  moss:   { color:'#3A4A37', label:'Verde musgo' },
+  terra:  { color:'#8C4A2B', label:'Terracota'   },
+  ochre:  { color:'#B98A3C', label:'Ocre'        },
+  ink:    { color:'#1A1815', label:'Tinta'       },
+  lake:   { color:'#355862', label:'Lago'        }
+};
+
+function applyTweaks(t){
+  document.documentElement.style.setProperty('--accent', accentMap[t.accent]?.color || accentMap.moss.color);
+  document.querySelector('.ticker').style.display = t.ticker ? '' : 'none';
+  const bg = document.querySelector('.hero__bg');
+  if (bg){
+    if (t.heroTreatment === 'duotone'){
+      bg.style.filter = 'grayscale(1) sepia(.6) hue-rotate(-20deg) saturate(1.2) contrast(1.05)';
+    } else if (t.heroTreatment === 'bright'){
+      bg.style.filter = 'saturate(1.1) contrast(1.05)';
+    } else {
+      bg.style.filter = '';
+    }
+  }
+}
+applyTweaks(TWEAKS);
+
+// Edit-mode protocol
+let tweaksOpen = false;
+function renderPanel(){
+  const root = document.getElementById('tweaks-root');
+  if (!tweaksOpen){ root.innerHTML=''; return; }
+  root.innerHTML = `
+  <div style="position:fixed;right:20px;bottom:20px;z-index:100;background:#F2EEE6;color:#1A1815;border:1px solid #CFC8B9;width:280px;font-family:Inter,system-ui,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #CFC8B9">
+      <strong style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500">Tweaks</strong>
+      <button id="tw-close" style="background:none;border:0;font-size:18px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="padding:16px;display:grid;gap:18px">
+      <div>
+        <label style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#6B665C;display:block;margin-bottom:8px">Color de acento</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          ${Object.entries(accentMap).map(([k,v])=>`
+            <button data-accent="${k}" title="${v.label}" style="width:28px;height:28px;border:2px solid ${TWEAKS.accent===k?'#1A1815':'transparent'};background:${v.color};cursor:pointer;padding:0"></button>
+          `).join('')}
+        </div>
+      </div>
+      <div>
+        <label style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#6B665C;display:block;margin-bottom:8px">Tratamiento del hero</label>
+        <div style="display:grid;gap:6px">
+          ${['dark-gradient','duotone','bright'].map(v=>`
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+              <input type="radio" name="hero" value="${v}" ${TWEAKS.heroTreatment===v?'checked':''}/> ${v}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+      <div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+          <input id="tw-ticker" type="checkbox" ${TWEAKS.ticker?'checked':''}/> Mostrar marquesina
+        </label>
+      </div>
+    </div>
+  </div>`;
+  root.querySelectorAll('[data-accent]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      TWEAKS.accent = b.dataset.accent; applyTweaks(TWEAKS); renderPanel(); persist({accent:TWEAKS.accent});
+    });
+  });
+  root.querySelectorAll('input[name=hero]').forEach(r=>{
+    r.addEventListener('change',()=>{ TWEAKS.heroTreatment=r.value; applyTweaks(TWEAKS); persist({heroTreatment:r.value});});
+  });
+  root.querySelector('#tw-ticker').addEventListener('change',(e)=>{
+    TWEAKS.ticker=e.target.checked; applyTweaks(TWEAKS); persist({ticker:e.target.checked});
+  });
+  root.querySelector('#tw-close').addEventListener('click',()=>{
+    tweaksOpen=false; renderPanel();
+    window.parent.postMessage({type:'__edit_mode_dismissed'},'*');
+  });
+}
+function persist(edits){ window.parent.postMessage({type:'__edit_mode_set_keys', edits},'*'); }
+
+window.addEventListener('message',(e)=>{
+  const d=e.data||{};
+  if (d.type==='__activate_edit_mode'){ tweaksOpen=true; renderPanel(); }
+  if (d.type==='__deactivate_edit_mode'){ tweaksOpen=false; renderPanel(); }
+});
+window.parent.postMessage({type:'__edit_mode_available'},'*');
+</script>
+</body>
+</html>

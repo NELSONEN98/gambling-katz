@@ -1,0 +1,42 @@
+.warp {
+  position: relative;
+  height: 30vh;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.warp__msg {
+  font-family: var(--font-pixel);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  letter-spacing: 0.35em;
+  color: var(--accent);
+  text-align: center;
+  text-shadow: 0 0 30px var(--accent);
+  text-transform: uppercase;
+  z-index: 2;
+  position: relative;
+  padding: 0 2rem;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: clamp(40px, 10vw, 120px);
+    height: 1px;
+    opacity: 0.5;
+  }
+
+  &::before {
+    right: 100%;
+    background: linear-gradient(to right, transparent, var(--accent));
+  }
+
+  &::after {
+    left: 100%;
+    background: linear-gradient(to left, transparent, var(--accent));
+  }
+}

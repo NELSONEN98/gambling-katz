@@ -1,644 +1,206 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import AppearOnScroll from "./AppearOnScroll";
 import "../assets/scss/ui/_Portfolio.scss";
-import MenuModalSelection from "./MenuModalSelection";
-import { ReactTag, HtmlTag, CssTag, SassTag, JsTag } from "./Tags";
+
+const PROJECTS = [
+  {
+    id: "spacevr", title: "Space VR Plus", url: "https://spacevrplus.netlify.app/",
+    img: "/projects/spacevr/spacevr.PNG.jpg", cat: "react", tags: ["react", "js", "css"], coord: "SX-001",
+    desc: "Landing page designed and built for SPACE VR PLUS — a virtual reality company. Custom visual identity, immersive sections, and a tailored design system aligned with the brand.",
+    styleguide: "/projects/spacevr/styleguide.html",
+  },
+  {
+    id: "subinvoxa", title: "SubInvoxa", url: "https://subinvoxa.com/",
+    img: "/projects/subinvoxa/subinvoxa.jpg", cat: "react", tags: ["react", "js", "css", "CONVEX", "CLERK"], coord: "AX-014",
+    desc: "Full-stack development for the Subinvoxa platform (electronic invoicing for DIAN)",
+    styleguide: "/projects/subinvoxa/styleguide.html",
+  },
+   
+
+   {
+    id: "arquitec", title: "Arquitectura Bosque", url: "/projects/arquitectura/index.html",
+    img: "/projects/arquitectura/arquitectura.jpg", cat: "sass", tags: ["css", "html"], coord: "HX-010",
+    desc: "Landing page showcasing Arquitectura Bosque — Basic, Premier, and Elite models highlighted dynamically.",
+    styleguide: "/projects/arquitectura/styleguide.html",
+  },
+  {
+    id: "animal", title: "Animal Gambling", url: "/projects/AnimalGambling/index.html",
+    img: "/img/animal.PNG", cat: "javascript", tags: ["js", "css", "html"], coord: "JX-108",
+    desc: "Two-player game in JS/HTML/CSS. Pick your character — first to 50 points wins.",
+    styleguide: "/projects/AnimalGambling/styleguide.html",
+  },
+  {
+    id: "moonframe", title: "MoonFrame", url: "https://moonframe.netlify.app/",
+    img: "/projects/moonframe/moonframe.jpg", cat: "react", tags: ["react", "js", "css"], coord: "BX-027",
+    desc: "Interactive app to search, rate and save favorite movies. Login system and local storage persist the user's personal library.",
+    styleguide: "/projects/moonframe/index.html",
+  },
+ 
+ 
+  {
+    id: "guess", title: "Guess my number!", url: "/projects/score/index.html",
+    img: "/img/number.PNG", cat: "javascript", tags: ["js", "css", "html"], coord: "JX-330",
+    desc: "Small desktop game in JS/HTML/CSS — guess a random number before your attempts run out.",
+    maintenance: true,
+  },
+
+  {
+    id: "guitar", title: "Guitar LA", url: "/projects/guitarLa/index.html",
+    img: "/img/portfolio/guitar.PNG", cat: "sass", tags: ["css", "html"], coord: "HX-024",
+    desc: "E-commerce for iconic guitars from Los Angeles, with subtle CSS animations and a considered color palette.",
+    maintenance: true,
+  },
+];
+
+const FILTERS = [
+  { id: "all", label: "Show all" },
+  { id: "react", label: "React" },
+  { id: "javascript", label: "JavaScript" },
+  { id: "sass", label: "Sass / CSS + HTML" },
+];
+
+function ArrowIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+      <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function PaletteIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+      <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.2" />
+      <circle cx="4" cy="4.5" r="0.7" fill="currentColor" />
+      <circle cx="7.5" cy="4" r="0.7" fill="currentColor" />
+      <circle cx="8.5" cy="7" r="0.7" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ProjectCard({ p }) {
+  const hasStyleguide = Boolean(p.styleguide);
+  return (
+    <article className={`project-card${p.maintenance ? " project-card--maintenance" : ""}`}>
+      <a
+        className="project-card__thumb"
+        href={p.url}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`Visit ${p.title}`}
+      >
+        {p.img ? (
+          <img src={p.img} alt={p.title} className="project-card__thumb-img" />
+        ) : (
+          <div className="project-card__thumb-grid" />
+        )}
+        <div className="project-card__thumb-meta">PROJECT · {p.coord}</div>
+        {p.maintenance && (
+          <div className="project-card__maintenance-badge" aria-label="Under maintenance">
+            ⚙ maintenance
+          </div>
+        )}
+        <div className="project-card__thumb-coords">[ {p.id.toUpperCase()} ]</div>
+        {!p.img && <div className="project-card__thumb-label">{p.title}</div>}
+        <div className="project-card__link-indicator" aria-hidden="true">
+          <ArrowIcon />
+        </div>
+      </a>
+      <div className="project-card__body">
+        <h3 className="project-card__title">{p.title}</h3>
+        <p className="project-card__desc">{p.desc}</p>
+        <div className="project-card__tags">
+          {p.tags.map((t) => (
+            <span key={t} className={`project-tag project-tag--${t}`}>#{t}</span>
+          ))}
+        </div>
+        <div className="project-card__actions">
+          <a
+            className="project-card__btn project-card__btn--primary"
+            href={p.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <ArrowIcon />
+            <span>Visit project</span>
+          </a>
+          {hasStyleguide ? (
+            <a
+              className="project-card__btn project-card__btn--ghost"
+              href={p.styleguide}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <PaletteIcon />
+              <span>Style guide</span>
+            </a>
+          ) : (
+            <button
+              type="button"
+              className="project-card__btn project-card__btn--ghost project-card__btn--disabled"
+              aria-disabled="true"
+              title="Style guide coming soon"
+              onClick={(e) => e.preventDefault()}
+            >
+              <PaletteIcon />
+              <span>Style guide</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
 
 export default function Portfolio() {
-  const [optionSelected, setOptionSelected] = useState("all");
-  const [isMenuSelected, setIsMenuSelected] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const list = useMemo(
+    () => filter === "all" ? PROJECTS : PROJECTS.filter((p) => p.cat === filter),
+    [filter]
+  );
 
-  function closeModal() {
-    setIsMenuSelected(false);
-  }
   return (
-    <div className="portfolio">
-      <div className="portfolio__hull-corner-tl" />
-      <div className="portfolio__hull-corner-br" />
-      <div className="portfolio__grid">
-        <div className="portfolio__container__text">
-          <div className="portfolio__status">
-            <span className="portfolio__status__dot" />
-            Systems online
+    <section className="section portfolio-section" id="sec-portfolio">
+      <div className="section__inner">
+        <AppearOnScroll>
+          <div className="section-chip">
+            <span className="section-chip__num">04 /</span>
+            <span>Portfolio · Constellation</span>
           </div>
-          <h2 className="portfolio__title">My projects</h2>
-
-          <p className="portfolio__text">
-            Here are some of my projects that showcase my skills and creativity
-            :)
+        </AppearOnScroll>
+        <AppearOnScroll delay={100}>
+          <h2 className="section-title">
+            My <span className="section-title__accent">projects</span>
+          </h2>
+        </AppearOnScroll>
+        <AppearOnScroll delay={200}>
+          <p className="section-sub">
+            Here are some of my projects that showcase my skills and creativity.
+            Each card is a mission — tap to dock into the live deployment.
           </p>
-          <ul className="portfolio__list__container">
-            <li
-              className={`portfolio__list ${
-                optionSelected === "all" ? "portfolio__list__active" : ""
-              }`}
-              onClick={() => setOptionSelected("all")}
-            >
-              Show all
-            </li>
-            <li
-              className={`portfolio__list ${
-                optionSelected === "react" ? "portfolio__list__active" : ""
-              }`}
-              onClick={() => setOptionSelected("react")}
-            >
-              React
-            </li>
-            <li
-              className={`portfolio__list ${
-                optionSelected === "javascript" ? "portfolio__list__active" : ""
-              }`}
-              onClick={() => setOptionSelected("javascript")}
-            >
-              JavaScript
-            </li>
-            <li
-              className={`portfolio__list ${
-                optionSelected === "sass" ? "portfolio__list__active" : ""
-              }`}
-              onClick={() => setOptionSelected("sass")}
-            >
-              SASS / CSS + HTML
-            </li>
-            {/*<li
-              className={`portfolio__list ${
-                optionSelected === "illustrations"
-                  ? "portfolio__list__active"
-                  : ""
-              }`}
-              onClick={() => setOptionSelected("illustrations")}
-            >
-              Some of my illustrations
-            </li>*/}
-          </ul>
-          <div className="portfolio__social__links">
-            <a href="https://github.com/NELSONEN98" target="_blank">
-              <img
-                className="portfolio__social__img"
-                src="/img/github-mark.png"
-                alt="githube"
-              />
-            </a>
+        </AppearOnScroll>
+        <AppearOnScroll delay={300}>
+          <div className="portfolio__filters">
+            {FILTERS.map((f) => (
+              <button
+                key={f.id}
+                className={`portfolio__filter ${filter === f.id ? "portfolio__filter--active" : ""}`}
+                onClick={() => setFilter(f.id)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </AppearOnScroll>
 
-            <a
-              href="https://www.linkedin.com/in/nelson-enrique-bedoya-arango-1466071b1/"
-              target="_blank"
-            >
-              <img
-                className="portfolio__social__img"
-                src="/img/linked.png"
-                alt="linkedin"
-              />
-            </a>
-            <img
-              className="portfolio__social__img portfolio__social__img--rocket"
-              src="/img/rocketpiskel.png"
-              alt="rocket"
-              onClick={() => setIsMenuSelected(true)}
-            />
-          </div>
-        </div>
-        {isMenuSelected && (
-          <MenuModalSelection onClose={closeModal} />
-        )}
-        <div className="portfolio__menu">
-          {optionSelected === "all" && (
-            <>
-              <ReactPortfolio />
-              <JsPortfolio />
-              <HtmlPorfolo />
-            </>
-          )}
-          {optionSelected === "react" && (
-            <>
-              <ReactPortfolio />
-            </>
-          )}
-          {optionSelected === "sass" && (
-            <>
-              <HtmlPorfolo />
-            </>
-          )}
-          {optionSelected === "javascript" && (
-            <>
-              <JsPortfolio />
-            </>
-          )}
+        <div className="portfolio__grid">
+          {list.map((p, i) => (
+            <AppearOnScroll key={p.id} delay={Math.min(i * 40, 400)}>
+              <ProjectCard p={p} />
+            </AppearOnScroll>
+          ))}
         </div>
       </div>
-      <div className="portfolio__coordinates">[ 04.7231 // -73.8592 ]</div>
-    </div>
-  );
-}
-
-function ReactPortfolio() {
-  return (
-    <>
-    <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/subinvoxa.png"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://subinvoxa.com/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              SubInvoxa
-            </a>
-            <p className="portfolio__content__text">
-              I developed the frontend of the Subinvoxa platform, a web application used for submitting electronic invoices to DIAN.
-
-I was responsible for implementing the user interface using modern frontend technologies, as well as creating a consistent design system, including color variables and visual guidelines. I designed the logo in Adobe Photoshop and defined the overall visual identity of the platform.
-
-Additionally, I implemented basic UI animations to enhance the sense of professionalism and improve the overall user experience.
-imagne: subinvoxa.com
-            </p>
-            <div className="tag__container">
-              <ReactTag />
-              <JsTag />
-              <CssTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/movie-meter.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://reliable-pavlova-06cf00.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Movie Meter
-            </a>
-            <p className="portfolio__content__text">
-              Movie Meter is an interactive web application that allows users to
-              search for, rate, and save their favorite movies. It includes a
-              login system and uses local storage to preserve user information
-              and their personal movie library.
-            </p>
-            <div className="tag__container">
-              <ReactTag />
-              <JsTag />
-              <CssTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/react.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://react-quiz-test-a.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              React Quiz
-            </a>
-            <p className="portfolio__content__text">
-              React-Quiz is an interactive quiz application built with React and
-              the useReducer hook. It challenges users with 15 carefully crafted
-              questions to test their knowledge of React fundamentals. The app
-              features dynamic state management using useReducer, providing a
-              smooth and responsive experience as users progress through the
-              quiz.
-            </p>
-            <div className="tag__container">
-              <ReactTag />
-              <JsTag />
-              <CssTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/resume.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://nelson-arango-portfolio.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Interactive Resume
-            </a>
-            <p className="portfolio__content__text">
-              This project was designed to showcase my resume in a dynamic and
-              interactive way. It features animations built with React, Framer
-              Motion, CSS/SASS Animation, and pixel art. All designs and images
-              were created by me from scratch.
-            </p>
-            <div className="tag__container">
-              <ReactTag />
-              <JsTag />
-              <SassTag />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function JsPortfolio() {
-  return (
-    <>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img className="portfolio__img" src="/img/animal.PNG" alt="ejemplo" />
-          <div className="portfolio__content__flex">
-            <a
-              href="projects/AnimalGambling/index.html"
-              className="portfolio__content__title"
-              target="_blank"
-            >
-              Animal Gambling
-            </a>
-            <p className="portfolio__content__text">
-              A two-player desktop game built with JavaScript, HTML, and CSS.
-              Choose your character and start playing — the first player to
-              reach 50 points wins!.
-            </p>
-            <div className="tag__container">
-              <JsTag />
-              <CssTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/bankist.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="/projects/Dombankist/index.html"
-              className="portfolio__content__title"
-              target="_blank"
-            >
-              Bankist App
-            </a>
-            <p className="portfolio__content__text">
-              A modern banking interface developed using JavaScript and CSS
-              animations. This project embraces a minimalist design approach,
-              focusing on smooth interactions and a clean user experience.
-            </p>
-            <div className="tag__container">
-              <JsTag />
-              <CssTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img className="portfolio__img" src="/img/number.PNG" alt="ejemplo" />
-          <div className="portfolio__content__flex">
-            <a
-              href="/projects/score/index.html"
-              className="portfolio__content__title"
-              target="_blank"
-            >
-              Guess my number!
-            </a>
-            <p className="portfolio__content__text">
-              A small desktop game built with JavaScript, HTML, and CSS, where
-              the goal is to guess a random number before you run out of
-              attempts.
-            </p>
-            <div className="tag__container">
-              <JsTag />
-              <CssTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function HtmlPorfolo() {
-  return (
-    <>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/arquitec.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="/projects/arquitectura/index.html"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Arquitectura Bosque
-            </a>
-            <p className="portfolio__content__text">
-              A landing page designed to showcase the company Arquitectura
-              Bosque in an attractive and dynamic way, highlighting its Basic,
-              Premier, and Elite models.
-            </p>
-            <div className="tag__container">
-              <CssTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/guitar.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="/projects/guitarLa/index.html"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Guitar LA
-            </a>
-            <p className="portfolio__content__text">
-              A website where you can buy some of the best guitars from Los
-              Angeles. It features subtle CSS animations and a consistent,
-              well-thought-out color scheme.
-            </p>
-            <div className="tag__container">
-              <CssTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/nucleus.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="/projects/nucleus/index.html"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Nucleus wallet
-            </a>
-            <p className="portfolio__content__text">
-              A landing page designed to showcase the Nucleus Wallet app in a
-              clear and engaging way, highlighting its key features and value
-              proposition.
-            </p>
-            <div className="tag__container">
-              <CssTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/cocina.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://willowy-otter-a52d8b.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Escuela Cocina
-            </a>
-            <p className="portfolio__content__text">
-              A landing page created to promote the Bahn BnB platform, allowing
-              users to explore exciting travel destinations and easily select
-              their desired travel dates.
-            </p>
-            <div className="tag__container">
-              <SassTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/bahn.png"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://jolly-cendol-94138f.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Bahn BnB
-            </a>
-            <p className="portfolio__content__text">
-              A landing page created to promote the Bahn BnB platform, allowing
-              users to explore exciting travel destinations and easily select
-              their desired travel dates.
-            </p>
-            <div className="tag__container">
-              <SassTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/state.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://dulcet-trifle-f3b951.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Real state
-            </a>
-            <p className="portfolio__content__text">
-              A landing page designed to promote Real State, a company that
-              sells houses and apartments. This site is built not only to
-              showcase available properties, but also to feature customer
-              reviews and a blog section.
-            </p>
-            <div className="tag__container">
-              <SassTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/meeti.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://golden-bublanina-115075.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Meeti
-            </a>
-            <p className="portfolio__content__text">
-              A practice project based on the Meeting website, created to
-              improve my skills using CSS Grid and Flexbox.
-            </p>
-            <div className="tag__container">
-              <SassTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/podcast.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="
-https://keen-salmiakki-e27f4c.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Podcast FM
-            </a>
-            <p className="portfolio__content__text">
-              A website created to promote Podcast FM, a platform where users
-              can upload and share their podcasts with the world.
-            </p>
-            <div className="tag__container">
-              <SassTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/cafeteria.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://meek-duckanoo-6ae791.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              La Cafetería
-            </a>
-            <p className="portfolio__content__text">
-              A website created to promote Podcast FM, a platform where users
-              can upload and share their podcasts with the world.
-            </p>
-            <div className="tag__container">
-              <SassTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/tech.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="/projects/tech/index.html"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Tech PRO
-            </a>
-            <p className="portfolio__content__text">
-              A website created to showcase the new Tech PRO headphones,
-              highlighting their main features and specifications.
-            </p>
-            <div className="tag__container">
-              <CssTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="portfolio__content">
-        <div className="portfolio__content__grid">
-          <img
-            className="portfolio__img"
-            src="/img/portfolio/delivery.PNG"
-            alt="ejemplo"
-          />
-          <div className="portfolio__content__flex">
-            <a
-              href="https://beautiful-pegasus-0d193a.netlify.app/"
-              target="_blank"
-              className="portfolio__content__title"
-            >
-              Delivery App
-            </a>
-            <p className="portfolio__content__text">
-              Delivery App is a promotional website for a food delivery
-              application, designed to showcase its features and encourage user
-              downloads.
-            </p>
-            <div className="tag__container">
-              <SassTag />
-              <HtmlTag />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+    </section>
   );
 }
