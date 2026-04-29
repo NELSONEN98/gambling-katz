@@ -283,7 +283,6 @@ function switchPlayer() {
    ============================================ */
 function winGame(winnerIdx) {
   state.playing = false;
-  screens.game.classList.remove("in-play");
   const winPanel = $(`#panel-${winnerIdx}`);
   const losePanel = $(`#panel-${winnerIdx === 0 ? 1 : 0}`);
   winPanel.classList.add("winner");
@@ -353,13 +352,11 @@ function startGame() {
   state.players[1].current = 0;
 
   switchScreen("game");
-  screens.game.classList.add("in-play");
   renderGameUI();
   setDiceFace(1);
 }
 
 function fullReset() {
-  screens.game.classList.remove("in-play");
   state.screen = "select";
   state.picking = 0;
   state.players = [null, null];
@@ -389,7 +386,6 @@ function newRound() {
   state.players[1].current = 0;
   $$(".player-panel").forEach((el) => el.classList.remove("winner", "loser"));
   switchScreen("game");
-  screens.game.classList.add("in-play");
   renderGameUI();
   setDiceFace(1);
 }
@@ -408,15 +404,8 @@ function init() {
   $("#btn-again").addEventListener("click", newRound);
   $("#btn-gameover-new").addEventListener("click", fullReset);
 
-  $("#btn-rules").addEventListener("click", openRules);
-  $("#btn-rules-close").addEventListener("click", closeRules);
-  $("#rules-overlay").addEventListener("click", (e) => {
-    if (e.target === $("#rules-overlay")) closeRules();
-  });
-
   // keyboard
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { closeRules(); return; }
     if (state.screen !== "game" || !state.playing) return;
     if (e.code === "Space") { e.preventDefault(); rollDice(); }
     if (e.key === "Enter") { e.preventDefault(); holdScore(); }
@@ -425,20 +414,6 @@ function init() {
   // apply tweaks
   applyTweaks();
   setupTweaks();
-
-  // show rules on first load
-  openRules();
-}
-
-/* ============================================
-   RULES MODAL
-   ============================================ */
-function openRules() {
-  $("#rules-overlay").classList.add("open");
-}
-
-function closeRules() {
-  $("#rules-overlay").classList.remove("open");
 }
 
 /* ============================================
