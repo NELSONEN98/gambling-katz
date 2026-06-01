@@ -15,6 +15,20 @@ const DECO_STARS = [
 export default function Hero() {
   const [count, setCount] = useState(null);
   const [ignited, setIgnited] = useState(false);
+  const [spinning, setSpinning] = useState(false);
+  const [miauu, setMiauu] = useState(false);
+  const [avatarAlt, setAvatarAlt] = useState(false);
+
+  const handleAvatarClick = () => {
+    if (spinning || miauu) return;
+    setSpinning(true);
+    setTimeout(() => {
+      setAvatarAlt((v) => !v);
+      setSpinning(false);
+      setMiauu(true);
+      setTimeout(() => setMiauu(false), 900);
+    }, 400);
+  };
 
   useEffect(() => {
     const t = setTimeout(() => setCount(3), 2200);
@@ -71,6 +85,32 @@ export default function Hero() {
         <span className="hero__title-separator">✦</span>
         Web &amp; Front-End Developer
       </p>
+
+      <div className="hero__avatar-wrap">
+        {[
+          { size: 18, top: "4%",  left: "10%",  delay: 1.6 },
+          { size: 13, top: "12%", left: "82%",  delay: 2.1 },
+          { size: 22, top: "50%", left: "-4%",  delay: 1.9 },
+          { size: 15, top: "55%", left: "90%",  delay: 2.4 },
+          { size: 11, top: "80%", left: "18%",  delay: 2.0 },
+          { size: 20, top: "78%", left: "75%",  delay: 1.7 },
+          { size: 12, top: "30%", left: "95%",  delay: 2.3 },
+          { size: 16, top: "92%", left: "48%",  delay: 2.2 },
+        ].map((s, i) => (
+          <span
+            key={i}
+            className="hero__avatar-star"
+            style={{ width: s.size, height: s.size, top: s.top, left: s.left, animationDelay: `${s.delay}s, ${s.delay + 0.4}s` }}
+          />
+        ))}
+        <span className={`hero__miauu${miauu ? " hero__miauu--visible" : ""}`}>MIAUU</span>
+        <img
+          src={avatarAlt ? "/icono/ME2.png" : "/icono/ME.png"}
+          alt="Nelson Arango"
+          className={`hero__avatar${spinning ? " hero__avatar--spin" : ""}${miauu ? " hero__avatar--hidden" : ""}`}
+          onClick={handleAvatarClick}
+        />
+      </div>
 
       <div className={`hero__countdown${ignited ? " hero__countdown--ignited" : ""}`}>
         {countText}

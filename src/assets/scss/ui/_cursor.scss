@@ -39,3 +39,10 @@ body.no-custom-cursor .cursor-comet,
 body.no-custom-cursor .cursor-trail {
   display: none;
 }
+
+@media (pointer: coarse) {
+  .cursor-comet,
+  .cursor-trail {
+    display: none;
+  }
+}

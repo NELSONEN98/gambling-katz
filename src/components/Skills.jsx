@@ -18,9 +18,6 @@ function SkillsOrbit() {
         <div className="orbit-ring__dot" style={{ "--dot-color": "#ff7ac6" }} />
       </div>
       <div className="orbit-skill-label" style={{ "--x": "0px", "--y": "-19%" }}>Frontend</div>
-      <div className="orbit-skill-label" style={{ "--x": "29%", "--y": "0px" }}>Backend</div>
-      <div className="orbit-skill-label" style={{ "--x": "0px", "--y": "39%" }}>Design</div>
-      <div className="orbit-skill-label" style={{ "--x": "-49%", "--y": "0px" }}>Motion</div>
     </div>
   );
 }

@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import "../assets/scss/ui/_cursor.scss";
 
+const isTouch = () => window.matchMedia("(pointer: coarse)").matches;
+
 export default function CometCursor({ enabled = true }) {
   const cometRef = useRef(null);
   const [trails, setTrails] = useState([]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || isTouch()) return;
     let lastT = 0;
     let tid = 0;
     const onMove = (e) => {
@@ -29,7 +31,7 @@ export default function CometCursor({ enabled = true }) {
     document.body.classList.toggle("no-custom-cursor", !enabled);
   }, [enabled]);
 
-  if (!enabled) return null;
+  if (!enabled || isTouch()) return null;
 
   return (
     <>

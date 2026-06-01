@@ -17,6 +17,11 @@ const PROJECTS = [
   },
    
 
+  {
+    id: "lou-reed", title: "Lou Reed Archive", url: "https://lou-reed-archive.netlify.app/",
+    img: "/projects/lou-reed/lou-reed.jpg", cat: "react", tags: ["react", "js", "css", "python"], coord: "JX-420",
+    desc: "A website created for Velvet Underground and Lou Reed fans, where you can find all songs with tabs, lyrics, and chords. Data scraped with Python, frontend built with React.",
+  },
    {
     id: "arquitec", title: "Arquitectura Bosque", url: "/projects/arquitectura/index.html",
     img: "/projects/arquitectura/arquitectura.jpg", cat: "sass", tags: ["css", "html"], coord: "HX-010",

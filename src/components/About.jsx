@@ -22,7 +22,6 @@ function Moon() {
       <div className="moon__orbit">
         <div className="moon__orbit-sat" />
       </div>
-      <div className="moon__label">WAYPOINT · 02 · LUNA</div>
     </div>
   );
 }
