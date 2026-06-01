@@ -244,8 +244,13 @@ function rollDice() {
       const p = state.players[state.active];
       p.current += n;
       updateScores();
-      btnRoll.disabled = false;
-      btnHold.disabled = false;
+
+      if (p.score + p.current >= state.goal) {
+        holdScore();
+      } else {
+        btnRoll.disabled = false;
+        btnHold.disabled = false;
+      }
     }
   }, 1150);
 }
