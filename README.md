@@ -34,9 +34,10 @@ need state behind them — `#/game` with no players redirects to `#/select`.
 ## Main menu
 
 Entries live in `MENU_ITEMS` in `script.js`, named per `md-guides/` §7 and §9.
-`ready: false` renders the entry greyed and disabled with a "pronto" badge —
-the mode has no implementation yet. Building one means flipping the flag and
-pointing `route` at a screen.
+`ready: false` renders the entry greyed and disabled — the mode has no
+implementation yet, and the `disabled` attribute carries that to screen readers
+without needing a label. Building one means flipping the flag and pointing
+`route` at a screen.
 
 | Entry | State |
 |---|---|

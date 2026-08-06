@@ -82,7 +82,7 @@ const response = await fetch("https://api.anthropic.com/v1/messages", {
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    model: "claude-sonnet-4-6",
+    model: "claude-opus-5",
     max_tokens: 300,
     system: characterPrompts[characterId],
     messages: [{ role: "user", content: userMessage }],

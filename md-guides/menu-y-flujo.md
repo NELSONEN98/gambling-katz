@@ -60,8 +60,9 @@ const MENU_ITEMS = [
 ];
 ```
 
-- `ready: false` → la entrada se dibuja gris, deshabilitada y con el cartel
-  "pronto". Se ve el roadmap sin fingir que el botón anda.
+- `ready: false` → la entrada se dibuja gris y deshabilitada. Se ve el roadmap
+  sin fingir que el botón anda; el atributo `disabled` ya comunica el estado,
+  al usuario y al lector de pantalla.
 - `ready: true` → hace falta un `route` que exista en `ROUTES`.
 
 Construir un modo = dar de alta su pantalla, agregarla a `ROUTES`, y dar vuelta
@@ -100,6 +101,3 @@ selección de personaje (→ menú).
 
 - Qué pantallas cuelgan de Duelo Online, Personalización y Tienda.
 - Si Ajustes y Reglas entran al menú o se quedan en el HUD.
-- **El idioma.** Hoy el menú está en castellano ("Iniciar", "Duelo Local",
-  "Volver") y el juego en inglés ("Rules", "New Game", "choose your
-  degenerate"). Hay que elegir uno.
