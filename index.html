@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Animal Gambling // Dirty Casino</title>
+  <title>Gambling Katz // Casino Sucio</title>
 
   <!-- boil frames: decode them before the title screen paints, or the
        first loop flashes through blank backgrounds -->
@@ -34,22 +34,22 @@
 
     <!-- marquee (top center sign) -->
     <div class="marquee">
-      <div class="marquee-top">— est. 2024 · members only —</div>
-      <div class="marquee-title">ANIMAL <span class="amp">&amp;</span> GAMBLING</div>
-      <div class="marquee-sub">dirty dice · dirtier players</div>
+      <div class="marquee-top">— desde 2024 · solo socios —</div>
+      <div class="marquee-title">GAMBLING <span class="amp">·</span> KATZ</div>
+      <div class="marquee-sub">dados sucios · jugadores más sucios</div>
     </div>
 
     <!-- top-left HUD -->
     <div class="top-hud-left">
-      <div class="row"><span class="k">session</span><span class="v live">● LIVE</span></div>
-      <div class="row"><span class="k">rolls</span><span class="v" id="hud-rolls">000</span></div>
-      <div class="row"><span class="k">pot</span><span class="v" id="hud-pot">000</span></div>
+      <div class="row"><span class="k">sesión</span><span class="v live">● EN VIVO</span></div>
+      <div class="row"><span class="k">tiradas</span><span class="v" id="hud-rolls">000</span></div>
+      <div class="row"><span class="k">pozo</span><span class="v" id="hud-pot">000</span></div>
     </div>
 
     <!-- top-right HUD -->
     <div class="top-hud">
-      <button class="btn small" id="btn-rules">⚑ Rules</button>
-      <button class="btn small danger" id="btn-new">× New Game</button>
+      <button class="btn small" id="btn-rules">⚑ Reglas</button>
+      <button class="btn small danger" id="btn-new">× Nueva partida</button>
     </div>
 
     <!-- ============== TITLE ============== -->
@@ -75,22 +75,22 @@
     <!-- ============== CHARACTER SELECT ============== -->
     <section class="screen select-screen" id="screen-select">
       <div class="select-header" id="select-header">
-        <div class="prompt-label">— choose your degenerate —</div>
-        <div class="prompt-title">SELECT <span class="who" id="prompt-who">PLAYER_01</span></div>
+        <div class="prompt-label">— elegí tu degenerado —</div>
+        <div class="prompt-title">ELEGÍ <span class="who" id="prompt-who">JUGADOR_01</span></div>
       </div>
       <div class="char-grid" id="char-grid"></div>
       <div class="select-footer">
         <div class="p1-pick">
           <span class="pick-dot"></span>
           <span class="pick-label">P1:</span>
-          <span class="pick-val" id="p1-pick">— none —</span>
+          <span class="pick-val" id="p1-pick">— ninguno —</span>
         </div>
-        <div class="sys-msg">[ click a card to lock in your character ]
+        <div class="sys-msg">[ tocá una carta para fijar tu personaje ]
           <button class="nav-back inline" id="btn-select-back">‹ Volver</button>
         </div>
         <div class="p2-pick">
           <span class="pick-label">P2:</span>
-          <span class="pick-val" id="p2-pick">— none —</span>
+          <span class="pick-val" id="p2-pick">— ninguno —</span>
           <span class="pick-dot"></span>
         </div>
       </div>
@@ -103,10 +103,10 @@
         <!-- Player 1 panel -->
         <div class="player-panel p1" id="panel-0">
           <div class="panel-header">
-            <span class="seat">SEAT_01 // PLAYER_01</span>
+            <span class="seat">ASIENTO_01 // JUGADOR_01</span>
             <span class="status">
               <span class="status-dot"></span>
-              <span class="panel-status-label">WAITING</span>
+              <span class="panel-status-label">ESPERANDO</span>
             </span>
           </div>
           <div class="panel-body">
@@ -116,17 +116,17 @@
             </div>
             <div class="panel-numbers">
               <div class="total-score">
-                <div class="lbl">total score</div>
+                <div class="lbl">puntaje total</div>
                 <div class="val" id="score-0">0</div>
               </div>
               <div class="current-block">
                 <div class="row">
-                  <span class="lbl">current</span>
+                  <span class="lbl">actual</span>
                   <span class="val" id="current-0">0</span>
                 </div>
               </div>
               <div>
-                <div class="chips-label">chips on hand</div>
+                <div class="chips-label">fichas en mano</div>
                 <div class="chips-row" id="chips-0"></div>
               </div>
             </div>
@@ -136,8 +136,8 @@
         <!-- Center stage — dice + controls -->
         <div class="center-stage">
           <div class="pot-display">
-            <div class="lbl">— goal —</div>
-            <div class="goal">FIRST TO <span class="num" id="goal-num">50</span></div>
+            <div class="lbl">— objetivo —</div>
+            <div class="goal">PRIMERO A <span class="num" id="goal-num">50</span></div>
           </div>
           <div class="dice-arena">
             <div class="dice-3d" id="dice-3d">
@@ -148,21 +148,21 @@
               <div class="dice-face face-5"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
               <div class="dice-face face-6"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
             </div>
-            <div class="snake-eyes-warning" id="snake-warn">× BUSTED ×</div>
+            <div class="snake-eyes-warning" id="snake-warn">× TE QUEMASTE ×</div>
           </div>
           <div class="controls">
-            <button class="btn primary" id="btn-roll">⚀ Roll Dice <span style="opacity:.5;font-size:.9em">[space]</span></button>
-            <button class="btn" id="btn-hold">⎔ Hold <span style="opacity:.5;font-size:.9em">[enter]</span></button>
+            <button class="btn primary" id="btn-roll">⚀ Tirar dado <span style="opacity:.5;font-size:.9em">[espacio]</span></button>
+            <button class="btn" id="btn-hold">⎔ Plantarse <span style="opacity:.5;font-size:.9em">[enter]</span></button>
           </div>
         </div>
 
         <!-- Player 2 panel -->
         <div class="player-panel p2" id="panel-1">
           <div class="panel-header">
-            <span class="seat">SEAT_02 // PLAYER_02</span>
+            <span class="seat">ASIENTO_02 // JUGADOR_02</span>
             <span class="status">
               <span class="status-dot"></span>
-              <span class="panel-status-label">WAITING</span>
+              <span class="panel-status-label">ESPERANDO</span>
             </span>
           </div>
           <div class="panel-body">
@@ -172,17 +172,17 @@
             </div>
             <div class="panel-numbers">
               <div class="total-score">
-                <div class="lbl">total score</div>
+                <div class="lbl">puntaje total</div>
                 <div class="val" id="score-1">0</div>
               </div>
               <div class="current-block">
                 <div class="row">
-                  <span class="lbl">current</span>
+                  <span class="lbl">actual</span>
                   <span class="val" id="current-1">0</span>
                 </div>
               </div>
               <div>
-                <div class="chips-label">chips on hand</div>
+                <div class="chips-label">fichas en mano</div>
                 <div class="chips-row" id="chips-1"></div>
               </div>
             </div>
@@ -194,19 +194,19 @@
     <!-- ============== GAME OVER SCREEN ============== -->
     <section class="screen gameover-screen" id="screen-gameover">
       <div class="gameover-banner">
-        <div class="tag">— the house has a winner —</div>
-        <div class="big">GAME OVER</div>
+        <div class="tag">— la casa ya tiene ganador —</div>
+        <div class="big">SE ACABÓ</div>
       </div>
       <div class="gameover-stage">
         <div class="go-winner">
-          <div class="go-label">★ WINNER ★</div>
+          <div class="go-label">★ GANADOR ★</div>
           <div class="go-portrait"><img id="go-winner-img" src="img/penguin.png" alt="" /></div>
           <div class="go-name" id="go-winner-name">—</div>
           <div class="go-score" id="go-winner-score">0</div>
           <div class="go-quote" id="go-winner-quote"></div>
         </div>
         <div class="go-loser">
-          <div class="go-label">† LOSER †</div>
+          <div class="go-label">† PERDEDOR †</div>
           <div class="go-portrait"><img id="go-loser-img" src="img/bear.png" alt="" /></div>
           <div class="go-name" id="go-loser-name">—</div>
           <div class="go-score" id="go-loser-score">0</div>
@@ -214,8 +214,8 @@
         </div>
       </div>
       <div class="gameover-actions">
-        <button class="btn primary" id="btn-again">⟲ Rematch</button>
-        <button class="btn danger" id="btn-gameover-new">× New Players</button>
+        <button class="btn primary" id="btn-again">⟲ Revancha</button>
+        <button class="btn danger" id="btn-gameover-new">× Otros jugadores</button>
       </div>
     </section>
 
@@ -226,44 +226,44 @@
     <div class="rules-overlay" id="rules-overlay">
       <div class="rules-modal">
         <div class="rules-header">
-          <div class="rules-tag">— the only rules worth knowing —</div>
-          <div class="rules-title">HOW TO PLAY</div>
+          <div class="rules-tag">— las únicas reglas que importan —</div>
+          <div class="rules-title">CÓMO SE JUEGA</div>
           <button class="rules-close" id="btn-rules-close">✕</button>
         </div>
         <div class="rules-body">
           <div class="rules-rule">
             <div class="rule-num">01</div>
             <div class="rule-content">
-              <div class="rule-title">THE GAME</div>
-              <div class="rule-text">Two degenerates. One die. Take turns rolling until someone reaches the goal. Loser buys the drinks.</div>
+              <div class="rule-title">EL JUEGO</div>
+              <div class="rule-text">Dos degenerados. Un dado. Se tira por turnos hasta que alguien llega al objetivo. El que pierde paga las copas.</div>
             </div>
           </div>
           <div class="rules-rule">
             <div class="rule-num">02</div>
             <div class="rule-content">
-              <div class="rule-title">ROLL <span class="rule-key">[SPACE]</span></div>
-              <div class="rule-text">Roll the die. The result adds to your current turn total. Keep rolling to stack points.</div>
+              <div class="rule-title">TIRAR <span class="rule-key">[ESPACIO]</span></div>
+              <div class="rule-text">Tirá el dado. El resultado se suma al total de tu turno. Seguí tirando para acumular.</div>
             </div>
           </div>
           <div class="rules-rule bust">
             <div class="rule-num">03</div>
             <div class="rule-content">
-              <div class="rule-title">BUST <span class="rule-badge">× roll a 1 ×</span></div>
-              <div class="rule-text">Snake eye. You lose every point accumulated this turn. Nothing. Zero. Turn passes.</div>
+              <div class="rule-title">QUEMARSE <span class="rule-badge">× sacar un 1 ×</span></div>
+              <div class="rule-text">Ojo de víbora. Perdés todo lo que acumulaste en el turno. Nada. Cero. Pasa el turno.</div>
             </div>
           </div>
           <div class="rules-rule">
             <div class="rule-num">04</div>
             <div class="rule-content">
-              <div class="rule-title">HOLD <span class="rule-key">[ENTER]</span></div>
-              <div class="rule-text">Bank your current points to your total score and pass the turn. The safe play — if you're a coward.</div>
+              <div class="rule-title">PLANTARSE <span class="rule-key">[ENTER]</span></div>
+              <div class="rule-text">Guardás lo del turno en tu puntaje total y pasás. La jugada segura — si sos cagón.</div>
             </div>
           </div>
           <div class="rules-rule win">
             <div class="rule-num">05</div>
             <div class="rule-content">
-              <div class="rule-title">WIN</div>
-              <div class="rule-text">First player to reach or exceed the goal score wins. The house pays out. The loser pays in shame.</div>
+              <div class="rule-title">GANAR</div>
+              <div class="rule-text">Gana el primero que llegue al objetivo o lo pase. La casa paga. El que pierde paga con vergüenza.</div>
             </div>
           </div>
         </div>
@@ -275,7 +275,7 @@
             <div class="chip red"></div>
             <div class="chip gold"></div>
           </div>
-          <div class="rules-footer-text">— good luck. you'll need it. —</div>
+          <div class="rules-footer-text">— suerte. la vas a necesitar. —</div>
         </div>
       </div>
     </div>
@@ -286,14 +286,14 @@
 
   <!-- tweaks panel -->
   <div class="tweaks" id="tweaks">
-    <h3>TWEAKS</h3>
-    <label>Goal score: <span id="tweak-goal-val">50</span></label>
+    <h3>AJUSTES</h3>
+    <label>Puntaje objetivo: <span id="tweak-goal-val">50</span></label>
     <input type="range" id="tweak-goal" min="10" max="100" step="5" value="50" />
-    <label>Smoke opacity: <span id="tweak-smoke-val">0.35</span></label>
+    <label>Opacidad del humo: <span id="tweak-smoke-val">0.35</span></label>
     <input type="range" id="tweak-smoke" min="0" max="1" step="0.05" value="0.35" />
-    <label>Effects</label>
-    <button id="tweak-scanlines">SCANLINES</button>
-    <button id="tweak-particles">PARTICLES</button>
+    <label>Efectos</label>
+    <button id="tweak-scanlines">LÍNEAS DE BARRIDO</button>
+    <button id="tweak-particles">PARTÍCULAS</button>
   </div>
 
   <script src="script.js"></script>

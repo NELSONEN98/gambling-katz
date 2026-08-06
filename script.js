@@ -1,46 +1,46 @@
 "use strict";
 
 /* ============================================
-   ANIMAL GAMBLING — game logic
+   GAMBLING KATZ — game logic
    ============================================ */
 
 const CHARACTERS = [
   {
     id: "penguin",
-    name: "Tax Penguin",
+    name: "Pingüino Fiscal",
     img: "img/penguin.png",
     age: "30",
-    cond: "Wanted for tax evasion in three jurisdictions.",
-    quote: "The house always wins. I just need to become the house.",
-    loseQuote: "The IRS is gonna catch me now...",
-    tags: ["FUGITIVE", "COLD-BLOODED"],
+    cond: "Buscado por evasión impositiva en tres jurisdicciones.",
+    quote: "La casa siempre gana. Solo me falta ser la casa.",
+    loseQuote: "Ahora sí me agarra la AFIP...",
+    tags: ["PRÓFUGO", "SANGRE FRÍA"],
   },
   {
     id: "bear",
     name: "Bearnardo",
     img: "img/bear.png",
     age: "42",
-    cond: "Ex-mob enforcer. Now pretends to be a butcher.",
-    quote: "I've buried worse things than my losses.",
-    loseQuote: "Shouldn't have left the family...",
-    tags: ["HEAVY", "PATIENT"],
+    cond: "Ex matón de la mafia. Ahora se hace el carnicero.",
+    quote: "Enterré cosas peores que mis pérdidas.",
+    loseQuote: "No tendría que haber dejado a la familia...",
+    tags: ["PESADO", "PACIENTE"],
   },
   {
     id: "duck",
-    name: "Lucky Ducky",
+    name: "Pato Suertudo",
     img: "img/duck.png",
     age: "25",
-    cond: "Degenerate. Here for the dopamine, not the money.",
-    quote: "One more roll. Just one more. I promise.",
-    loseQuote: "I can feel the next one. Let me play.",
-    tags: ["RECKLESS", "TILTED"],
+    cond: "Degenerado. Viene por la dopamina, no por la plata.",
+    quote: "Una tirada más. Una sola. Te lo juro.",
+    loseQuote: "La próxima la siento. Dejame jugar.",
+    tags: ["IMPRUDENTE", "CALIENTE"],
   },
   {
     id: "egg",
-    name: "Mystery Egg",
+    name: "Huevo Misterioso",
     img: "img/egg.png",
     age: "???",
-    cond: "Unknown. Has never been seen outside its shell.",
+    cond: "Desconocido. Nunca se lo vio fuera del cascarón.",
     quote: "...",
     loseQuote: "......",
     tags: ["???", "???"],
@@ -50,7 +50,7 @@ const CHARACTERS = [
 /* ============================================
    MAIN MENU
    ============================================ */
-/* Sections and names come from md-guides/radio-jazz-api-conexion.md §7 and §9.
+/* Sections and names come from md-guides/menu-y-flujo.md.
    `ready: false` renders the entry but keeps it unclickable — the mode has no
    implementation yet, and a dead button that looks alive is worse than one
    that says so. Building a mode means flipping the flag and adding a route. */
@@ -79,6 +79,7 @@ const state = {
   players: [null, null], // each: { char, score, current }
   active: 0,
   playing: false,
+  rolling: false, // a die is mid-animation; blocks roll and hold
   rollsTotal: 0,
   goal: TWEAK_DEFAULS.goalScore,
 };
@@ -114,9 +115,9 @@ function renderCharGrid() {
       <div class="char-info">
         <div class="char-name">${c.name}</div>
         <div class="char-meta">
-          <span class="k">age</span><span class="v">${c.age}</span>
-          <span class="k">tag</span><span class="v mono-dim">${c.tags.join(" · ")}</span>
-          <span class="k">note</span><span class="v mono-dim">${c.cond}</span>
+          <span class="k">edad</span><span class="v">${c.age}</span>
+          <span class="k">etiqueta</span><span class="v mono-dim">${c.tags.join(" · ")}</span>
+          <span class="k">ficha</span><span class="v mono-dim">${c.cond}</span>
         </div>
       </div>
     </div>
@@ -129,11 +130,11 @@ function renderCharGrid() {
 
 function updateSelectHeader() {
   const header = $("#select-header");
-  const who = state.picking === 0 ? "PLAYER_01" : "PLAYER_02";
+  const who = state.picking === 0 ? "JUGADOR_01" : "JUGADOR_02";
   header.classList.toggle("p2", state.picking === 1);
   $("#prompt-who").textContent = who;
-  $("#p1-pick").textContent = state.players[0]?.char.name || "— none —";
-  $("#p2-pick").textContent = state.players[1]?.char.name || "— none —";
+  $("#p1-pick").textContent = state.players[0]?.char.name || "— ninguno —";
+  $("#p2-pick").textContent = state.players[1]?.char.name || "— ninguno —";
 }
 
 function pickCharacter(idx) {
@@ -191,7 +192,7 @@ function updateActivePanel() {
     const panel = $(`#panel-${i}`);
     panel.classList.toggle("active", i === state.active && state.playing);
     panel.querySelector(".panel-status-label").textContent =
-      i === state.active && state.playing ? "ROLLING" : "WAITING";
+      i === state.active && state.playing ? "TIRANDO" : "ESPERANDO";
   }
 }
 
@@ -205,7 +206,7 @@ function renderChips(pIdx, score) {
   for (let i = 0; i < gold; i++) html += `<div class="chip gold" style="animation-delay:${i*0.04}s"></div>`;
   for (let i = 0; i < red; i++) html += `<div class="chip red" style="animation-delay:${(gold+i)*0.04}s"></div>`;
   for (let i = 0; i < blue; i++) html += `<div class="chip blue" style="animation-delay:${(gold+red+i)*0.04}s"></div>`;
-  if (!html) html = `<div class="chips-empty" style="font-family:var(--mono);font-size:1rem;color:var(--bone-dim);letter-spacing:.2rem;">— no chips —</div>`;
+  if (!html) html = `<div class="chips-empty" style="font-family:var(--mono);font-size:1rem;color:var(--bone-dim);letter-spacing:.2rem;">— sin fichas —</div>`;
   row.innerHTML = html;
 }
 
@@ -227,13 +228,18 @@ function setDiceFace(n) {
   dice.style.transform = `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`;
 }
 
-function rollDice() {
-  if (!state.playing) return;
+/* The single source of truth for "a roll is in flight". The DOM `disabled`
+   flag is a reflection of it, never the other way round — the keyboard
+   bypasses button state entirely, so guarding on `disabled` guards nothing. */
+function setRolling(rolling) {
+  state.rolling = rolling;
+  $("#btn-roll").disabled = rolling;
+  $("#btn-hold").disabled = rolling;
+}
 
-  const btnRoll = $("#btn-roll");
-  const btnHold = $("#btn-hold");
-  btnRoll.disabled = true;
-  btnHold.disabled = true;
+function rollDice() {
+  if (!state.playing || state.rolling) return;
+  setRolling(true);
 
   const n = Math.trunc(Math.random() * 6) + 1;
   state.rollsTotal++;
@@ -255,20 +261,16 @@ function rollDice() {
       p.current = 0;
       setTimeout(() => {
         switchPlayer();
-        btnRoll.disabled = false;
-        btnHold.disabled = false;
+        setRolling(false);
       }, 900);
     } else {
       const p = state.players[state.active];
       p.current += n;
       updateScores();
 
-      if (p.score + p.current >= state.goal) {
-        holdScore();
-      } else {
-        btnRoll.disabled = false;
-        btnHold.disabled = false;
-      }
+      // release before holdScore(), which guards on state.rolling too
+      setRolling(false);
+      if (p.score + p.current >= state.goal) holdScore();
     }
   }, 1150);
 }
@@ -281,7 +283,7 @@ function showSnakeEyes() {
 }
 
 function holdScore() {
-  if (!state.playing) return;
+  if (!state.playing || state.rolling) return;
   const p = state.players[state.active];
   p.score += p.current;
   p.current = 0;
@@ -455,6 +457,7 @@ function leaveMenu(route = "select") {
 function startGame() {
   state.active = 0;
   state.playing = true;
+  setRolling(false);
   state.rollsTotal = 0;
   state.players[0].score = 0;
   state.players[0].current = 0;
@@ -474,6 +477,7 @@ function fullReset() {
   state.players = [null, null];
   state.active = 0;
   state.playing = false;
+  state.rolling = false;
   state.rollsTotal = 0;
 
   $$(".char-card").forEach((el) => {
@@ -491,6 +495,7 @@ function newRound() {
   // Keep characters, reset scores
   state.active = 0;
   state.playing = true;
+  setRolling(false);
   state.rollsTotal = 0;
   state.players[0].score = 0;
   state.players[0].current = 0;
