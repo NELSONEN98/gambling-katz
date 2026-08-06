@@ -1741,10 +1741,10 @@ body {
   align-items: flex-start;
   gap: clamp(4px, 1vh, 12px);
 
-  /* 16.5% lines the options up with the left edge of the painted title.
-     NOT a percentage padding — that resolves against the containing block
-     (the whole viewport), which is what threw the alignment off on desktop. */
-  padding: clamp(8px, 1.4vh, 20px) calc(var(--art-w) * 0.165);
+  /* Inset as a share of the artwork, NOT a percentage padding — percentage
+     padding resolves against the containing block (the whole viewport), which
+     makes the same rule mean 19px on a phone and 72px on desktop. */
+  padding: clamp(8px, 1.4vh, 20px) calc(var(--art-w) * 0.09);
 
   background: radial-gradient(
     ellipse 92% 58% at 28% 50%,
