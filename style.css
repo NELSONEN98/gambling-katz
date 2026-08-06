@@ -1724,30 +1724,42 @@ body {
 /* Five 44px targets do not fit in the gap the artwork leaves, so the list
    runs slightly over the skyline. A soft scrim keeps the type legible
    there — black fading out, the same trick as the letterbox feather. */
+/* Anchored to the artwork's left edge, not the viewport's: on a wide screen
+   the viewport edge is hundreds of pixels out in the black letterbox and the
+   list would detach from the sign. The inset is a share of the artwork so it
+   holds at every size. */
 .menu-options {
   position: absolute;
   top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
+  /* the nav overlays the artwork exactly, so every inset below can be a
+     share of the art and hold its proportion at any screen size */
+  left: calc((100% - var(--art-w)) / 2);
+  width: var(--art-w);
+  transform: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: clamp(4px, 1vh, 12px);
-  padding: 3% 6%;
+
+  /* 16.5% lines the options up with the left edge of the painted title.
+     NOT a percentage padding — that resolves against the containing block
+     (the whole viewport), which is what threw the alignment off on desktop. */
+  padding: clamp(8px, 1.4vh, 20px) calc(var(--art-w) * 0.165);
 
   background: radial-gradient(
-    ellipse 68% 58% at 50% 50%,
+    ellipse 92% 58% at 28% 50%,
     rgba(0, 0, 0, 0.88),
-    rgba(0, 0, 0, 0.6) 58%,
-    transparent 84%
+    rgba(0, 0, 0, 0.6) 52%,
+    transparent 82%
   );
 }
 
 .menu-option {
   display: flex;
   align-items: baseline;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 10px;
+  text-align: left;
 
   background: none;
   border: 0;
