@@ -29,8 +29,9 @@ style.css         everything visual
 styleguide.html   design system reference
 img/              character sprites
 dices/            die face sprites
-menu/             title screen boil — 6 frames
-start/            "Iniciar" button boil — 3 frames
+main-menu/        main menu boil — 3 drawings, holds 2/3/1
+start/            "Iniciar" button boil — 3 drawings, holds 2/1/4
+menu/             earlier alley/arcade art — no longer referenced
 piskels/          .piskel sources for the character sprites
 ```
 

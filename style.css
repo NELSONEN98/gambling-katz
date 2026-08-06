@@ -1646,9 +1646,9 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover; /* box is already 9:16, so cover == contain */
-  background-image: url("menu/menu-0.webp");
+  background-image: url("main-menu/main-0.webp");
 
-  animation: boil 0.75s step-end infinite;
+  animation: boil 0.25s step-end infinite;
 
   /* Feather all four edges into the black so the letterbox bars
      dissolve into the artwork instead of cutting it off. */
@@ -1662,15 +1662,12 @@ body {
   mask-composite: intersect;
 }
 
-/* 6 drawings held on threes at 24fps = 8fps.
+/* 3 drawings over 6 frames at 24fps — holds of 2, 3 and 1.
    step-end means no interpolation: it snaps, the way a drawing should. */
 @keyframes boil {
-  0%      { background-image: url("menu/menu-0.webp"); }
-  16.667% { background-image: url("menu/menu-1.webp"); }
-  33.333% { background-image: url("menu/menu-2.webp"); }
-  50%     { background-image: url("menu/menu-3.webp"); }
-  66.667% { background-image: url("menu/menu-4.webp"); }
-  83.333% { background-image: url("menu/menu-5.webp"); }
+  0%      { background-image: url("main-menu/main-0.webp"); } /* 2 frames */
+  33.333% { background-image: url("main-menu/main-1.webp"); } /* 3 frames */
+  83.333% { background-image: url("main-menu/main-2.webp"); } /* 1 frame  */
 }
 
 /* Pinned to the viewport corner — on wide screens it sits out in the black
