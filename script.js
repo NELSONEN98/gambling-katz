@@ -370,7 +370,6 @@ function leaveMenu() {
   setTimeout(() => {
     screens.menu.classList.remove("leaving");
     switchScreen("select");
-    openRules();
   }, 420);
 }
 
