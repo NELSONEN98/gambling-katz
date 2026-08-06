@@ -58,7 +58,7 @@ const TWEAK_DEFAULS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 
 const state = {
-  screen: "select", // "select" | "game" | "gameover"
+  screen: "title", // "title" | "select" | "game" | "gameover"
   picking: 0, // which player is picking (0 or 1)
   players: [null, null], // each: { char, score, current }
   active: 0,
@@ -74,6 +74,7 @@ const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
 const screens = {
+  title: $("#screen-title"),
   select: $("#screen-select"),
   game: $("#screen-game"),
   gameover: $("#screen-gameover"),
@@ -346,6 +347,21 @@ function switchScreen(name) {
   Object.entries(screens).forEach(([k, el]) => {
     el.classList.toggle("active", k === name);
   });
+  // the felt table, wood frame and HUD only exist past the title
+  $(".table").classList.toggle("on-title", name === "title");
+}
+
+/* ============================================
+   TITLE / MENU
+   ============================================ */
+function leaveTitle() {
+  if (state.screen !== "title") return;
+  screens.title.classList.add("leaving");
+  setTimeout(() => {
+    screens.title.classList.remove("leaving");
+    switchScreen("select");
+    openRules();
+  }, 420);
 }
 
 function startGame() {
@@ -405,7 +421,10 @@ function newRound() {
 function init() {
   renderCharGrid();
   updateSelectHeader();
-  switchScreen("select");
+  switchScreen("title");
+
+  $("#btn-start").addEventListener("click", leaveTitle);
+  screens.title.addEventListener("click", leaveTitle);
 
   $("#btn-roll").addEventListener("click", rollDice);
   $("#btn-hold").addEventListener("click", holdScore);
@@ -422,6 +441,7 @@ function init() {
   // keyboard
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") { closeRules(); return; }
+    if (state.screen === "title") { e.preventDefault(); leaveTitle(); return; }
     if (state.screen !== "game" || !state.playing) return;
     if (e.code === "Space") { e.preventDefault(); rollDice(); }
     if (e.key === "Enter") { e.preventDefault(); holdScore(); }
@@ -430,9 +450,7 @@ function init() {
   // apply tweaks
   applyTweaks();
   setupTweaks();
-
-  // show rules on first load
-  openRules();
+  // rules now open when the player leaves the title — see leaveTitle()
 }
 
 /* ============================================

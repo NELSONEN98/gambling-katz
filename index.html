@@ -4,6 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Animal Gambling // Dirty Casino</title>
+
+  <!-- boil frames: decode them before the title screen paints, or the
+       first loop flashes through blank backgrounds -->
+  <link rel="preload" as="image" href="menu/menu-0.webp" />
+  <link rel="preload" as="image" href="menu/menu-1.webp" />
+  <link rel="preload" as="image" href="menu/menu-2.webp" />
+  <link rel="preload" as="image" href="menu/menu-3.webp" />
+  <link rel="preload" as="image" href="menu/menu-4.webp" />
+  <link rel="preload" as="image" href="menu/menu-5.webp" />
+  <link rel="preload" as="image" href="start/start-0.webp" />
+  <link rel="preload" as="image" href="start/start-1.webp" />
+  <link rel="preload" as="image" href="start/start-2.webp" />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -36,8 +49,18 @@
       <button class="btn small danger" id="btn-new">× New Game</button>
     </div>
 
+    <!-- ============== TITLE / MENU ============== -->
+    <section class="screen title-screen active" id="screen-title">
+      <div class="title-art" id="title-art"></div>
+      <!-- The label lives inside the artwork, so the button needs an
+           accessible name of its own or a screen reader announces "button". -->
+      <button class="title-start" id="btn-start" aria-label="Iniciar juego">
+        <span class="start-art" aria-hidden="true"></span>
+      </button>
+    </section>
+
     <!-- ============== CHARACTER SELECT ============== -->
-    <section class="screen select-screen active" id="screen-select">
+    <section class="screen select-screen" id="screen-select">
       <div class="select-header" id="select-header">
         <div class="prompt-label">— choose your degenerate —</div>
         <div class="prompt-title">SELECT <span class="who" id="prompt-who">PLAYER_01</span></div>
