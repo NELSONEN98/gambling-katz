@@ -1760,29 +1760,37 @@ body {
   justify-content: flex-start;
   gap: 10px;
   text-align: left;
+  /* every button the same width, so the borders read as one stack
+     instead of five ragged boxes */
+  align-self: stretch;
 
-  background: none;
-  border: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--bone);
+  border-radius: 10px;
   cursor: pointer;
   /* padding, not margin: keeps the touch target at 44px even when the
      type shrinks on small screens */
-  padding: 10px 16px;
+  padding: 8px 16px;
   min-height: 44px;
 
   font-family: var(--display);
-  font-size: clamp(24px, 5.4vw, 40px);
+  font-size: clamp(22px, 4.8vw, 34px);
   letter-spacing: 0.2rem;
   text-transform: uppercase;
   color: var(--bone);
   text-shadow: 0 0 1.6rem rgba(0, 0, 0, 0.95);
-  transition: color 0.15s ease, transform 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease,
+              background-color 0.15s ease, transform 0.15s ease;
 }
 
 .menu-option:not(.locked):hover,
 .menu-option:not(.locked):focus-visible {
   color: var(--neon-amber);
+  border-color: var(--neon-amber);
+  background: rgba(245, 185, 66, 0.14);
   text-shadow: 0 0 1.2rem var(--neon-amber-glow), 0 0 3rem rgba(245, 185, 66, 0.45);
-  transform: scale(1.06);
+  box-shadow: 0 0 1.6rem rgba(245, 185, 66, 0.35);
+  transform: scale(1.03);
 }
 .menu-option:focus-visible {
   outline: 2px solid var(--neon-amber);
@@ -1797,7 +1805,9 @@ body {
    the roadmap is visible without pretending the button works. */
 .menu-option.locked {
   color: var(--bone-dim);
-  opacity: 0.45;
+  border-color: var(--bone-dim);
+  background: rgba(0, 0, 0, 0.38);
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
