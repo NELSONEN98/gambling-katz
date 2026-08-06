@@ -48,6 +48,22 @@ const CHARACTERS = [
 ];
 
 /* ============================================
+   MAIN MENU
+   ============================================ */
+/* Sections and names come from md-guides/radio-jazz-api-conexion.md §7 and §9.
+   `ready: false` renders the entry but keeps it unclickable — the mode has no
+   implementation yet, and a dead button that looks alive is worse than one
+   that says so. Building a mode means flipping the flag and adding a route. */
+const MENU_ITEMS = [
+  { id: "online", label: "Duelo Online", ready: false, note: "1v1" },
+  { id: "cpu", label: "Vs. IA", ready: false, note: "práctica" },
+  // The only mode that exists today: two players sharing one screen.
+  { id: "local", label: "Duelo Local", ready: true, route: "select" },
+  { id: "skins", label: "Personalización", ready: false },
+  { id: "shop", label: "Tienda", ready: false },
+];
+
+/* ============================================
    STATE
    ============================================ */
 const TWEAK_DEFAULS = /*EDITMODE-BEGIN*/{
@@ -343,14 +359,57 @@ function launchParticles(count = 80) {
 /* ============================================
    FLOW
    ============================================ */
-function switchScreen(name) {
+/* Hash routing, not the History API. This ships as a static file opened
+   straight from disk or from /projects/..., where pushState paths would
+   404 on reload. "#/menu" survives both. */
+const ROUTES = ["title", "menu", "select", "game", "gameover"];
+
+function routeFromHash() {
+  const raw = (location.hash || "").replace(/^#\/?/, "");
+  return ROUTES.includes(raw) ? raw : "title";
+}
+
+/* A screen is only reachable if the state behind it exists. Anyone who
+   pastes #/game, or walks back into a finished round, lands somewhere
+   coherent instead of on a half-rendered board. */
+function resolveRoute(name) {
+  const picked = Boolean(state.players[0] && state.players[1]);
+  if ((name === "game" || name === "gameover") && !picked) return "select";
+  return name;
+}
+
+/* Renders. Never touches history. */
+function applyScreen(name) {
   state.screen = name;
   Object.entries(screens).forEach(([k, el]) => {
     el.classList.toggle("active", k === name);
   });
   // the felt table, wood frame and HUD only exist past the artwork screens
   $(".table").classList.toggle("on-title", name === "title" || name === "menu");
+  closeRules();
 }
+
+/* Navigates. The hashchange listener does the rendering, so a button click
+   and the browser's back arrow travel exactly the same path — one flow,
+   not two that drift apart. */
+function switchScreen(name) {
+  const target = resolveRoute(name);
+  if (location.hash === `#/${target}`) {
+    applyScreen(target);
+    return;
+  }
+  location.hash = `#/${target}`;
+}
+
+window.addEventListener("hashchange", () => {
+  const target = resolveRoute(routeFromHash());
+  if (location.hash !== `#/${target}`) {
+    // guard rewrote the destination — replace so back doesn't bounce
+    location.replace(`#/${target}`);
+    return;
+  }
+  applyScreen(target);
+});
 
 /* ============================================
    TITLE / MENU
@@ -364,12 +423,32 @@ function leaveTitle() {
   }, 420);
 }
 
-function leaveMenu() {
+function renderMenu() {
+  const nav = $("#menu-options");
+  nav.innerHTML = MENU_ITEMS.map((it) => `
+    <button class="menu-option${it.ready ? "" : " locked"}"
+            data-id="${it.id}"
+            ${it.ready ? "" : 'disabled aria-disabled="true"'}>
+      <span class="opt-label">${it.label}</span>
+      ${it.ready
+        ? (it.note ? `<span class="opt-note">${it.note}</span>` : "")
+        : '<span class="opt-note locked-note">pronto</span>'}
+    </button>
+  `).join("");
+
+  nav.querySelectorAll(".menu-option").forEach((el) => {
+    const item = MENU_ITEMS.find((i) => i.id === el.dataset.id);
+    if (!item?.ready) return;
+    el.addEventListener("click", () => leaveMenu(item.route));
+  });
+}
+
+function leaveMenu(route = "select") {
   if (state.screen !== "menu") return;
   screens.menu.classList.add("leaving");
   setTimeout(() => {
     screens.menu.classList.remove("leaving");
-    switchScreen("select");
+    switchScreen(route);
   }, 420);
 }
 
@@ -429,14 +508,19 @@ function newRound() {
    ============================================ */
 function init() {
   renderCharGrid();
+  renderMenu();
   updateSelectHeader();
-  switchScreen("title");
+
+  // honour a hash that is already in the URL (reload, bookmark, shared link)
+  const initial = resolveRoute(routeFromHash());
+  if (location.hash !== `#/${initial}`) location.replace(`#/${initial}`);
+  applyScreen(initial);
 
   $("#btn-start").addEventListener("click", leaveTitle);
   screens.title.addEventListener("click", leaveTitle);
 
-  $("#btn-menu-play").addEventListener("click", leaveMenu);
-  $("#btn-menu-rules").addEventListener("click", openRules);
+  $("#btn-menu-back").addEventListener("click", () => switchScreen("title"));
+  $("#btn-select-back").addEventListener("click", () => switchScreen("menu"));
 
   $("#btn-roll").addEventListener("click", rollDice);
   $("#btn-hold").addEventListener("click", holdScore);

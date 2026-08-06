@@ -67,10 +67,9 @@
          band open; the options sit in that gap. -->
     <section class="screen menu-screen" id="screen-menu">
       <div class="menu-art" id="menu-art"></div>
-      <nav class="menu-options" aria-label="Menú principal">
-        <button class="menu-option" id="btn-menu-play">Jugar</button>
-        <button class="menu-option" id="btn-menu-rules">Reglas</button>
-      </nav>
+      <!-- filled by renderMenu() from MENU_ITEMS in script.js -->
+      <nav class="menu-options" id="menu-options" aria-label="Menú principal"></nav>
+      <button class="nav-back" id="btn-menu-back">‹ Volver</button>
     </section>
 
     <!-- ============== CHARACTER SELECT ============== -->
@@ -86,7 +85,9 @@
           <span class="pick-label">P1:</span>
           <span class="pick-val" id="p1-pick">— none —</span>
         </div>
-        <div class="sys-msg">[ click a card to lock in your character ]</div>
+        <div class="sys-msg">[ click a card to lock in your character ]
+          <button class="nav-back inline" id="btn-select-back">‹ Volver</button>
+        </div>
         <div class="p2-pick">
           <span class="pick-label">P2:</span>
           <span class="pick-val" id="p2-pick">— none —</span>

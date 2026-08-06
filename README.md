@@ -13,6 +13,39 @@ It is a static site. Open `index.html` directly, or serve the folder:
 npx serve .
 ```
 
+## Screens and routing
+
+```
+#/title     splash — the alley sign, tap or Iniciar
+#/menu      main menu
+#/select    character select
+#/game      the board
+#/gameover  result
+```
+
+Hash routing, not the History API: this is a static file opened from disk
+or from `/projects/...`, where pushState paths would 404 on reload.
+
+`switchScreen(name)` only pushes a hash; the `hashchange` listener does all
+rendering. Button clicks and the browser's back arrow therefore travel the
+same path instead of drifting apart. `resolveRoute()` guards screens that
+need state behind them — `#/game` with no players redirects to `#/select`.
+
+## Main menu
+
+Entries live in `MENU_ITEMS` in `script.js`, named per `md-guides/` §7 and §9.
+`ready: false` renders the entry greyed and disabled with a "pronto" badge —
+the mode has no implementation yet. Building one means flipping the flag and
+pointing `route` at a screen.
+
+| Entry | State |
+|---|---|
+| Duelo Online | not built |
+| Vs. IA | not built |
+| Duelo Local | **playable** — the two-player game |
+| Personalización | not built |
+| Tienda | not built |
+
 ## Rules
 
 - Roll (`space`) adds the die to your current turn total.

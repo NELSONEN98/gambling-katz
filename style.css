@@ -1721,49 +1721,129 @@ body {
 
 /* Options sit in the empty band the artwork leaves between the title
    and the skyline — roughly 38%–62% down. */
+/* Five 44px targets do not fit in the gap the artwork leaves, so the list
+   runs slightly over the skyline. A soft scrim keeps the type legible
+   there — black fading out, the same trick as the letterbox feather. */
 .menu-options {
   position: absolute;
-  top: 44%;
+  top: 30%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(14px, 2.5vh, 28px);
+  gap: clamp(4px, 1vh, 12px);
+  padding: 3% 6%;
+
+  background: radial-gradient(
+    ellipse 68% 58% at 50% 50%,
+    rgba(0, 0, 0, 0.88),
+    rgba(0, 0, 0, 0.6) 58%,
+    transparent 84%
+  );
 }
 
 .menu-option {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+
   background: none;
   border: 0;
   cursor: pointer;
-  padding: 8px 16px;
+  /* padding, not margin: keeps the touch target at 44px even when the
+     type shrinks on small screens */
+  padding: 10px 16px;
+  min-height: 44px;
 
   font-family: var(--display);
-  font-size: clamp(28px, 7vw, 56px);
-  letter-spacing: 0.25rem;
+  font-size: clamp(24px, 5.4vw, 40px);
+  letter-spacing: 0.2rem;
   text-transform: uppercase;
   color: var(--bone);
-  text-shadow: 0 0 1.6rem rgba(0, 0, 0, 0.9);
+  text-shadow: 0 0 1.6rem rgba(0, 0, 0, 0.95);
   transition: color 0.15s ease, transform 0.15s ease;
 }
 
-.menu-option:hover,
-.menu-option:focus-visible {
+.menu-option:not(.locked):hover,
+.menu-option:not(.locked):focus-visible {
   color: var(--neon-amber);
   text-shadow: 0 0 1.2rem var(--neon-amber-glow), 0 0 3rem rgba(245, 185, 66, 0.45);
   transform: scale(1.06);
 }
 .menu-option:focus-visible {
   outline: 2px solid var(--neon-amber);
-  outline-offset: 6px;
+  outline-offset: 4px;
   border-radius: 4px;
 }
-.menu-option:active {
+.menu-option:not(.locked):active {
   transform: scale(0.97);
+}
+
+/* Unbuilt modes stay readable but clearly inert — greyed, not hidden, so
+   the roadmap is visible without pretending the button works. */
+.menu-option.locked {
+  color: var(--bone-dim);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.opt-note {
+  font-family: var(--mono);
+  font-size: clamp(9px, 1.5vw, 12px);
+  letter-spacing: 0.15rem;
+  text-transform: lowercase;
+  color: var(--bone-dim);
+  opacity: 0.8;
+}
+.opt-note.locked-note {
+  color: var(--blood);
+  opacity: 0.9;
 }
 
 .menu-screen.leaving {
   animation: title-out 0.45s ease forwards;
+}
+
+/* ============================================
+   BACK NAVIGATION
+   ============================================ */
+.nav-back {
+  position: absolute;
+  left: clamp(24px, 3.6vw, 52.8px);
+  bottom: clamp(38.4px, 6vw, 86.4px);
+
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 10px 14px;
+
+  font-family: var(--mono);
+  font-size: clamp(12px, 1.4vw, 16px);
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.nav-back:hover,
+.nav-back:focus-visible {
+  color: var(--neon-amber);
+  transform: translateX(-3px);
+}
+.nav-back:focus-visible {
+  outline: 2px solid var(--neon-amber);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* inside the select screen's footer, it flows with the text instead */
+.nav-back.inline {
+  position: static;
+  display: inline-block;
+  margin-left: 1.2rem;
+  padding: 6px 10px;
 }
 
 /* Pinned to the viewport corner — on wide screens it sits out in the black
