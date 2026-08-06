@@ -75,6 +75,7 @@ const $$ = (sel) => document.querySelectorAll(sel);
 
 const screens = {
   title: $("#screen-title"),
+  menu: $("#screen-menu"),
   select: $("#screen-select"),
   game: $("#screen-game"),
   gameover: $("#screen-gameover"),
@@ -347,8 +348,8 @@ function switchScreen(name) {
   Object.entries(screens).forEach(([k, el]) => {
     el.classList.toggle("active", k === name);
   });
-  // the felt table, wood frame and HUD only exist past the title
-  $(".table").classList.toggle("on-title", name === "title");
+  // the felt table, wood frame and HUD only exist past the artwork screens
+  $(".table").classList.toggle("on-title", name === "title" || name === "menu");
 }
 
 /* ============================================
@@ -359,6 +360,15 @@ function leaveTitle() {
   screens.title.classList.add("leaving");
   setTimeout(() => {
     screens.title.classList.remove("leaving");
+    switchScreen("menu");
+  }, 420);
+}
+
+function leaveMenu() {
+  if (state.screen !== "menu") return;
+  screens.menu.classList.add("leaving");
+  setTimeout(() => {
+    screens.menu.classList.remove("leaving");
     switchScreen("select");
     openRules();
   }, 420);
@@ -425,6 +435,9 @@ function init() {
 
   $("#btn-start").addEventListener("click", leaveTitle);
   screens.title.addEventListener("click", leaveTitle);
+
+  $("#btn-menu-play").addEventListener("click", leaveMenu);
+  $("#btn-menu-rules").addEventListener("click", openRules);
 
   $("#btn-roll").addEventListener("click", rollDice);
   $("#btn-hold").addEventListener("click", holdScore);

@@ -1646,9 +1646,9 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover; /* box is already 9:16, so cover == contain */
-  background-image: url("main-menu/main-0.webp");
+  background-image: url("menu/menu-0.webp");
 
-  animation: boil 0.25s step-end infinite;
+  animation: boil 0.75s step-end infinite;
 
   /* Feather all four edges into the black so the letterbox bars
      dissolve into the artwork instead of cutting it off. */
@@ -1662,12 +1662,108 @@ body {
   mask-composite: intersect;
 }
 
-/* 3 drawings over 6 frames at 24fps — holds of 2, 3 and 1.
+/* 6 drawings held on threes at 24fps = 8fps.
    step-end means no interpolation: it snaps, the way a drawing should. */
 @keyframes boil {
+  0%      { background-image: url("menu/menu-0.webp"); }
+  16.667% { background-image: url("menu/menu-1.webp"); }
+  33.333% { background-image: url("menu/menu-2.webp"); }
+  50%     { background-image: url("menu/menu-3.webp"); }
+  66.667% { background-image: url("menu/menu-4.webp"); }
+  83.333% { background-image: url("menu/menu-5.webp"); }
+}
+
+/* ============================================
+   MAIN MENU — same derived contain box as the title
+   ============================================ */
+.menu-screen {
+  --art-w: min(100%, calc(100dvh * 9 / 16));
+
+  display: none;
+  place-items: center;
+  background: #000;
+  z-index: 20;
+}
+.menu-screen.active {
+  display: grid;
+}
+
+.menu-art {
+  --feather: 5%;
+
+  width: var(--art-w);
+  aspect-ratio: 9 / 16;
+  max-height: 100dvh;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-image: url("main-menu/main-0.webp");
+
+  animation: menu-boil 0.25s step-end infinite;
+
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%);
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* 3 drawings over 6 frames at 24fps — holds of 2, 3 and 1. */
+@keyframes menu-boil {
   0%      { background-image: url("main-menu/main-0.webp"); } /* 2 frames */
   33.333% { background-image: url("main-menu/main-1.webp"); } /* 3 frames */
   83.333% { background-image: url("main-menu/main-2.webp"); } /* 1 frame  */
+}
+
+/* Options sit in the empty band the artwork leaves between the title
+   and the skyline — roughly 38%–62% down. */
+.menu-options {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 2.5vh, 28px);
+}
+
+.menu-option {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 8px 16px;
+
+  font-family: var(--display);
+  font-size: clamp(28px, 7vw, 56px);
+  letter-spacing: 0.25rem;
+  text-transform: uppercase;
+  color: var(--bone);
+  text-shadow: 0 0 1.6rem rgba(0, 0, 0, 0.9);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.menu-option:hover,
+.menu-option:focus-visible {
+  color: var(--neon-amber);
+  text-shadow: 0 0 1.2rem var(--neon-amber-glow), 0 0 3rem rgba(245, 185, 66, 0.45);
+  transform: scale(1.06);
+}
+.menu-option:focus-visible {
+  outline: 2px solid var(--neon-amber);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+.menu-option:active {
+  transform: scale(0.97);
+}
+
+.menu-screen.leaving {
+  animation: title-out 0.45s ease forwards;
 }
 
 /* Pinned to the viewport corner — on wide screens it sits out in the black
@@ -1756,8 +1852,10 @@ body {
    not a slower boil. */
 @media (prefers-reduced-motion: reduce) {
   .title-art { animation: none; }
+  .menu-art { animation: none; }
   .title-start .start-art { animation: none; }
-  .title-screen.leaving { animation: none; opacity: 0; }
+  .title-screen.leaving,
+  .menu-screen.leaving { animation: none; opacity: 0; }
 }
 
 @media (max-width: 768px) {

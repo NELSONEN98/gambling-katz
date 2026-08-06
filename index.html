@@ -7,6 +7,12 @@
 
   <!-- boil frames: decode them before the title screen paints, or the
        first loop flashes through blank backgrounds -->
+  <link rel="preload" as="image" href="menu/menu-0.webp" />
+  <link rel="preload" as="image" href="menu/menu-1.webp" />
+  <link rel="preload" as="image" href="menu/menu-2.webp" />
+  <link rel="preload" as="image" href="menu/menu-3.webp" />
+  <link rel="preload" as="image" href="menu/menu-4.webp" />
+  <link rel="preload" as="image" href="menu/menu-5.webp" />
   <link rel="preload" as="image" href="main-menu/main-0.webp" />
   <link rel="preload" as="image" href="main-menu/main-1.webp" />
   <link rel="preload" as="image" href="main-menu/main-2.webp" />
@@ -46,7 +52,7 @@
       <button class="btn small danger" id="btn-new">× New Game</button>
     </div>
 
-    <!-- ============== TITLE / MENU ============== -->
+    <!-- ============== TITLE ============== -->
     <section class="screen title-screen active" id="screen-title">
       <div class="title-art" id="title-art"></div>
       <!-- The label lives inside the artwork, so the button needs an
@@ -54,6 +60,17 @@
       <button class="title-start" id="btn-start" aria-label="Iniciar juego">
         <span class="start-art" aria-hidden="true"></span>
       </button>
+    </section>
+
+    <!-- ============== MAIN MENU ============== -->
+    <!-- The artwork carries the GAMBLING KATZ title and leaves the middle
+         band open; the options sit in that gap. -->
+    <section class="screen menu-screen" id="screen-menu">
+      <div class="menu-art" id="menu-art"></div>
+      <nav class="menu-options" aria-label="Menú principal">
+        <button class="menu-option" id="btn-menu-play">Jugar</button>
+        <button class="menu-option" id="btn-menu-rules">Reglas</button>
+      </nav>
     </section>
 
     <!-- ============== CHARACTER SELECT ============== -->
