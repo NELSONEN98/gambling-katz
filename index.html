@@ -16,9 +16,6 @@
   <link rel="preload" as="image" href="main-menu/main-0.webp" />
   <link rel="preload" as="image" href="main-menu/main-1.webp" />
   <link rel="preload" as="image" href="main-menu/main-2.webp" />
-  <link rel="preload" as="image" href="start/start-0.webp" />
-  <link rel="preload" as="image" href="start/start-1.webp" />
-  <link rel="preload" as="image" href="start/start-2.webp" />
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -55,11 +52,7 @@
     <!-- ============== TITLE ============== -->
     <section class="screen title-screen active" id="screen-title">
       <div class="title-art" id="title-art"></div>
-      <!-- The label lives inside the artwork, so the button needs an
-           accessible name of its own or a screen reader announces "button". -->
-      <button class="title-start" id="btn-start" aria-label="Iniciar juego">
-        <span class="start-art" aria-hidden="true"></span>
-      </button>
+      <button class="btn-marquee title-start" id="btn-start">Iniciar</button>
     </section>
 
     <!-- ============== MAIN MENU ============== -->
@@ -69,7 +62,7 @@
       <div class="menu-art" id="menu-art"></div>
       <!-- filled by renderMenu() from MENU_ITEMS in script.js -->
       <nav class="menu-options" id="menu-options" aria-label="Menú principal"></nav>
-      <button class="nav-back" id="btn-menu-back">‹ Volver</button>
+      <button class="btn-marquee nav-back" id="btn-menu-back">‹ Volver</button>
     </section>
 
     <!-- ============== CHARACTER SELECT ============== -->
@@ -86,7 +79,7 @@
           <span class="pick-val" id="p1-pick">— ninguno —</span>
         </div>
         <div class="sys-msg">[ tocá una carta para fijar tu personaje ]
-          <button class="nav-back inline" id="btn-select-back">‹ Volver</button>
+          <button class="btn-marquee nav-back inline" id="btn-select-back">‹ Volver</button>
         </div>
         <div class="p2-pick">
           <span class="pick-label">P2:</span>

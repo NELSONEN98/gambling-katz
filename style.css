@@ -30,6 +30,9 @@
   --chip-gold: #f5b942;
   --chip-black: #1a1a1a;
 
+  --marquee: #fdf900;
+  --marquee-deep: #ddd900;
+
   --mono: "JetBrains Mono", ui-monospace, monospace;
   --pixel: "Pixelify Sans", sans-serif;
   --display: "Jersey 10", serif;
@@ -1830,43 +1833,66 @@ body {
 }
 
 /* ============================================
+   MARQUEE BUTTON
+   ============================================ */
+/* One component, two callers: the title screen's Iniciar and every Volver.
+   The class owns the look only — each caller keeps its own positioning, so
+   changing the button's face is a one-place edit. */
+.btn-marquee {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+
+  background: var(--marquee);
+  border: 2px solid var(--marquee);
+  border-radius: 10px;
+  cursor: pointer;
+  /* padding plus min-height holds the 44px touch target on a phone */
+  padding: 10px 22px;
+  min-height: 44px;
+
+  font-family: var(--menu);
+  font-size: clamp(13px, 1.9vw, 20px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* black on --marquee reads at 18.7:1 — the yellow is far too luminous to
+     carry light type, so the contrast has to come from the ink side */
+  color: #000;
+
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+              box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.btn-marquee:hover,
+.btn-marquee:focus-visible {
+  background: var(--marquee-deep);
+  border-color: var(--marquee-deep);
+  box-shadow: 0 0 1.6rem rgba(253, 249, 0, 0.5);
+}
+.btn-marquee:focus-visible {
+  outline: 2px solid var(--neon-amber);
+  outline-offset: 4px;
+}
+.btn-marquee:active {
+  transform: scale(0.97);
+}
+
+/* ============================================
    BACK NAVIGATION
    ============================================ */
+/* .btn-marquee carries the face; these rules only place it. */
 .nav-back {
   position: absolute;
   left: clamp(24px, 3.6vw, 52.8px);
   bottom: clamp(38.4px, 6vw, 86.4px);
-
-  background: none;
-  border: 0;
-  cursor: pointer;
-  padding: 10px 14px;
-
-  font-family: var(--mono);
-  font-size: clamp(12px, 1.4vw, 16px);
-  letter-spacing: 0.2rem;
-  text-transform: uppercase;
-  color: var(--bone-dim);
-  transition: color 0.15s ease, transform 0.15s ease;
-}
-
-.nav-back:hover,
-.nav-back:focus-visible {
-  color: var(--neon-amber);
-  transform: translateX(-3px);
-}
-.nav-back:focus-visible {
-  outline: 2px solid var(--neon-amber);
-  outline-offset: 4px;
-  border-radius: 4px;
 }
 
 /* inside the select screen's footer, it flows with the text instead */
 .nav-back.inline {
   position: static;
-  display: inline-block;
   margin-left: 1.2rem;
-  padding: 6px 10px;
+  vertical-align: middle;
 }
 
 /* Pinned to the viewport corner — on wide screens it sits out in the black
@@ -1878,70 +1904,29 @@ body {
   left: auto;
   right: clamp(24px, 3.6vw, 52.8px);
   bottom: clamp(38.4px, 6vw, 86.4px);
-  transform: none;
 
-  /* Sized explicitly. With width:auto the shrink-to-fit width came from the
-     hint text below and squashed the artwork to 82px. */
-  width: min(35vw, 18rem);
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
+  /* The title screen's only call to action, so it breathes on its own instead
+     of waiting to be hovered — which a touch screen never does. */
+  animation: marquee-pulse 1.9s ease-in-out infinite;
 }
 
-/* With the hint gone the button is only the 82x27 artwork — under the
-   44x44 minimum. Grows the hit area outward without moving a pixel of it.
-   Deliberately in px: a fingertip does not shrink with the rem ladder. */
-.title-start::before {
-  content: "";
-  position: absolute;
-  inset: -10px -6px;
-  border-radius: 0.4rem;
-}
-
-/* Hand-drawn "Iniciar" button — 3 drawings, native 420x140 (3:1). */
-.title-start .start-art {
-  display: block;
-  width: 100%;
-  flex-shrink: 0;
-  aspect-ratio: 3 / 1;
-
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  background-image: url("start/start-0.webp");
-
-  animation: start-boil 0.2917s step-end infinite;
-  /* lifts the sticker off the black without washing out the alpha edge */
-  filter: drop-shadow(0 0 1.6rem rgba(245, 185, 66, 0.35));
-  transition: transform 0.15s ease;
-}
-
-.title-start:hover .start-art,
-.title-start:focus-visible .start-art {
-  transform: scale(1.04);
-  filter: drop-shadow(0 0 2.4rem rgba(245, 185, 66, 0.6));
-}
-.title-start:active .start-art {
-  transform: scale(0.97);
-}
+/* Hover keeps the same rhythm, just hotter. It has to be a second keyframe set
+   rather than a plain box-shadow: an animated property beats a normal
+   declaration, so .btn-marquee:hover's shadow would never land here. */
+.title-start:hover,
 .title-start:focus-visible {
-  outline: 2px solid var(--neon-amber);
-  outline-offset: 0.6rem;
-  border-radius: 0.4rem;
+  animation-name: marquee-pulse-hot;
 }
 
-/* Export holds each drawing for 2, 1 and 4 frames at 24fps.
-   Keeping the uneven holds is the point — an even cycle reads mechanical. */
-@keyframes start-boil {
-  0%      { background-image: url("start/start-0.webp"); } /* 2 frames */
-  28.571% { background-image: url("start/start-1.webp"); } /* 1 frame  */
-  42.857% { background-image: url("start/start-2.webp"); } /* 4 frames */
+/* Starts lit and fades down, so the button is already glowing the instant the
+   title screen appears instead of ramping up half a beat late. */
+@keyframes marquee-pulse {
+  0%, 100% { box-shadow: 0 0 2.2rem rgba(253, 249, 0, 0.7); }
+  50%      { box-shadow: 0 0 0.7rem rgba(253, 249, 0, 0.3); }
+}
+@keyframes marquee-pulse-hot {
+  0%, 100% { box-shadow: 0 0 3.2rem rgba(253, 249, 0, 1); }
+  50%      { box-shadow: 0 0 1.6rem rgba(253, 249, 0, 0.6); }
 }
 
 .title-screen.leaving {
@@ -1956,11 +1941,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .title-art { animation: none; }
   .menu-art { animation: none; }
-  .title-start .start-art { animation: none; }
+  /* the glow is decoration, so it drops entirely — the button still reads */
+  .title-start,
+  .title-start:hover,
+  .title-start:focus-visible { animation: none; }
   .title-screen.leaving,
   .menu-screen.leaving { animation: none; opacity: 0; }
-}
-
-@media (max-width: 768px) {
-  .title-start { width: min(36vw, 15rem); }
 }
