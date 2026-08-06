@@ -432,9 +432,7 @@ function renderMenu() {
             data-id="${it.id}"
             ${it.ready ? "" : 'disabled aria-disabled="true"'}>
       <span class="opt-label">${it.label}</span>
-      ${it.ready
-        ? (it.note ? `<span class="opt-note">${it.note}</span>` : "")
-        : '<span class="opt-note locked-note">pronto</span>'}
+      ${it.ready && it.note ? `<span class="opt-note">${it.note}</span>` : ""}
     </button>
   `).join("");
 

@@ -1738,7 +1738,9 @@ body {
   transform: none;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  /* every button the same width, so the five borders read as one stack
+     with a single vertical edge each side instead of a ragged column */
+  align-items: stretch;
   gap: clamp(4px, 1vh, 12px);
 
   /* Inset as a share of the artwork, NOT a percentage padding — percentage
@@ -1757,12 +1759,9 @@ body {
 .menu-option {
   display: flex;
   align-items: baseline;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 10px;
-  text-align: left;
-  /* every button the same width, so the borders read as one stack
-     instead of five ragged boxes */
-  align-self: stretch;
+  text-align: center;
 
   background: rgba(0, 0, 0, 0.5);
   border: 2px solid var(--bone);
@@ -1818,10 +1817,6 @@ body {
   text-transform: lowercase;
   color: var(--bone-dim);
   opacity: 0.8;
-}
-.opt-note.locked-note {
-  color: var(--blood);
-  opacity: 0.9;
 }
 
 .menu-screen.leaving {
