@@ -1,0 +1,15 @@
+# editor / OS
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+
+# logs
+*.log
+
+# Raw frame exports from Krita. The shipped .webp are either lossless or
+# derived from the .kra sources, so raw sequences stay out of the repo.
+**/frame[0-9][0-9][0-9][0-9].png
