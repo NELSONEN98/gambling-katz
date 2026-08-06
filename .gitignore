@@ -10,6 +10,10 @@ desktop.ini
 # logs
 *.log
 
+# Embedding model downloaded on demand by the local tooling — tens of MB of
+# generated binary that any machine can re-fetch.
+local_cache/
+
 # Raw frame exports from Krita. The shipped .webp are either lossless or
 # derived from the .kra sources, so raw sequences stay out of the repo.
 **/frame[0-9][0-9][0-9][0-9].png
