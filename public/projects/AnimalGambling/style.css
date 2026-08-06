@@ -63,6 +63,7 @@ body {
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* mobile: 100vh sits under the address bar */
   background:
     /* spotlights */
     radial-gradient(ellipse 40% 30% at 25% 40%, rgba(245, 185, 66, 0.08), transparent 70%),
@@ -1597,4 +1598,171 @@ body {
 
   .gameover-screen { padding: 13rem 1.5rem 1.5rem; }
   .gameover-banner .big { font-size: 6rem; }
+}
+
+/* ============================================
+   TITLE / MENU — boiling neon sign
+   ============================================ */
+
+/* On the title, the felt table gets out of the way entirely:
+   pure black, no wood frame, no HUD, no marquee. */
+.table.on-title {
+  background: #000;
+}
+.table.on-title::before,
+.table.on-title::after {
+  display: none;
+}
+.table.on-title .marquee,
+.table.on-title .top-hud,
+.table.on-title .top-hud-left {
+  display: none;
+}
+
+.title-screen {
+  /* the derived contain box, shared by the art and by whatever anchors to it */
+  --art-w: min(100%, calc(100dvh * 9 / 16));
+
+  display: none;
+  place-items: center;
+  background: #000;
+  z-index: 20;
+}
+.title-screen.active {
+  display: grid;
+}
+
+/* The art box is derived, not fitted.
+   Source is exactly 9:16, so we compute the contain box ourselves —
+   that way the mask below lands on the artwork edge and not on the
+   letterbox bars, which is what object-fit/background-contain can't give us. */
+.title-art {
+  --feather: 5%;
+
+  width: var(--art-w);
+  aspect-ratio: 9 / 16;
+  max-height: 100dvh;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover; /* box is already 9:16, so cover == contain */
+  background-image: url("menu/menu-0.webp");
+
+  animation: boil 0.75s step-end infinite;
+
+  /* Feather all four edges into the black so the letterbox bars
+     dissolve into the artwork instead of cutting it off. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%);
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* 6 drawings held on threes at 24fps = 8fps.
+   step-end means no interpolation: it snaps, the way a drawing should. */
+@keyframes boil {
+  0%      { background-image: url("menu/menu-0.webp"); }
+  16.667% { background-image: url("menu/menu-1.webp"); }
+  33.333% { background-image: url("menu/menu-2.webp"); }
+  50%     { background-image: url("menu/menu-3.webp"); }
+  66.667% { background-image: url("menu/menu-4.webp"); }
+  83.333% { background-image: url("menu/menu-5.webp"); }
+}
+
+/* Pinned to the viewport corner — on wide screens it sits out in the black
+   letterbox, away from the sign, which is the intended look.
+   Insets are clamped to the viewport, NOT rem: the rem ladder drops to 34%
+   on phones and would collapse the corner gap to a few pixels. */
+.title-start {
+  position: absolute;
+  left: auto;
+  right: clamp(24px, 3.6vw, 52.8px);
+  bottom: clamp(38.4px, 6vw, 86.4px);
+  transform: none;
+
+  /* Sized explicitly. With width:auto the shrink-to-fit width came from the
+     hint text below and squashed the artwork to 82px. */
+  width: min(35vw, 18rem);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* With the hint gone the button is only the 82x27 artwork — under the
+   44x44 minimum. Grows the hit area outward without moving a pixel of it.
+   Deliberately in px: a fingertip does not shrink with the rem ladder. */
+.title-start::before {
+  content: "";
+  position: absolute;
+  inset: -10px -6px;
+  border-radius: 0.4rem;
+}
+
+/* Hand-drawn "Iniciar" button — 3 drawings, native 420x140 (3:1). */
+.title-start .start-art {
+  display: block;
+  width: 100%;
+  flex-shrink: 0;
+  aspect-ratio: 3 / 1;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-image: url("start/start-0.webp");
+
+  animation: start-boil 0.2917s step-end infinite;
+  /* lifts the sticker off the black without washing out the alpha edge */
+  filter: drop-shadow(0 0 1.6rem rgba(245, 185, 66, 0.35));
+  transition: transform 0.15s ease;
+}
+
+.title-start:hover .start-art,
+.title-start:focus-visible .start-art {
+  transform: scale(1.04);
+  filter: drop-shadow(0 0 2.4rem rgba(245, 185, 66, 0.6));
+}
+.title-start:active .start-art {
+  transform: scale(0.97);
+}
+.title-start:focus-visible {
+  outline: 2px solid var(--neon-amber);
+  outline-offset: 0.6rem;
+  border-radius: 0.4rem;
+}
+
+/* Export holds each drawing for 2, 1 and 4 frames at 24fps.
+   Keeping the uneven holds is the point — an even cycle reads mechanical. */
+@keyframes start-boil {
+  0%      { background-image: url("start/start-0.webp"); } /* 2 frames */
+  28.571% { background-image: url("start/start-1.webp"); } /* 1 frame  */
+  42.857% { background-image: url("start/start-2.webp"); } /* 4 frames */
+}
+
+.title-screen.leaving {
+  animation: title-out 0.45s ease forwards;
+}
+@keyframes title-out {
+  to { opacity: 0; transform: scale(1.04); }
+}
+
+/* Someone who asked the OS to stop animating gets a still frame,
+   not a slower boil. */
+@media (prefers-reduced-motion: reduce) {
+  .title-art { animation: none; }
+  .title-start .start-art { animation: none; }
+  .title-screen.leaving { animation: none; opacity: 0; }
+}
+
+@media (max-width: 768px) {
+  .title-start { width: min(36vw, 15rem); }
 }
