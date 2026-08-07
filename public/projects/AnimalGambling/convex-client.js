@@ -1,4 +1,8 @@
-const CONVEX_PROXY_URL = "http://localhost:3000";
+// Detect if running on Vercel or localhost
+const CONVEX_PROXY_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:3000"
+    : `${window.location.origin}/api/convex-proxy`;
 
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
