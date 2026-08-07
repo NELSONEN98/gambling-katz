@@ -152,8 +152,11 @@ const TWEAK_DEFAULS = /*EDITMODE-BEGIN*/{
 
 const state = {
   screen: "title", // "title" | "select" | "game" | "gameover"
+  gameMode: "local", // "local" | "online"
   picking: 0, // which player is picking (0 or 1)
   players: [null, null], // each: { char, score, current }
+  selectedCatP1: null,
+  selectedCatP2: null,
   active: 0,
   playing: false,
   finished: false, // a round has actually been won — gates #/gameover
@@ -461,6 +464,19 @@ function applyScreen(name) {
   // versus: the felt is a real object mid-screen, so the full-bleed one goes
   table.classList.toggle("on-versus", name === "game");
   closeRules();
+
+  // Reset select screen when entering
+  if (name === "select") {
+    state.picking = 0;
+    state.players = [null, null];
+    state.selectedCatP1 = null;
+    state.selectedCatP2 = null;
+    $$(".char-card").forEach((el) => el.classList.remove("selected", "p1", "p2"));
+    $("#char-grid").classList.remove("p2-turn");
+    $("#btn-play").disabled = true;
+    renderCharGrid();
+    updateSelectHeader();
+  }
 }
 
 /* Navigates. The hashchange listener does the rendering, so a button click
@@ -515,7 +531,7 @@ function renderMenu() {
   nav.querySelectorAll(".menu-option").forEach((el) => {
     const item = MENU_ITEMS.find((i) => i.id === el.dataset.id);
     if (!item?.ready) return;
-    el.addEventListener("click", () => leaveMenu(item.route));
+    el.addEventListener("click", () => leaveMenu(item.route, item.mode || "local"));
   });
 }
 
