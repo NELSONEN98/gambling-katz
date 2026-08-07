@@ -280,6 +280,59 @@ function renderGameUI() {
   updateScores();
   updateActiveFighter();
   $("#goal-num").textContent = state.goal;
+
+  // Setup real-time sync for online mode
+  if (state.gameMode === "online") {
+    syncGameStateOnline();
+  }
+}
+
+async function syncGameStateOnline() {
+  try {
+    const { watchRoom } = await import("./convex-client.js");
+    const roomId = sessionStorage.getItem("roomId");
+    const sessionId = sessionStorage.getItem("sessionId");
+
+    watchRoom(roomId, (room) => {
+      if (!room) return;
+
+      // Update player states from room
+      if (room.player1) {
+        state.players[0] = {
+          char: state.players[0].char,
+          score: room.player1.score,
+          current: room.player1.current,
+        };
+      }
+      if (room.player2) {
+        state.players[1] = {
+          char: state.players[1].char,
+          score: room.player2.score,
+          current: room.player2.current,
+        };
+      }
+
+      // Determine active player based on turn
+      if (room.turn === "player1") {
+        state.active = 0;
+      } else {
+        state.active = 1;
+      }
+
+      // Check win condition
+      if (room.status === "finished") {
+        const winner = room.player1.score >= state.goal ? 0 : 1;
+        if (!state.finished) {
+          winGame(winner);
+        }
+      }
+
+      updateScores();
+      updateActiveFighter();
+    });
+  } catch (error) {
+    console.error("Error syncing game state:", error);
+  }
 }
 
 function updateScores() {
@@ -325,6 +378,30 @@ function setRolling(rolling) {
 
 function rollDice() {
   if (!state.playing || state.rolling) return;
+
+  if (state.gameMode === "online") {
+    rollDiceOnline();
+  } else {
+    rollDiceLocal();
+  }
+}
+
+async function rollDiceOnline() {
+  try {
+    const { rollDice: rollDiceConvex } = await import("./convex-client.js");
+    const roomId = sessionStorage.getItem("roomId");
+
+    setRolling(true);
+    const result = await rollDiceConvex(roomId);
+
+    animateDiceRoll(result.roll, result.isBust);
+  } catch (error) {
+    console.error("Error rolling dice online:", error);
+    setRolling(false);
+  }
+}
+
+function rollDiceLocal() {
   setRolling(true);
 
   const n = Math.trunc(Math.random() * 6) + 1;
@@ -332,7 +409,6 @@ function rollDice() {
 
   const dice = $("#dice-3d");
   dice.classList.remove("rolling");
-  // force reflow
   void dice.offsetWidth;
   dice.classList.add("rolling");
 
@@ -341,7 +417,6 @@ function rollDice() {
     setDiceFace(n);
 
     if (n === 1) {
-      // snake eye / bust
       showSnakeEyes();
       const p = state.players[state.active];
       p.current = 0;
@@ -353,10 +428,29 @@ function rollDice() {
       const p = state.players[state.active];
       p.current += n;
       updateScores();
-
-      // release before holdScore(), which guards on state.rolling too
       setRolling(false);
       if (p.score + p.current >= state.goal) holdScore();
+    }
+  }, 1150);
+}
+
+function animateDiceRoll(roll, isBust) {
+  const dice = $("#dice-3d");
+  dice.classList.remove("rolling");
+  void dice.offsetWidth;
+  dice.classList.add("rolling");
+
+  setTimeout(() => {
+    dice.classList.remove("rolling");
+    setDiceFace(roll);
+
+    if (isBust) {
+      showSnakeEyes();
+      setTimeout(() => {
+        setRolling(false);
+      }, 900);
+    } else {
+      setRolling(false);
     }
   }, 1150);
 }
@@ -370,6 +464,29 @@ function showSnakeEyes() {
 
 function holdScore() {
   if (!state.playing || state.rolling) return;
+
+  if (state.gameMode === "online") {
+    holdScoreOnline();
+  } else {
+    holdScoreLocal();
+  }
+}
+
+async function holdScoreOnline() {
+  try {
+    const { holdScore: holdScoreConvex } = await import("./convex-client.js");
+    const roomId = sessionStorage.getItem("roomId");
+
+    setRolling(true);
+    await holdScoreConvex(roomId);
+    setRolling(false);
+  } catch (error) {
+    console.error("Error holding score online:", error);
+    setRolling(false);
+  }
+}
+
+function holdScoreLocal() {
   const p = state.players[state.active];
   p.score += p.current;
   p.current = 0;
