@@ -555,7 +555,7 @@ body {
 }
 .f-score {
   font-family: var(--display);
-  font-size: clamp(3rem, 7vmin, 6.4rem);
+  font-size: clamp(9rem, 21vmin, 19.2rem);
   line-height: 0.85;
   color: var(--bone);
   transition: color 0.3s, text-shadow 0.3s;
