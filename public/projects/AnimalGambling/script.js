@@ -687,7 +687,18 @@ function startGame() {
   state.finished = false;
   setRolling(false);
   state.rollsTotal = 0;
-  state.players.forEach((p) => { p.score = 0; p.current = 0; });
+
+  // Ensure both players exist (in online, P2 is placeholder until joined)
+  if (!state.players[1]) {
+    state.players[1] = { char: { name: "...", id: "cat1" }, score: 0, current: 0 };
+  }
+
+  state.players.forEach((p) => {
+    if (p) {
+      p.score = 0;
+      p.current = 0;
+    }
+  });
 
   $$(".fighter").forEach((el) => el.classList.remove("winner", "loser", "active"));
 
