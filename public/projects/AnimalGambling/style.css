@@ -165,90 +165,78 @@ body {
 }
 
 /* ============================================
-   ONLINE DUELO
+   ROOM CREATION MODAL
    ============================================ */
-.online-screen {
-  display: none;
-  flex-direction: column;
+.room-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3rem;
-  padding: 3rem;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.room-modal-content {
   background: #000;
-  height: 100%;
-}
-
-.online-screen.active {
-  display: flex;
-}
-
-.online-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
+  border: 2px solid #E4A700;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  max-width: 50rem;
+  width: 100%;
   text-align: center;
 }
 
-.online-header h2 {
+.room-modal-header h2 {
   font-family: var(--display);
-  font-size: clamp(2.8rem, 7vw, 4.4rem);
-  color: var(--neon-amber);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  color: #E4A700;
   letter-spacing: 0.15rem;
   text-shadow: 0 0 1.6rem rgba(245, 185, 66, 0.5);
+  margin-bottom: 2rem;
 }
 
-.online-content {
+.room-options {
   display: flex;
-  gap: 3rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.online-option {
+.room-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-  text-align: center;
+  gap: 1rem;
 }
 
-.online-option p {
+.room-option p {
   font-family: var(--display);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--bone-dim);
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.05rem;
 }
 
-.online-option input {
-  padding: 1rem 1.5rem;
-  font-size: 1.2rem;
+.room-option input {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
   font-family: var(--display);
   border: 2px solid #E4A700;
   background: #000;
   color: #E4A700;
-  border-radius: 0.8rem;
+  border-radius: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   text-align: center;
-  width: 20rem;
-  max-width: 90vw;
+  width: 100%;
+  max-width: 25rem;
 }
 
-.online-option input::placeholder {
+.room-option input::placeholder {
   color: rgba(228, 167, 0, 0.5);
 }
 
-.online-waiting {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  min-height: 30rem;
-}
-
-.waiting-content {
+.room-waiting {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -257,15 +245,15 @@ body {
 
 .room-code {
   font-family: var(--display);
-  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
   color: #E4A700;
   letter-spacing: 0.3em;
   text-shadow: 0 0 1.6rem rgba(245, 185, 66, 0.6);
 }
 
-.waiting-content p {
+.room-waiting p {
   font-family: var(--display);
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--bone);
   letter-spacing: 0.1rem;
 }
