@@ -1,50 +1,143 @@
 "use strict";
 
 /* ============================================
-   ANIMAL GAMBLING — game logic
+   GAMBLING KATZ — game logic
    ============================================ */
 
+/* The retired static cast. Nothing renders these any more — the selection
+   screen and the versus both run off ROSTER below, which is animated. Kept
+   because the writing is worth more than the 40 lines it costs, and these
+   four come back the day they get drawn as boils. */
 const CHARACTERS = [
   {
     id: "penguin",
-    name: "Tax Penguin",
+    name: "Pingüino Fiscal",
     img: "img/penguin.png",
     age: "30",
-    cond: "Wanted for tax evasion in three jurisdictions.",
-    quote: "The house always wins. I just need to become the house.",
-    loseQuote: "The IRS is gonna catch me now...",
-    tags: ["FUGITIVE", "COLD-BLOODED"],
+    cond: "Buscado por evasión impositiva en tres jurisdicciones.",
+    quote: "La casa siempre gana. Solo me falta ser la casa.",
+    loseQuote: "Ahora sí me agarra la AFIP...",
+    tags: ["PRÓFUGO", "SANGRE FRÍA"],
   },
   {
     id: "bear",
     name: "Bearnardo",
     img: "img/bear.png",
     age: "42",
-    cond: "Ex-mob enforcer. Now pretends to be a butcher.",
-    quote: "I've buried worse things than my losses.",
-    loseQuote: "Shouldn't have left the family...",
-    tags: ["HEAVY", "PATIENT"],
+    cond: "Ex matón de la mafia. Ahora se hace el carnicero.",
+    quote: "Enterré cosas peores que mis pérdidas.",
+    loseQuote: "No tendría que haber dejado a la familia...",
+    tags: ["PESADO", "PACIENTE"],
   },
   {
     id: "duck",
-    name: "Lucky Ducky",
+    name: "Pato Suertudo",
     img: "img/duck.png",
     age: "25",
-    cond: "Degenerate. Here for the dopamine, not the money.",
-    quote: "One more roll. Just one more. I promise.",
-    loseQuote: "I can feel the next one. Let me play.",
-    tags: ["RECKLESS", "TILTED"],
+    cond: "Degenerado. Viene por la dopamina, no por la plata.",
+    quote: "Una tirada más. Una sola. Te lo juro.",
+    loseQuote: "La próxima la siento. Dejame jugar.",
+    tags: ["IMPRUDENTE", "CALIENTE"],
   },
   {
     id: "egg",
-    name: "Mystery Egg",
+    name: "Huevo Misterioso",
     img: "img/egg.png",
     age: "???",
-    cond: "Unknown. Has never been seen outside its shell.",
+    cond: "Desconocido. Nunca se lo vio fuera del cascarón.",
     quote: "...",
     loseQuote: "......",
     tags: ["???", "???"],
   },
+];
+
+/* ============================================
+   ROSTER — who you can actually pick
+   ============================================ */
+/* Every fighter here is a boil: `frames` hand-drawn PNGs in `dir` that the
+   CSS cycles through, keyed off `id` via .boil[data-cat="…"]. Adding a
+   third cat is this entry plus its two CSS rules — nothing else in the
+   selection screen or the versus needs to know. */
+const ROSTER = [
+  {
+    id: "cat1",
+    name: "Michi Bizco",
+    dir: "cat1",
+    frames: 9,
+    img: "cat1/frame0000.png",
+    age: "7",
+    cond: "Le debe plata a todos los gatos del barrio.",
+    quote: "Te dije que tenía un sistema.",
+    loseQuote: "Los dados están cargados. Lo sé.",
+    tags: ["ANSIOSO", "SIN FILTRO"],
+  },
+  {
+    id: "cat2",
+    name: "Tuco Rayado",
+    dir: "cat2",
+    frames: 9,
+    img: "cat2/frame0000.png",
+    age: "11",
+    cond: "Dice que se retiró. Vuelve todas las noches.",
+    quote: "Nunca dudé. Ni un segundo.",
+    loseQuote: "Una más. Dale. Una más.",
+    tags: ["VETERANO", "MENTIROSO"],
+  },
+  {
+    id: "cat3",
+    name: "Feliz Pinto",
+    dir: "cat3",
+    frames: 10,
+    img: "cat3/frame0000.png",
+    age: "5",
+    cond: "Cree que esto es un juego. No entiende el dinero.",
+    quote: "¡Esto es lo mejor que pasó en mi vida!",
+    loseQuote: "Pero... ¿cuándo es mi turno de ganar?",
+    tags: ["INGENUO", "PURO"],
+  },
+  {
+    id: "cat4",
+    name: "Sombra Negra",
+    dir: "cat4",
+    frames: 10,
+    img: "cat4/frame0000.png",
+    age: "??",
+    cond: "Nadie sabe de dónde vino. Gana sin hablar.",
+    quote: "...",
+    loseQuote: "...",
+    tags: ["MISTERIO", "SILENCIO"],
+  },
+];
+
+/* The boil swaps background-image every 100ms; a frame that has not been
+   decoded yet paints as a hole. Warming every drawing when the player
+   leaves the title buys two clicks of head start, and keeps them from
+   competing with the title artwork for bandwidth. */
+let framesWarmed = false;
+function warmRosterFrames() {
+  if (framesWarmed) return;
+  framesWarmed = true;
+  ROSTER.forEach((c) => {
+    for (let i = 0; i < c.frames; i++) {
+      new Image().src = `${c.dir}/frame${String(i).padStart(4, "0")}.png`;
+    }
+  });
+}
+
+/* ============================================
+   MAIN MENU
+   ============================================ */
+/* Sections and names come from md-guides/menu-y-flujo.md.
+   `ready: false` renders the entry but keeps it unclickable — the mode has no
+   implementation yet, and a dead button that looks alive is worse than one
+   that says so. Building a mode means flipping the flag and adding a route. */
+const MENU_ITEMS = [
+  { id: "online", label: "Duelo Online", ready: false, note: "1v1" },
+  { id: "cpu", label: "Vs. IA", ready: false, note: "práctica" },
+  // The only mode that exists today: two players sharing one screen.
+  { id: "local", label: "Duelo Local", ready: true, route: "select" },
+  { id: "skins", label: "Personalización", ready: false },
+  { id: "shop", label: "Tienda", ready: false },
 ];
 
 /* ============================================
@@ -63,6 +156,8 @@ const state = {
   players: [null, null], // each: { char, score, current }
   active: 0,
   playing: false,
+  finished: false, // a round has actually been won — gates #/gameover
+  rolling: false, // a die is mid-animation; blocks roll and hold
   rollsTotal: 0,
   goal: TWEAK_DEFAULS.goalScore,
 };
@@ -75,6 +170,7 @@ const $$ = (sel) => document.querySelectorAll(sel);
 
 const screens = {
   title: $("#screen-title"),
+  menu: $("#screen-menu"),
   select: $("#screen-select"),
   game: $("#screen-game"),
   gameover: $("#screen-gameover"),
@@ -83,25 +179,14 @@ const screens = {
 /* ============================================
    RENDER — CHARACTER SELECT
    ============================================ */
+/* Clean grid: just the frame, name, and description per fighter. */
 function renderCharGrid() {
   const grid = $("#char-grid");
-  grid.innerHTML = CHARACTERS.map((c, i) => `
+  grid.innerHTML = ROSTER.map((c, i) => `
     <div class="char-card" data-idx="${i}" data-id="${c.id}">
-      <div class="char-id-row">
-        <span>ID/${String(i + 1).padStart(3, "0")}</span>
-        <span class="dot"></span>
-      </div>
-      <div class="char-img-wrap">
-        <img src="${c.img}" alt="${c.name}">
-      </div>
-      <div class="char-info">
-        <div class="char-name">${c.name}</div>
-        <div class="char-meta">
-          <span class="k">age</span><span class="v">${c.age}</span>
-          <span class="k">tag</span><span class="v mono-dim">${c.tags.join(" · ")}</span>
-          <span class="k">note</span><span class="v mono-dim">${c.cond}</span>
-        </div>
-      </div>
+      <div class="char-art boil" data-cat="${c.id}" role="img" aria-label="${c.name}"></div>
+      <div class="char-name">${c.name}</div>
+      <div class="char-desc">${c.cond}</div>
     </div>
   `).join("");
 
@@ -110,20 +195,17 @@ function renderCharGrid() {
   });
 }
 
+/* Update the footer picks display (what's left is just that). */
 function updateSelectHeader() {
-  const header = $("#select-header");
-  const who = state.picking === 0 ? "PLAYER_01" : "PLAYER_02";
-  header.classList.toggle("p2", state.picking === 1);
-  $("#prompt-who").textContent = who;
-  $("#p1-pick").textContent = state.players[0]?.char.name || "— none —";
-  $("#p2-pick").textContent = state.players[1]?.char.name || "— none —";
+  $("#p1-pick").textContent = state.players[0]?.char.name || "— ninguno —";
+  $("#p2-pick").textContent = state.players[1]?.char.name || "— ninguno —";
 }
 
 function pickCharacter(idx) {
   const card = $$(".char-card")[idx];
   if (card.classList.contains("selected")) return;
 
-  const char = CHARACTERS[idx];
+  const char = ROSTER[idx];
   state.players[state.picking] = { char, score: 0, current: 0 };
 
   card.classList.add("selected", state.picking === 0 ? "p1" : "p2");
@@ -141,18 +223,19 @@ function pickCharacter(idx) {
 }
 
 /* ============================================
-   RENDER — GAME SCREEN
+   RENDER — VERSUS SCREEN
    ============================================ */
+/* There is no image src to set: the boil is CSS, selected by data-cat.
+   Writing the attribute is the whole handoff from "who was picked" to
+   "which 7 drawings cycle in that corner". */
 function renderGameUI() {
   for (let i = 0; i < 2; i++) {
     const p = state.players[i];
-    const panel = $(`#panel-${i}`);
-    panel.querySelector(".char-portrait img").src = p.char.img;
-    panel.querySelector(".char-portrait img").alt = p.char.name;
-    panel.querySelector(".char-nametag").textContent = p.char.name;
+    $(`#name-${i}`).textContent = p.char.name;
+    $(`#fighter-${i} .fighter-art`).dataset.cat = p.char.id;
   }
   updateScores();
-  updateActivePanel();
+  updateActiveFighter();
   $("#goal-num").textContent = state.goal;
 }
 
@@ -161,35 +244,13 @@ function updateScores() {
     const p = state.players[i];
     $(`#score-${i}`).textContent = p.score;
     $(`#current-${i}`).textContent = p.current;
-    renderChips(i, p.score);
   }
-  $("#hud-rolls").textContent = String(state.rollsTotal).padStart(3, "0");
-  const p1Score = state.players[0]?.score || 0;
-  const p2Score = state.players[1]?.score || 0;
-  $("#hud-pot").textContent = String(p1Score + p2Score).padStart(3, "0");
 }
 
-function updateActivePanel() {
+function updateActiveFighter() {
   for (let i = 0; i < 2; i++) {
-    const panel = $(`#panel-${i}`);
-    panel.classList.toggle("active", i === state.active && state.playing);
-    panel.querySelector(".panel-status-label").textContent =
-      i === state.active && state.playing ? "ROLLING" : "WAITING";
+    $(`#fighter-${i}`).classList.toggle("active", i === state.active && state.playing);
   }
-}
-
-function renderChips(pIdx, score) {
-  const row = $(`#chips-${pIdx}`);
-  // decompose score into chips: 10s gold, 5s red, 1s blue. cap rendering
-  const gold = Math.floor(score / 10);
-  const red = Math.floor((score % 10) / 5);
-  const blue = score % 5;
-  let html = "";
-  for (let i = 0; i < gold; i++) html += `<div class="chip gold" style="animation-delay:${i*0.04}s"></div>`;
-  for (let i = 0; i < red; i++) html += `<div class="chip red" style="animation-delay:${(gold+i)*0.04}s"></div>`;
-  for (let i = 0; i < blue; i++) html += `<div class="chip blue" style="animation-delay:${(gold+red+i)*0.04}s"></div>`;
-  if (!html) html = `<div class="chips-empty" style="font-family:var(--mono);font-size:1rem;color:var(--bone-dim);letter-spacing:.2rem;">— no chips —</div>`;
-  row.innerHTML = html;
 }
 
 /* ============================================
@@ -210,13 +271,18 @@ function setDiceFace(n) {
   dice.style.transform = `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`;
 }
 
-function rollDice() {
-  if (!state.playing) return;
+/* The single source of truth for "a roll is in flight". The DOM `disabled`
+   flag is a reflection of it, never the other way round — the keyboard
+   bypasses button state entirely, so guarding on `disabled` guards nothing. */
+function setRolling(rolling) {
+  state.rolling = rolling;
+  $("#btn-roll").disabled = rolling;
+  $("#btn-hold").disabled = rolling;
+}
 
-  const btnRoll = $("#btn-roll");
-  const btnHold = $("#btn-hold");
-  btnRoll.disabled = true;
-  btnHold.disabled = true;
+function rollDice() {
+  if (!state.playing || state.rolling) return;
+  setRolling(true);
 
   const n = Math.trunc(Math.random() * 6) + 1;
   state.rollsTotal++;
@@ -238,20 +304,16 @@ function rollDice() {
       p.current = 0;
       setTimeout(() => {
         switchPlayer();
-        btnRoll.disabled = false;
-        btnHold.disabled = false;
+        setRolling(false);
       }, 900);
     } else {
       const p = state.players[state.active];
       p.current += n;
       updateScores();
 
-      if (p.score + p.current >= state.goal) {
-        holdScore();
-      } else {
-        btnRoll.disabled = false;
-        btnHold.disabled = false;
-      }
+      // release before holdScore(), which guards on state.rolling too
+      setRolling(false);
+      if (p.score + p.current >= state.goal) holdScore();
     }
   }, 1150);
 }
@@ -264,7 +326,7 @@ function showSnakeEyes() {
 }
 
 function holdScore() {
-  if (!state.playing) return;
+  if (!state.playing || state.rolling) return;
   const p = state.players[state.active];
   p.score += p.current;
   p.current = 0;
@@ -281,7 +343,7 @@ function switchPlayer() {
   state.players[state.active].current = 0;
   state.active = state.active === 0 ? 1 : 0;
   updateScores();
-  updateActivePanel();
+  updateActiveFighter();
 }
 
 /* ============================================
@@ -289,12 +351,13 @@ function switchPlayer() {
    ============================================ */
 function winGame(winnerIdx) {
   state.playing = false;
+  state.finished = true;
   screens.game.classList.remove("in-play");
-  const winPanel = $(`#panel-${winnerIdx}`);
-  const losePanel = $(`#panel-${winnerIdx === 0 ? 1 : 0}`);
-  winPanel.classList.add("winner");
-  winPanel.classList.remove("active");
-  losePanel.classList.add("loser");
+  const winner = $(`#fighter-${winnerIdx}`);
+  const loser = $(`#fighter-${winnerIdx === 0 ? 1 : 0}`);
+  winner.classList.add("winner");
+  winner.classList.remove("active");
+  loser.classList.add("loser");
 
   launchParticles();
   $("#btn-roll").disabled = true;
@@ -342,36 +405,117 @@ function launchParticles(count = 80) {
 /* ============================================
    FLOW
    ============================================ */
-function switchScreen(name) {
+/* Hash routing, not the History API. This ships as a static file opened
+   straight from disk or from /projects/..., where pushState paths would
+   404 on reload. "#/menu" survives both. */
+const ROUTES = ["title", "menu", "select", "game", "gameover"];
+
+function routeFromHash() {
+  const raw = (location.hash || "").replace(/^#\/?/, "");
+  return ROUTES.includes(raw) ? raw : "title";
+}
+
+/* A screen is only reachable if the state behind it exists. Anyone who
+   pastes #/game before picking lands on the selection screen, and
+   #/gameover before anyone has won lands on the versus, instead of on a
+   podium for a round that never happened. */
+function resolveRoute(name) {
+  const picked = Boolean(state.players[0] && state.players[1]);
+  if ((name === "game" || name === "gameover") && !picked) return "select";
+  if (name === "gameover" && !state.finished) return "game";
+  return name;
+}
+
+/* Renders. Never touches history. */
+function applyScreen(name) {
   state.screen = name;
   Object.entries(screens).forEach(([k, el]) => {
     el.classList.toggle("active", k === name);
   });
-  // the felt table, wood frame and HUD only exist past the title
-  $(".table").classList.toggle("on-title", name === "title");
+  const table = $(".table");
+  // artwork screens: pure black, no felt, no wood frame
+  table.classList.toggle("on-title", name === "title" || name === "menu");
+  // versus: the felt is a real object mid-screen, so the full-bleed one goes
+  table.classList.toggle("on-versus", name === "game");
+  closeRules();
 }
+
+/* Navigates. The hashchange listener does the rendering, so a button click
+   and the browser's back arrow travel exactly the same path — one flow,
+   not two that drift apart. */
+function switchScreen(name) {
+  const target = resolveRoute(name);
+  if (location.hash === `#/${target}`) {
+    applyScreen(target);
+    return;
+  }
+  location.hash = `#/${target}`;
+}
+
+window.addEventListener("hashchange", () => {
+  const target = resolveRoute(routeFromHash());
+  if (location.hash !== `#/${target}`) {
+    // guard rewrote the destination — replace so back doesn't bounce
+    location.replace(`#/${target}`);
+    return;
+  }
+  applyScreen(target);
+});
 
 /* ============================================
    TITLE / MENU
    ============================================ */
 function leaveTitle() {
   if (state.screen !== "title") return;
+  // two clicks of head start for the boil frames
+  warmRosterFrames();
   screens.title.classList.add("leaving");
   setTimeout(() => {
     screens.title.classList.remove("leaving");
-    switchScreen("select");
-    openRules();
+    switchScreen("menu");
   }, 420);
 }
 
+function renderMenu() {
+  const nav = $("#menu-options");
+  nav.innerHTML = MENU_ITEMS.map((it) => `
+    <button class="menu-option${it.ready ? "" : " locked"}"
+            data-id="${it.id}"
+            ${it.ready ? "" : 'disabled aria-disabled="true"'}>
+      <span class="opt-label">${it.label}</span>
+      ${it.ready
+        ? (it.note ? `<span class="opt-note">${it.note}</span>` : "")
+        : '<span class="opt-note locked-note">pronto</span>'}
+    </button>
+  `).join("");
+
+  nav.querySelectorAll(".menu-option").forEach((el) => {
+    const item = MENU_ITEMS.find((i) => i.id === el.dataset.id);
+    if (!item?.ready) return;
+    el.addEventListener("click", () => leaveMenu(item.route));
+  });
+}
+
+function leaveMenu(route = "select") {
+  if (state.screen !== "menu") return;
+  screens.menu.classList.add("leaving");
+  setTimeout(() => {
+    screens.menu.classList.remove("leaving");
+    switchScreen(route);
+  }, 420);
+}
+
+/* Opening a duel and taking a rematch are the same act — same two picks,
+   scores back to zero — so they share one path. */
 function startGame() {
   state.active = 0;
   state.playing = true;
+  state.finished = false;
+  setRolling(false);
   state.rollsTotal = 0;
-  state.players[0].score = 0;
-  state.players[0].current = 0;
-  state.players[1].score = 0;
-  state.players[1].current = 0;
+  state.players.forEach((p) => { p.score = 0; p.current = 0; });
+
+  $$(".fighter").forEach((el) => el.classList.remove("winner", "loser", "active"));
 
   switchScreen("game");
   screens.game.classList.add("in-play");
@@ -379,13 +523,17 @@ function startGame() {
   setDiceFace(1);
 }
 
+const newRound = startGame;
+
+/* Drop both picks and go back to choosing. */
 function fullReset() {
   screens.game.classList.remove("in-play");
-  state.screen = "select";
   state.picking = 0;
   state.players = [null, null];
   state.active = 0;
   state.playing = false;
+  state.finished = false;
+  state.rolling = false;
   state.rollsTotal = 0;
 
   $$(".char-card").forEach((el) => {
@@ -393,26 +541,10 @@ function fullReset() {
     el.removeAttribute("data-player");
   });
   $("#char-grid").classList.remove("p2-turn");
-  $$(".player-panel").forEach((el) => el.classList.remove("winner", "loser", "active"));
+  $$(".fighter").forEach((el) => el.classList.remove("winner", "loser", "active"));
 
   updateSelectHeader();
   switchScreen("select");
-}
-
-function newRound() {
-  // Keep characters, reset scores
-  state.active = 0;
-  state.playing = true;
-  state.rollsTotal = 0;
-  state.players[0].score = 0;
-  state.players[0].current = 0;
-  state.players[1].score = 0;
-  state.players[1].current = 0;
-  $$(".player-panel").forEach((el) => el.classList.remove("winner", "loser"));
-  switchScreen("game");
-  screens.game.classList.add("in-play");
-  renderGameUI();
-  setDiceFace(1);
 }
 
 /* ============================================
@@ -420,19 +552,31 @@ function newRound() {
    ============================================ */
 function init() {
   renderCharGrid();
+  renderMenu();
   updateSelectHeader();
-  switchScreen("title");
+
+  // honour a hash that is already in the URL (reload, bookmark, shared link)
+  const initial = resolveRoute(routeFromHash());
+  if (location.hash !== `#/${initial}`) location.replace(`#/${initial}`);
+  applyScreen(initial);
 
   $("#btn-start").addEventListener("click", leaveTitle);
   screens.title.addEventListener("click", leaveTitle);
 
+  $("#btn-menu-back").addEventListener("click", () => switchScreen("title"));
+  $("#btn-select-back").addEventListener("click", () => switchScreen("menu"));
+  $("#btn-select-back-top").addEventListener("click", () => switchScreen("menu"));
+
   $("#btn-roll").addEventListener("click", rollDice);
   $("#btn-hold").addEventListener("click", holdScore);
-  $("#btn-new").addEventListener("click", fullReset);
   $("#btn-again").addEventListener("click", newRound);
   $("#btn-gameover-new").addEventListener("click", fullReset);
 
-  $("#btn-rules").addEventListener("click", openRules);
+  /* The versus screen was stripped down to three things, and the top HUD —
+     which held the only "Reglas" button — went with it. The modal, its
+     styles and closeRules() are all still here and still work; what it no
+     longer has is a way in. Wire openRules() to whatever entry point the
+     new layout gets. */
   $("#btn-rules-close").addEventListener("click", closeRules);
   $("#rules-overlay").addEventListener("click", (e) => {
     if (e.target === $("#rules-overlay")) closeRules();
