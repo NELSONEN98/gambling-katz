@@ -1,50 +1,5 @@
 const CONVEX_URL = "https://quixotic-squid-855.convex.cloud";
 
-// Wait for Convex SDK to load from CDN
-let client = null;
-
-function waitForConvex() {
-  return new Promise((resolve) => {
-    const checkInterval = setInterval(() => {
-      // Check multiple possible locations where Convex might be exposed
-      if (
-        (window.Convex && window.Convex.ConvexHttpClient) ||
-        (window.ConvexHttpClient)
-      ) {
-        clearInterval(checkInterval);
-        resolve();
-      }
-    }, 50);
-
-    // Timeout after 10 seconds
-    setTimeout(() => {
-      clearInterval(checkInterval);
-      resolve();
-    }, 10000);
-  });
-}
-
-async function getConvexClient() {
-  if (client) return client;
-
-  // Wait for SDK to be available
-  await waitForConvex();
-
-  const ConvexHttpClient =
-    (window.Convex && window.Convex.ConvexHttpClient) ||
-    window.ConvexHttpClient;
-
-  if (!ConvexHttpClient) {
-    throw new Error(
-      "Convex SDK failed to load. Available: " +
-        JSON.stringify(Object.keys(window).filter((k) => k.includes("Convex")))
-    );
-  }
-
-  client = new ConvexHttpClient(CONVEX_URL);
-  return client;
-}
-
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -61,11 +16,33 @@ function getSessionId() {
   return sessionId;
 }
 
+async function callConvexFunction(functionPath, args) {
+  const url = `${CONVEX_URL}/api/json`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      path: functionPath,
+      args: [args],
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Convex error (${response.status}): ${error}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 async function createOnlineRoom() {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    const result = await convex.mutation("rooms:createRoom", {
+    const result = await callConvexFunction("rooms:createRoom", {
       sessionId,
     });
     return result.roomId;
@@ -78,8 +55,7 @@ async function createOnlineRoom() {
 async function updatePlayerCharacter(roomId, playerName, catId) {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    return await convex.mutation("rooms:updatePlayerCharacter", {
+    return await callConvexFunction("rooms:updatePlayerCharacter", {
       roomId,
       sessionId,
       playerName,
@@ -94,8 +70,7 @@ async function updatePlayerCharacter(roomId, playerName, catId) {
 async function joinOnlineRoom(roomId, playerName, catId) {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    const result = await convex.mutation("rooms:joinRoom", {
+    const result = await callConvexFunction("rooms:joinRoom", {
       roomId,
       sessionId,
       playerName,
@@ -110,8 +85,7 @@ async function joinOnlineRoom(roomId, playerName, catId) {
 
 async function getRoom(roomId) {
   try {
-    const convex = await getConvexClient();
-    return await convex.query("rooms:getRoom", { roomId });
+    return await callConvexFunction("rooms:getRoom", { roomId });
   } catch (error) {
     console.error("Error fetching room:", error);
     throw error;
@@ -140,8 +114,7 @@ function watchRoom(roomId, callback) {
 async function rollDice(roomId) {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    return await convex.mutation("rooms:rollDice", { roomId, sessionId });
+    return await callConvexFunction("rooms:rollDice", { roomId, sessionId });
   } catch (error) {
     console.error("Error rolling dice:", error);
     throw error;
@@ -151,8 +124,7 @@ async function rollDice(roomId) {
 async function holdScore(roomId) {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    return await convex.mutation("rooms:holdScore", { roomId, sessionId });
+    return await callConvexFunction("rooms:holdScore", { roomId, sessionId });
   } catch (error) {
     console.error("Error holding score:", error);
     throw error;
