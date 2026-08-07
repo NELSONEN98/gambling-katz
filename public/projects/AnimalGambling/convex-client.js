@@ -1,8 +1,8 @@
-// Detect if running on Vercel or localhost
+// Detect environment: localhost, Netlify, or other
 const CONVEX_PROXY_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:3000"
-    : `${window.location.origin}/api/convex-proxy`;
+    : `${window.location.origin}/.netlify/functions/convex-proxy`;
 
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
