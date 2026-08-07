@@ -327,6 +327,20 @@ body {
     0 1.8rem 2.8rem rgba(0, 0, 0, 0.5);
 }
 
+.char-card.selected .char-art {
+  transform: translateY(-1rem) scale(1.05);
+  box-shadow:
+    0 0 0 0.4rem #E4A700,
+    0 0 4rem rgba(228, 167, 0, 0.8),
+    0 2rem 3rem rgba(0, 0, 0, 0.6);
+}
+
+.char-card.selected .char-name {
+  color: #E4A700;
+  text-shadow: 0 0 1.2rem rgba(228, 167, 0, 0.6);
+  font-weight: 700;
+}
+
 /* Personaje colors — behind the animated PNGs */
 .char-card[data-id="cat1"] .char-art {
   background-color: #E4A700;
