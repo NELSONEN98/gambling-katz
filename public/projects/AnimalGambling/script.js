@@ -7,8 +7,8 @@ import {
   joinOnlineRoom,
   getRoom,
   watchRoom,
-  rollDice,
-  holdScore,
+  rollDice as rollDiceOnlineAPI,
+  holdScore as holdScoreOnlineAPI,
   getSessionId,
 } from "./convex-client.js";
 
@@ -402,7 +402,7 @@ async function rollDiceOnline() {
     const roomId = sessionStorage.getItem("roomId");
 
     setRolling(true);
-    const result = await rollDice(roomId);
+    const result = await rollDiceOnlineAPI(roomId);
 
     animateDiceRoll(result.roll, result.isBust);
   } catch (error) {
@@ -487,7 +487,7 @@ async function holdScoreOnline() {
     const roomId = sessionStorage.getItem("roomId");
 
     setRolling(true);
-    await holdScore(roomId);
+    await holdScoreOnlineAPI(roomId);
     setRolling(false);
   } catch (error) {
     console.error("Error holding score online:", error);
