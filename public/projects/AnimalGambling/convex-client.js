@@ -109,7 +109,7 @@ function watchRoom(roomId, callback) {
   return () => { unsubscribed = true; };
 }
 
-async function rollDice(roomId) {
+async function convexRollDice(roomId) {
   const sessionId = getSessionId();
   try {
     return await callConvexViaProxy("rooms:rollDice", { roomId, sessionId });
@@ -119,7 +119,7 @@ async function rollDice(roomId) {
   }
 }
 
-async function holdScore(roomId) {
+async function convexHoldScore(roomId) {
   const sessionId = getSessionId();
   try {
     return await callConvexViaProxy("rooms:holdScore", { roomId, sessionId });
@@ -129,14 +129,4 @@ async function holdScore(roomId) {
   }
 }
 
-// Export all functions for use in script.js
-export {
-  createOnlineRoom,
-  updatePlayerCharacter,
-  joinOnlineRoom,
-  getRoom,
-  watchRoom,
-  rollDice,
-  holdScore,
-  getSessionId,
-};
+// Functions are available globally to script.js
