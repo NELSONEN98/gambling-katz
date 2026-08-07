@@ -1,5 +1,18 @@
 const CONVEX_URL = "https://quixotic-squid-855.convex.cloud";
 
+// Wait for Convex SDK to load
+let client = null;
+async function getConvexClient() {
+  if (client) return client;
+
+  if (typeof ConvexHttpClient === "undefined") {
+    throw new Error("Convex SDK not loaded yet");
+  }
+
+  client = new ConvexHttpClient(CONVEX_URL);
+  return client;
+}
+
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -16,30 +29,11 @@ function getSessionId() {
   return sessionId;
 }
 
-async function callConvexMutation(functionName, args) {
-  const response = await fetch(`${CONVEX_URL}/api/mutation`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ function: functionName, args }),
-  });
-  if (!response.ok) throw new Error(`Convex error: ${response.statusText}`);
-  return response.json();
-}
-
-async function callConvexQuery(functionName, args) {
-  const response = await fetch(`${CONVEX_URL}/api/query`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ function: functionName, args }),
-  });
-  if (!response.ok) throw new Error(`Convex error: ${response.statusText}`);
-  return response.json();
-}
-
 async function createOnlineRoom() {
   const sessionId = getSessionId();
   try {
-    const result = await callConvexMutation("rooms:createRoom", {
+    const convex = await getConvexClient();
+    const result = await convex.mutation("rooms:createRoom", {
       sessionId,
     });
     return result.roomId;
@@ -52,7 +46,8 @@ async function createOnlineRoom() {
 async function updatePlayerCharacter(roomId, playerName, catId) {
   const sessionId = getSessionId();
   try {
-    return await callConvexMutation("rooms:updatePlayerCharacter", {
+    const convex = await getConvexClient();
+    return await convex.mutation("rooms:updatePlayerCharacter", {
       roomId,
       sessionId,
       playerName,
@@ -67,7 +62,8 @@ async function updatePlayerCharacter(roomId, playerName, catId) {
 async function joinOnlineRoom(roomId, playerName, catId) {
   const sessionId = getSessionId();
   try {
-    const result = await callConvexMutation("rooms:joinRoom", {
+    const convex = await getConvexClient();
+    const result = await convex.mutation("rooms:joinRoom", {
       roomId,
       sessionId,
       playerName,
@@ -82,7 +78,8 @@ async function joinOnlineRoom(roomId, playerName, catId) {
 
 async function getRoom(roomId) {
   try {
-    return await callConvexQuery("rooms:getRoom", { roomId });
+    const convex = await getConvexClient();
+    return await convex.query("rooms:getRoom", { roomId });
   } catch (error) {
     console.error("Error fetching room:", error);
     throw error;
@@ -111,7 +108,8 @@ function watchRoom(roomId, callback) {
 async function rollDice(roomId) {
   const sessionId = getSessionId();
   try {
-    return await callConvexMutation("rooms:rollDice", { roomId, sessionId });
+    const convex = await getConvexClient();
+    return await convex.mutation("rooms:rollDice", { roomId, sessionId });
   } catch (error) {
     console.error("Error rolling dice:", error);
     throw error;
@@ -121,7 +119,8 @@ async function rollDice(roomId) {
 async function holdScore(roomId) {
   const sessionId = getSessionId();
   try {
-    return await callConvexMutation("rooms:holdScore", { roomId, sessionId });
+    const convex = await getConvexClient();
+    return await convex.mutation("rooms:holdScore", { roomId, sessionId });
   } catch (error) {
     console.error("Error holding score:", error);
     throw error;
