@@ -225,10 +225,20 @@ function pickCharacter(idx) {
   // Prevent clicking same card twice
   if (card.classList.contains("selected")) return;
 
-  // Limit selections based on mode
-  const selectedCount = $$(".char-card.selected").length;
-  if (state.gameMode === "online" && selectedCount >= 1) return; // Online: only 1
-  if (state.gameMode === "local" && selectedCount >= 2) return;  // Local: only 2
+  // In online mode, allow switching: deselect previous P1 and select new one
+  if (state.gameMode === "online") {
+    $$(".char-card.selected").forEach((el) => {
+      el.classList.remove("selected", "p1", "p2");
+      el.removeAttribute("data-player");
+    });
+    state.picking = 0;
+    state.players[0] = null;
+    state.selectedCatP1 = null;
+  } else {
+    // Local mode: limit to 2 selections max
+    const selectedCount = $$(".char-card.selected").length;
+    if (selectedCount >= 2) return;
+  }
 
   const char = ROSTER[idx];
   state.players[state.picking] = { char, score: 0, current: 0 };
