@@ -333,7 +333,7 @@ body {
     "table"
     "f2"
     "ctrl";
-  gap: clamp(0.8rem, 1.8vh, 2.2rem);
+  gap: clamp(0.3rem, 0.8vh, 1rem);
   padding:
     clamp(1.2rem, 3vh, 3.6rem)
     clamp(1.2rem, 3vw, 4rem)
