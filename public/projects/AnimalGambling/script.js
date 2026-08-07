@@ -693,10 +693,19 @@ function startGame() {
 
   // Si es modo online, mostrar modal de crear/unir sala
   if (state.gameMode === "online") {
-    $("#room-modal").style.display = "flex";
-    $("#room-options").style.display = "flex";
-    $("#room-waiting").style.display = "none";
-    $("#room-code").value = "";
+    // Cambiar a pantalla de game primero
+    switchScreen("game");
+    screens.game.classList.add("in-play");
+    renderGameUI();
+    setDiceFace(1);
+
+    // Mostrar modal sobre el game
+    setTimeout(() => {
+      $("#room-modal").style.display = "flex";
+      $("#room-options").style.display = "flex";
+      $("#room-waiting").style.display = "none";
+      $("#room-code").value = "";
+    }, 100);
   } else {
     // Modo local: ir directamente a game
     switchScreen("game");
