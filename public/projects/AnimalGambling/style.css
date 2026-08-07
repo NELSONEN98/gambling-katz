@@ -605,7 +605,7 @@ body {
 .pool-table {
   grid-area: table;
   place-self: center;
-  width: min(100%, 66rem, 46dvh);
+  width: min(100%, 79.2rem, 55.2dvh);
   aspect-ratio: 2 / 1;
   padding: clamp(0.7rem, 1.8vmin, 1.6rem);
   border-radius: clamp(1rem, 2.4vmin, 1.8rem);
@@ -647,10 +647,6 @@ body {
 .pk-bc { bottom: 1.5%; left: 50%; transform: translateX(-50%); }
 
 .pool-goal {
-  position: absolute;
-  bottom: 9%;
-  left: 50%;
-  transform: translateX(-50%);
   font-family: var(--display);
   font-size: clamp(0.85rem, 1.4vmin, 1.15rem);
   letter-spacing: 0.35em;
@@ -658,6 +654,7 @@ body {
   color: rgba(232, 225, 204, 0.4);
   white-space: nowrap;
   pointer-events: none;
+  order: -1;
 }
 .pool-goal .num {
   color: var(--neon-amber);
@@ -767,14 +764,16 @@ body {
    translateZ that pushes each face out to half an edge. Change --die and
    the whole thing scales without the six faces drifting apart. */
 .dice-arena {
-  --die: clamp(4.4rem, 12vmin, 9rem);
+  --die: clamp(5.28rem, 14.4vmin, 10.8rem);
 
   width: calc(var(--die) * 1.8);
-  height: calc(var(--die) * 1.8);
+  height: auto;
   perspective: 800px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
   position: relative;
 }
 .dice-arena::before {
