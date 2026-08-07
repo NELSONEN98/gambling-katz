@@ -675,7 +675,8 @@ body {
   display: flex;
   gap: clamp(0.6rem, 1.5vw, 1.2rem);
 }
-.versus-controls .btn {
+.versus-controls .btn,
+.versus-controls .btn-nav {
   flex: 1;
   text-align: center;
   padding-block: clamp(1rem, 2vh, 1.6rem);
@@ -978,6 +979,15 @@ body {
 .btn-nav:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-nav.secondary {
+  background: #fff;
+  color: #000;
+}
+.btn-nav.secondary:hover:not(:disabled) {
+  background: #f0f0f0;
+  box-shadow: 0 0 1.6rem rgba(255, 255, 255, 0.5);
 }
 
 /* ============================================
