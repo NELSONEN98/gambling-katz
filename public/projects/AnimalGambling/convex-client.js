@@ -1,15 +1,36 @@
 const CONVEX_URL = "https://quixotic-squid-855.convex.cloud";
 
-// Wait for Convex SDK to load
+// Wait for Convex SDK to load from CDN
 let client = null;
+
+function waitForConvex() {
+  return new Promise((resolve) => {
+    const checkInterval = setInterval(() => {
+      if (typeof window.Convex !== "undefined" && window.Convex.ConvexHttpClient) {
+        clearInterval(checkInterval);
+        resolve();
+      }
+    }, 50);
+
+    // Timeout after 5 seconds
+    setTimeout(() => {
+      clearInterval(checkInterval);
+      resolve();
+    }, 5000);
+  });
+}
+
 async function getConvexClient() {
   if (client) return client;
 
-  if (typeof ConvexHttpClient === "undefined") {
-    throw new Error("Convex SDK not loaded yet");
+  // Wait for SDK to be available
+  await waitForConvex();
+
+  if (typeof window.Convex === "undefined" || !window.Convex.ConvexHttpClient) {
+    throw new Error("Convex SDK failed to load from CDN");
   }
 
-  client = new ConvexHttpClient(CONVEX_URL);
+  client = new window.Convex.ConvexHttpClient(CONVEX_URL);
   return client;
 }
 
