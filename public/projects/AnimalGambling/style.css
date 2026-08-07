@@ -545,6 +545,9 @@ body {
    The only numbers left on screen. Without them the die is decoration —
    a player has no way to know who is ahead or what the turn is worth. */
 .fighter-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
   min-width: 0;
   text-align: left;
 }
@@ -575,7 +578,7 @@ body {
 }
 .f-current {
   font-family: var(--display);
-  font-size: clamp(1rem, 1.7vmin, 1.4rem);
+  font-size: clamp(2rem, 3.4vmin, 2.8rem);
   color: var(--bone-dim);
   letter-spacing: 0.1em;
 }
