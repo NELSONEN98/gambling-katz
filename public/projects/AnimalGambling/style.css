@@ -374,6 +374,8 @@ body {
    a fifth of the screen, not a third. Viewport units are the only unit
    that means the same thing at every breakpoint. */
 .fighter-frame {
+  display: flex;
+  flex-direction: column;
   position: relative;
   height: max(6.5rem, min(21dvh, 41.8vw));
   width: auto;
@@ -389,8 +391,19 @@ body {
 }
 
 .fighter-art {
-  position: absolute;
-  inset: 0;
+  flex: 1;
+  position: relative;
+}
+
+.fighter-frame .f-name {
+  order: 2;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 0.6rem 0.8rem;
+  text-align: center;
+  font-size: clamp(0.9rem, 1.8vmin, 1.3rem);
+  color: var(--bone);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Versus fighter colors — same as selection */
