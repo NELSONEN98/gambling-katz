@@ -868,8 +868,12 @@ function closeRules() {
    TWEAKS
    ============================================ */
 function applyTweaks() {
-  $(".smoke").style.opacity = TWEAK_DEFAULS.smokeOpacity;
-  $(".scanlines").style.display = TWEAK_DEFAULS.scanlines ? "block" : "none";
+  const smoke = $(".smoke");
+  if (smoke) smoke.style.opacity = TWEAK_DEFAULS.smokeOpacity;
+
+  const scanlines = $(".scanlines");
+  if (scanlines) scanlines.style.display = TWEAK_DEFAULS.scanlines ? "block" : "none";
+
   state.goal = TWEAK_DEFAULS.goalScore;
   const goalEl = $("#goal-num");
   if (goalEl) goalEl.textContent = state.goal;

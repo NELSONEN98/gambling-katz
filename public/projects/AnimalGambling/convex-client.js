@@ -6,17 +6,21 @@ let client = null;
 function waitForConvex() {
   return new Promise((resolve) => {
     const checkInterval = setInterval(() => {
-      if (typeof window.Convex !== "undefined" && window.Convex.ConvexHttpClient) {
+      // Check multiple possible locations where Convex might be exposed
+      if (
+        (window.Convex && window.Convex.ConvexHttpClient) ||
+        (window.ConvexHttpClient)
+      ) {
         clearInterval(checkInterval);
         resolve();
       }
     }, 50);
 
-    // Timeout after 5 seconds
+    // Timeout after 10 seconds
     setTimeout(() => {
       clearInterval(checkInterval);
       resolve();
-    }, 5000);
+    }, 10000);
   });
 }
 
@@ -26,11 +30,18 @@ async function getConvexClient() {
   // Wait for SDK to be available
   await waitForConvex();
 
-  if (typeof window.Convex === "undefined" || !window.Convex.ConvexHttpClient) {
-    throw new Error("Convex SDK failed to load from CDN");
+  const ConvexHttpClient =
+    (window.Convex && window.Convex.ConvexHttpClient) ||
+    window.ConvexHttpClient;
+
+  if (!ConvexHttpClient) {
+    throw new Error(
+      "Convex SDK failed to load. Available: " +
+        JSON.stringify(Object.keys(window).filter((k) => k.includes("Convex")))
+    );
   }
 
-  client = new window.Convex.ConvexHttpClient(CONVEX_URL);
+  client = new ConvexHttpClient(CONVEX_URL);
   return client;
 }
 
