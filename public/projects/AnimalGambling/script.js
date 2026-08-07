@@ -132,7 +132,7 @@ function warmRosterFrames() {
    implementation yet, and a dead button that looks alive is worse than one
    that says so. Building a mode means flipping the flag and adding a route. */
 const MENU_ITEMS = [
-  { id: "online", label: "Duelo Online", ready: false, note: "1v1" },
+  { id: "online", label: "Duelo Online", ready: true, route: "online" },
   { id: "cpu", label: "Vs. IA", ready: false, note: "práctica" },
   // The only mode that exists today: two players sharing one screen.
   { id: "local", label: "Duelo Local", ready: true, route: "select" },
@@ -408,7 +408,7 @@ function launchParticles(count = 80) {
 /* Hash routing, not the History API. This ships as a static file opened
    straight from disk or from /projects/..., where pushState paths would
    404 on reload. "#/menu" survives both. */
-const ROUTES = ["title", "menu", "select", "game", "gameover"];
+const ROUTES = ["title", "menu", "online", "select", "game", "gameover"];
 
 function routeFromHash() {
   const raw = (location.hash || "").replace(/^#\/?/, "");
@@ -565,6 +565,10 @@ function init() {
 
   $("#btn-menu-back").addEventListener("click", () => switchScreen("title"));
   $("#btn-select-back-top").addEventListener("click", () => switchScreen("menu"));
+  $("#btn-online-back").addEventListener("click", () => switchScreen("menu"));
+  $("#btn-create-room").addEventListener("click", handleCreateRoom);
+  $("#btn-join-room").addEventListener("click", handleJoinRoom);
+  $("#btn-cancel-wait").addEventListener("click", handleCancelWait);
 
   $("#btn-roll").addEventListener("click", rollDice);
   $("#btn-hold").addEventListener("click", holdScore);
@@ -594,6 +598,75 @@ function init() {
   applyTweaks();
   setupTweaks();
   // rules now open when the player leaves the title — see leaveTitle()
+}
+
+/* ============================================
+   ONLINE DUELO
+   ============================================ */
+async function handleCreateRoom() {
+  try {
+    // Dinámicamente importar convex-client
+    const { createOnlineRoom } = await import("./convex-client.js");
+    const playerName = ROSTER[state.selectedCatP1].name;
+    const catId = `cat${state.selectedCatP1 + 1}`;
+
+    const roomId = await createOnlineRoom(playerName, catId);
+
+    // Mostrar código y esperar jugador 2
+    $("#online-content").style.display = "none";
+    $("#online-waiting").style.display = "flex";
+    $("#display-room-code").textContent = roomId;
+
+    // Guardar roomId para la partida
+    sessionStorage.setItem("roomId", roomId);
+    sessionStorage.setItem("onlineMode", "true");
+
+    // Esperar al jugador 2
+    const { watchRoom } = await import("./convex-client.js");
+    const unsubscribe = watchRoom(roomId, (room) => {
+      if (room && room.status === "playing") {
+        unsubscribe();
+        switchScreen("game");
+      }
+    });
+  } catch (error) {
+    console.error("Error creating room:", error);
+    alert(`Error: ${error.message}`);
+  }
+}
+
+async function handleJoinRoom() {
+  try {
+    const roomId = $("#room-code").value.toUpperCase().trim();
+    if (!roomId) {
+      alert("Pegá el código de la sala");
+      return;
+    }
+
+    const { joinOnlineRoom } = await import("./convex-client.js");
+    const playerName = ROSTER[state.selectedCatP2].name;
+    const catId = `cat${state.selectedCatP2 + 1}`;
+
+    await joinOnlineRoom(roomId, playerName, catId);
+
+    // Guardar info para la partida
+    sessionStorage.setItem("roomId", roomId);
+    sessionStorage.setItem("onlineMode", "true");
+
+    switchScreen("game");
+  } catch (error) {
+    console.error("Error joining room:", error);
+    alert(`Error: ${error.message}`);
+  }
+}
+
+function handleCancelWait() {
+  sessionStorage.removeItem("roomId");
+  sessionStorage.removeItem("onlineMode");
+  $("#online-content").style.display = "flex";
+  $("#online-waiting").style.display = "none";
+  $("#room-code").value = "";
+  switchScreen("menu");
 }
 
 /* ============================================
