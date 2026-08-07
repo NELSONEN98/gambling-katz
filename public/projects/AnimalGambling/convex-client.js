@@ -24,12 +24,24 @@ async function getConvexClient() {
 
   // Dynamically import the ConvexHttpClient from CDN
   try {
-    const module = await import("https://cdn.jsdelivr.net/npm/convex@latest/+esm");
-    convexClient = new module.ConvexHttpClient(CONVEX_URL);
+    const module = await import("https://cdn.jsdelivr.net/npm/convex@latest/dist/index.js");
+
+    // Try different possible exports
+    const ConvexHttpClient =
+      module.ConvexHttpClient ||
+      module.default?.ConvexHttpClient ||
+      module.default;
+
+    if (!ConvexHttpClient) {
+      console.error("Available exports:", Object.keys(module));
+      throw new Error("ConvexHttpClient not found in module");
+    }
+
+    convexClient = new ConvexHttpClient(CONVEX_URL);
     return convexClient;
   } catch (error) {
     console.error("Failed to load Convex SDK:", error);
-    throw new Error("Convex SDK failed to load from CDN");
+    throw new Error("Convex SDK failed to load from CDN: " + error.message);
   }
 }
 
