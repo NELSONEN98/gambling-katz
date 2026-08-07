@@ -1,9 +1,5 @@
-import { ConvexHttpClient } from "convex/browser";
-
 const CONVEX_URL = "https://quixotic-squid-855.convex.cloud";
-const convex = new ConvexHttpClient(CONVEX_URL);
 
-// Generate UUID for session
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -11,7 +7,6 @@ function generateUUID() {
   });
 }
 
-// Get or create session ID
 function getSessionId() {
   let sessionId = sessionStorage.getItem("sessionId");
   if (!sessionId) {
@@ -21,11 +16,30 @@ function getSessionId() {
   return sessionId;
 }
 
-// Create a new game room
-export async function createOnlineRoom(playerName, catId) {
+async function callConvexMutation(functionName, args) {
+  const response = await fetch(`${CONVEX_URL}/api/mutation`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ function: functionName, args }),
+  });
+  if (!response.ok) throw new Error(`Convex error: ${response.statusText}`);
+  return response.json();
+}
+
+async function callConvexQuery(functionName, args) {
+  const response = await fetch(`${CONVEX_URL}/api/query`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ function: functionName, args }),
+  });
+  if (!response.ok) throw new Error(`Convex error: ${response.statusText}`);
+  return response.json();
+}
+
+async function createOnlineRoom(playerName, catId) {
   const sessionId = getSessionId();
   try {
-    const result = await convex.mutation("rooms:createRoom", {
+    const result = await callConvexMutation("rooms:createRoom", {
       sessionId,
       playerName,
       catId,
@@ -37,11 +51,10 @@ export async function createOnlineRoom(playerName, catId) {
   }
 }
 
-// Join an existing game room
-export async function joinOnlineRoom(roomId, playerName, catId) {
+async function joinOnlineRoom(roomId, playerName, catId) {
   const sessionId = getSessionId();
   try {
-    const result = await convex.mutation("rooms:joinRoom", {
+    const result = await callConvexMutation("rooms:joinRoom", {
       roomId,
       sessionId,
       playerName,
@@ -54,42 +67,48 @@ export async function joinOnlineRoom(roomId, playerName, catId) {
   }
 }
 
-// Get room state (one-time fetch)
-export async function getRoom(roomId) {
+async function getRoom(roomId) {
   try {
-    return await convex.query("rooms:getRoom", { roomId });
+    return await callConvexQuery("rooms:getRoom", { roomId });
   } catch (error) {
     console.error("Error fetching room:", error);
     throw error;
   }
 }
 
-// Watch room for real-time updates
-export function watchRoom(roomId, callback) {
-  try {
-    return convex.watchQuery("rooms:getRoom", { roomId }).on("change", callback);
-  } catch (error) {
-    console.error("Error watching room:", error);
-    throw error;
+function watchRoom(roomId, callback) {
+  let unsubscribed = false;
+
+  async function poll() {
+    if (unsubscribed) return;
+    try {
+      const room = await getRoom(roomId);
+      callback(room);
+      setTimeout(poll, 2000);
+    } catch (error) {
+      console.error("Error polling room:", error);
+      setTimeout(poll, 5000);
+    }
   }
+
+  poll();
+  return () => { unsubscribed = true; };
 }
 
-// Roll dice
-export async function rollDice(roomId) {
+async function rollDice(roomId) {
   const sessionId = getSessionId();
   try {
-    return await convex.mutation("rooms:rollDice", { roomId, sessionId });
+    return await callConvexMutation("rooms:rollDice", { roomId, sessionId });
   } catch (error) {
     console.error("Error rolling dice:", error);
     throw error;
   }
 }
 
-// Hold score
-export async function holdScore(roomId) {
+async function holdScore(roomId) {
   const sessionId = getSessionId();
   try {
-    return await convex.mutation("rooms:holdScore", { roomId, sessionId });
+    return await callConvexMutation("rooms:holdScore", { roomId, sessionId });
   } catch (error) {
     console.error("Error holding score:", error);
     throw error;

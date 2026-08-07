@@ -290,9 +290,7 @@ function renderGameUI() {
 
 async function syncGameStateOnline() {
   try {
-    const { watchRoom } = await import("./convex-client.js");
     const roomId = sessionStorage.getItem("roomId");
-    const sessionId = sessionStorage.getItem("sessionId");
 
     watchRoom(roomId, (room) => {
       if (!room) return;
@@ -389,11 +387,10 @@ function rollDice() {
 
 async function rollDiceOnline() {
   try {
-    const { rollDice: rollDiceConvex } = await import("./convex-client.js");
     const roomId = sessionStorage.getItem("roomId");
 
     setRolling(true);
-    const result = await rollDiceConvex(roomId);
+    const result = await rollDice(roomId);
 
     animateDiceRoll(result.roll, result.isBust);
   } catch (error) {
@@ -475,11 +472,10 @@ function holdScore() {
 
 async function holdScoreOnline() {
   try {
-    const { holdScore: holdScoreConvex } = await import("./convex-client.js");
     const roomId = sessionStorage.getItem("roomId");
 
     setRolling(true);
-    await holdScoreConvex(roomId);
+    await holdScore(roomId);
     setRolling(false);
   } catch (error) {
     console.error("Error holding score online:", error);
@@ -793,7 +789,6 @@ function init() {
    ============================================ */
 async function handleCreateRoom() {
   try {
-    const { createOnlineRoom, watchRoom } = await import("./convex-client.js");
     const playerName = ROSTER[state.selectedCatP1].name;
     const catId = `cat${state.selectedCatP1 + 1}`;
 
@@ -827,7 +822,6 @@ async function handleJoinRoom() {
       return;
     }
 
-    const { joinOnlineRoom } = await import("./convex-client.js");
     const playerName = ROSTER[state.selectedCatP1].name;
     const catId = `cat${state.selectedCatP1 + 1}`;
 
