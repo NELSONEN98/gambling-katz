@@ -132,7 +132,7 @@ function warmRosterFrames() {
    implementation yet, and a dead button that looks alive is worse than one
    that says so. Building a mode means flipping the flag and adding a route. */
 const MENU_ITEMS = [
-  { id: "online", label: "Duelo Online", ready: true, route: "select", mode: "online" },
+  { id: "online", label: "Duelo Online", ready: true, route: "room-choice", mode: "online" },
   { id: "cpu", label: "Vs. IA", ready: false, note: "práctica" },
   // The only mode that exists today: two players sharing one screen.
   { id: "local", label: "Duelo Local", ready: true, route: "select", mode: "local" },
@@ -174,6 +174,7 @@ const $$ = (sel) => document.querySelectorAll(sel);
 const screens = {
   title: $("#screen-title"),
   menu: $("#screen-menu"),
+  "room-choice": $("#screen-room-choice"),
   select: $("#screen-select"),
   game: $("#screen-game"),
   gameover: $("#screen-gameover"),
@@ -568,7 +569,7 @@ function launchParticles(count = 80) {
 /* Hash routing, not the History API. This ships as a static file opened
    straight from disk or from /projects/..., where pushState paths would
    404 on reload. "#/menu" survives both. */
-const ROUTES = ["title", "menu", "select", "game", "gameover"];
+const ROUTES = ["title", "menu", "room-choice", "select", "game", "gameover"];
 
 function routeFromHash() {
   const raw = (location.hash || "").replace(/^#\/?/, "");
@@ -702,28 +703,11 @@ function startGame() {
 
   $$(".fighter").forEach((el) => el.classList.remove("winner", "loser", "active"));
 
-  // Si es modo online, mostrar modal de crear/unir sala
-  if (state.gameMode === "online") {
-    // Cambiar a pantalla de game primero
-    switchScreen("game");
-    screens.game.classList.add("in-play");
-    renderGameUI();
-    setDiceFace(1);
-
-    // Mostrar modal sobre el game
-    setTimeout(() => {
-      $("#room-modal").style.display = "flex";
-      $("#room-options").style.display = "flex";
-      $("#room-waiting").style.display = "none";
-      $("#room-code").value = "";
-    }, 100);
-  } else {
-    // Modo local: ir directamente a game
-    switchScreen("game");
-    screens.game.classList.add("in-play");
-    renderGameUI();
-    setDiceFace(1);
-  }
+  // Both online and local go directly to game
+  switchScreen("game");
+  screens.game.classList.add("in-play");
+  renderGameUI();
+  setDiceFace(1);
 }
 
 const newRound = startGame;
@@ -767,6 +751,7 @@ function init() {
   screens.title.addEventListener("click", leaveTitle);
 
   $("#btn-menu-back").addEventListener("click", () => switchScreen("title"));
+  $("#btn-room-back").addEventListener("click", () => switchScreen("menu"));
   $("#btn-select-back-top").addEventListener("click", () => switchScreen("menu"));
   $("#btn-play").addEventListener("click", startGame);
   $("#btn-create-room").addEventListener("click", handleCreateRoom);
@@ -815,7 +800,7 @@ async function handleCreateRoom() {
     const roomId = await createOnlineRoom(playerName, catId);
 
     // Mostrar código y esperar jugador 2
-    $("#room-options").style.display = "none";
+    $("#room-choice-content").style.display = "none";
     $("#room-waiting").style.display = "flex";
     $("#display-room-code").textContent = roomId;
 
@@ -825,8 +810,7 @@ async function handleCreateRoom() {
     const unsubscribe = watchRoom(roomId, (room) => {
       if (room && room.status === "playing") {
         unsubscribe();
-        closeRoomModal();
-        startGameOnline();
+        switchScreen("select");
       }
     });
   } catch (error) {
@@ -844,14 +828,13 @@ async function handleJoinRoom() {
     }
 
     const { joinOnlineRoom } = await import("./convex-client.js");
-    const playerName = ROSTER[state.selectedCatP2].name;
-    const catId = `cat${state.selectedCatP2 + 1}`;
+    const playerName = ROSTER[state.selectedCatP1].name;
+    const catId = `cat${state.selectedCatP1 + 1}`;
 
     await joinOnlineRoom(roomId, playerName, catId);
 
     sessionStorage.setItem("roomId", roomId);
-    closeRoomModal();
-    startGameOnline();
+    switchScreen("select");
   } catch (error) {
     console.error("Error joining room:", error);
     alert(`Error: ${error.message}`);
@@ -860,22 +843,10 @@ async function handleJoinRoom() {
 
 function handleCancelWait() {
   sessionStorage.removeItem("roomId");
-  $("#room-options").style.display = "flex";
+  $("#room-choice-content").style.display = "flex";
   $("#room-waiting").style.display = "none";
   $("#room-code").value = "";
-  closeRoomModal();
   switchScreen("menu");
-}
-
-function closeRoomModal() {
-  $("#room-modal").style.display = "none";
-}
-
-function startGameOnline() {
-  screens.game.classList.add("in-play");
-  renderGameUI();
-  setDiceFace(1);
-  switchScreen("game");
 }
 
 /* ============================================
