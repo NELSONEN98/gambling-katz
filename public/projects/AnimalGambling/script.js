@@ -678,7 +678,7 @@ function leaveMenu(route = "select", mode = "local") {
 
 /* Opening a duel and taking a rematch are the same act — same two picks,
    scores back to zero — so they share one path. */
-function startGame() {
+async function startGame() {
   state.active = 0;
   state.playing = true;
   state.finished = false;
@@ -696,6 +696,18 @@ function startGame() {
       p.current = 0;
     }
   });
+
+  // If online, update player character in room
+  if (state.gameMode === "online") {
+    try {
+      const roomId = sessionStorage.getItem("roomId");
+      const playerName = ROSTER[state.selectedCatP1].name;
+      const catId = `cat${state.selectedCatP1 + 1}`;
+      await updatePlayerCharacter(roomId, playerName, catId);
+    } catch (error) {
+      console.error("Error updating character in room:", error);
+    }
+  }
 
   $$(".fighter").forEach((el) => el.classList.remove("winner", "loser", "active"));
 
@@ -789,10 +801,7 @@ function init() {
    ============================================ */
 async function handleCreateRoom() {
   try {
-    const playerName = ROSTER[state.selectedCatP1].name;
-    const catId = `cat${state.selectedCatP1 + 1}`;
-
-    const roomId = await createOnlineRoom(playerName, catId);
+    const roomId = await createOnlineRoom();
 
     // Mostrar código y esperar jugador 2
     $("#room-choice-content").style.display = "none";
@@ -800,6 +809,7 @@ async function handleCreateRoom() {
     $("#display-room-code").textContent = roomId;
 
     sessionStorage.setItem("roomId", roomId);
+    sessionStorage.setItem("isCreator", "true");
 
     // Esperar al jugador 2
     const unsubscribe = watchRoom(roomId, (room) => {

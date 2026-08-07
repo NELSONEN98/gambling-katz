@@ -36,17 +36,30 @@ async function callConvexQuery(functionName, args) {
   return response.json();
 }
 
-async function createOnlineRoom(playerName, catId) {
+async function createOnlineRoom() {
   const sessionId = getSessionId();
   try {
     const result = await callConvexMutation("rooms:createRoom", {
       sessionId,
-      playerName,
-      catId,
     });
     return result.roomId;
   } catch (error) {
     console.error("Error creating room:", error);
+    throw error;
+  }
+}
+
+async function updatePlayerCharacter(roomId, playerName, catId) {
+  const sessionId = getSessionId();
+  try {
+    return await callConvexMutation("rooms:updatePlayerCharacter", {
+      roomId,
+      sessionId,
+      playerName,
+      catId,
+    });
+  } catch (error) {
+    console.error("Error updating character:", error);
     throw error;
   }
 }

@@ -4,8 +4,6 @@ import { mutation, query } from "./_generated/server";
 export const createRoom = mutation({
   args: {
     sessionId: v.string(),
-    playerName: v.string(),
-    catId: v.string(),
   },
   async handler(ctx, args) {
     const roomId = crypto.getRandomValues(new Uint8Array(6))
@@ -17,8 +15,8 @@ export const createRoom = mutation({
       roomId,
       player1: {
         sessionId: args.sessionId,
-        name: args.playerName,
-        catId: args.catId,
+        name: null,
+        catId: null,
         score: 0,
         current: 0,
       },
@@ -30,6 +28,36 @@ export const createRoom = mutation({
     });
 
     return { roomId };
+  },
+});
+
+export const updatePlayerCharacter = mutation({
+  args: {
+    roomId: v.string(),
+    sessionId: v.string(),
+    playerName: v.string(),
+    catId: v.string(),
+  },
+  async handler(ctx, args) {
+    const room = await ctx.db
+      .query("rooms")
+      .filter((q) => q.eq(q.field("roomId"), args.roomId))
+      .unique();
+
+    if (!room) throw new Error("Room not found");
+
+    const isPlayer1 = room.player1.sessionId === args.sessionId;
+    const playerKey = isPlayer1 ? "player1" : "player2";
+
+    await ctx.db.patch(room._id, {
+      [playerKey]: {
+        ...room[playerKey],
+        name: args.playerName,
+        catId: args.catId,
+      },
+    });
+
+    return { success: true };
   },
 });
 
