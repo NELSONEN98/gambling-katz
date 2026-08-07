@@ -275,14 +275,23 @@ body {
 
 .select-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
   margin-top: 2rem;
   font-family: var(--display);
   font-size: 1.1rem;
   color: var(--bone-dim);
   letter-spacing: 0.2rem;
   text-transform: uppercase;
+}
+.select-footer > :not(.btn-nav) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.select-footer .btn-nav {
+  align-self: center;
+  margin-top: auto;
 }
 .select-footer .p1-pick, .select-footer .p2-pick {
   display: flex;
