@@ -564,7 +564,6 @@ function init() {
   screens.title.addEventListener("click", leaveTitle);
 
   $("#btn-menu-back").addEventListener("click", () => switchScreen("title"));
-  $("#btn-select-back").addEventListener("click", () => switchScreen("menu"));
   $("#btn-select-back-top").addEventListener("click", () => switchScreen("menu"));
 
   $("#btn-roll").addEventListener("click", rollDice);

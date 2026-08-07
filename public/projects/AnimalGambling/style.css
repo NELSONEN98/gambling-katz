@@ -925,6 +925,36 @@ body {
   letter-spacing: 0.2rem;
 }
 
+/* Navigation button — unified style */
+.btn-nav {
+  font-family: var(--display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.3rem;
+  text-transform: uppercase;
+  padding: 1rem 1.8rem;
+  background: #E4A700;
+  color: #000;
+  border: none;
+  border-radius: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-nav:hover:not(:disabled) {
+  background: #f5b942;
+  box-shadow: 0 0 1.6rem rgba(228, 167, 0, 0.5);
+  transform: translateY(-2px);
+}
+.btn-nav:active:not(:disabled) {
+  transform: translateY(0px);
+}
+.btn-nav:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ============================================
    GAME OVER SCREEN
    ============================================ */
