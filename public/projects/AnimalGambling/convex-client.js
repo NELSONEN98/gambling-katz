@@ -1,7 +1,4 @@
-const CONVEX_URL = "https://quixotic-squid-855.convex.cloud";
-
-// Lazy-loaded Convex client
-let convexClient = null;
+const CONVEX_PROXY_URL = "http://localhost:3000";
 
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -19,37 +16,29 @@ function getSessionId() {
   return sessionId;
 }
 
-async function getConvexClient() {
-  if (convexClient) return convexClient;
-
-  // Dynamically import the ConvexHttpClient from CDN
+async function callConvexViaProxy(functionPath, args) {
   try {
-    const module = await import("https://cdn.jsdelivr.net/npm/convex@latest/dist/index.js");
+    const response = await fetch(`${CONVEX_PROXY_URL}/api/convex`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ functionPath, args }),
+    });
 
-    // Try different possible exports
-    const ConvexHttpClient =
-      module.ConvexHttpClient ||
-      module.default?.ConvexHttpClient ||
-      module.default;
-
-    if (!ConvexHttpClient) {
-      console.error("Available exports:", Object.keys(module));
-      throw new Error("ConvexHttpClient not found in module");
+    if (!response.ok) {
+      throw new Error(`Proxy error: ${response.status}`);
     }
 
-    convexClient = new ConvexHttpClient(CONVEX_URL);
-    return convexClient;
+    return await response.json();
   } catch (error) {
-    console.error("Failed to load Convex SDK:", error);
-    throw new Error("Convex SDK failed to load from CDN: " + error.message);
+    console.error("Convex proxy error:", error);
+    throw new Error(`Convex call failed: ${error.message}`);
   }
 }
 
 async function createOnlineRoom() {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    const result = await convex.mutation("rooms:createRoom", { sessionId });
+    const result = await callConvexViaProxy("rooms:createRoom", { sessionId });
     return result.roomId;
   } catch (error) {
     console.error("Error creating room:", error);
@@ -60,8 +49,7 @@ async function createOnlineRoom() {
 async function updatePlayerCharacter(roomId, playerName, catId) {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    return await convex.mutation("rooms:updatePlayerCharacter", {
+    return await callConvexViaProxy("rooms:updatePlayerCharacter", {
       roomId,
       sessionId,
       playerName,
@@ -76,8 +64,7 @@ async function updatePlayerCharacter(roomId, playerName, catId) {
 async function joinOnlineRoom(roomId, playerName, catId) {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    const result = await convex.mutation("rooms:joinRoom", {
+    const result = await callConvexViaProxy("rooms:joinRoom", {
       roomId,
       sessionId,
       playerName,
@@ -92,8 +79,7 @@ async function joinOnlineRoom(roomId, playerName, catId) {
 
 async function getRoom(roomId) {
   try {
-    const convex = await getConvexClient();
-    return await convex.query("rooms:getRoom", { roomId });
+    return await callConvexViaProxy("rooms:getRoom", { roomId });
   } catch (error) {
     console.error("Error fetching room:", error);
     throw error;
@@ -122,8 +108,7 @@ function watchRoom(roomId, callback) {
 async function rollDice(roomId) {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    return await convex.mutation("rooms:rollDice", { roomId, sessionId });
+    return await callConvexViaProxy("rooms:rollDice", { roomId, sessionId });
   } catch (error) {
     console.error("Error rolling dice:", error);
     throw error;
@@ -133,8 +118,7 @@ async function rollDice(roomId) {
 async function holdScore(roomId) {
   const sessionId = getSessionId();
   try {
-    const convex = await getConvexClient();
-    return await convex.mutation("rooms:holdScore", { roomId, sessionId });
+    return await callConvexViaProxy("rooms:holdScore", { roomId, sessionId });
   } catch (error) {
     console.error("Error holding score:", error);
     throw error;
