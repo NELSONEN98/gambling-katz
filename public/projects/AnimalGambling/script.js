@@ -221,7 +221,14 @@ function updatePlayButton() {
 
 function pickCharacter(idx) {
   const card = $$(".char-card")[idx];
+
+  // Prevent clicking same card twice
   if (card.classList.contains("selected")) return;
+
+  // Limit selections based on mode
+  const selectedCount = $$(".char-card.selected").length;
+  if (state.gameMode === "online" && selectedCount >= 1) return; // Online: only 1
+  if (state.gameMode === "local" && selectedCount >= 2) return;  // Local: only 2
 
   const char = ROSTER[idx];
   state.players[state.picking] = { char, score: 0, current: 0 };
