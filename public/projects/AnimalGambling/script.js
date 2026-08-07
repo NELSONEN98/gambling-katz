@@ -195,10 +195,25 @@ function renderCharGrid() {
   });
 }
 
-/* Update the footer picks display (what's left is just that). */
 function updateSelectHeader() {
-  $("#p1-pick").textContent = state.players[0]?.char.name || "— ninguno —";
-  $("#p2-pick").textContent = state.players[1]?.char.name || "— ninguno —";
+  // Solo actualizar si los elementos existen
+  if ($("#p1-pick")) {
+    $("#p1-pick").textContent = state.players[0]?.char.name || "— ninguno —";
+  }
+  if ($("#p2-pick")) {
+    $("#p2-pick").textContent = state.players[1]?.char.name || "— ninguno —";
+  }
+}
+
+function updatePlayButton() {
+  const btn = $("#btn-play");
+  if (state.gameMode === "online") {
+    // Online: solo necesita P1
+    btn.disabled = !state.players[0];
+  } else {
+    // Local: necesita P1 y P2
+    btn.disabled = !state.players[0] || !state.players[1];
+  }
 }
 
 function pickCharacter(idx) {
@@ -212,13 +227,21 @@ function pickCharacter(idx) {
   card.setAttribute("data-player", state.picking === 0 ? "P1" : "P2");
 
   if (state.picking === 0) {
-    state.picking = 1;
-    $("#char-grid").classList.add("p2-turn");
-    updateSelectHeader();
+    state.selectedCatP1 = idx;
+    if (state.gameMode === "online") {
+      // Online: habilitar botón Jugar con solo P1
+      updatePlayButton();
+    } else {
+      // Local: esperar P2
+      state.picking = 1;
+      $("#char-grid").classList.add("p2-turn");
+      updateSelectHeader();
+    }
   } else {
-    // both picked — start game
+    // P2 elegido
+    state.selectedCatP2 = idx;
     updateSelectHeader();
-    setTimeout(() => startGame(), 500);
+    updatePlayButton();
   }
 }
 
@@ -575,6 +598,7 @@ function init() {
 
   $("#btn-menu-back").addEventListener("click", () => switchScreen("title"));
   $("#btn-select-back-top").addEventListener("click", () => switchScreen("menu"));
+  $("#btn-play").addEventListener("click", startGame);
   $("#btn-create-room").addEventListener("click", handleCreateRoom);
   $("#btn-join-room").addEventListener("click", handleJoinRoom);
   $("#btn-cancel-wait").addEventListener("click", handleCancelWait);

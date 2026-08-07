@@ -369,45 +369,15 @@ body {
 
 .select-footer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 2rem;
+  justify-content: center;
+  align-items: center;
   margin-top: 2rem;
-  font-family: var(--display);
-  font-size: 1.1rem;
-  color: var(--bone-dim);
-  letter-spacing: 0.2rem;
-  text-transform: uppercase;
 }
-.select-footer > :not(.btn-nav) {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+
 .select-footer .btn-nav {
-  align-self: center;
-  margin-top: auto;
-}
-.select-footer .p1-pick, .select-footer .p2-pick {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-.select-footer .pick-label {
-  color: var(--bone-dim);
-}
-.select-footer .pick-val {
-  color: var(--bone);
-  font-weight: 700;
-}
-.select-footer .p1-pick .pick-dot {
-  width: 0.8rem; height: 0.8rem;
-  background: var(--neon-amber);
-  box-shadow: 0 0 0.8rem var(--neon-amber);
-}
-.select-footer .p2-pick .pick-dot {
-  width: 0.8rem; height: 0.8rem;
-  background: var(--cyan);
-  box-shadow: 0 0 0.8rem var(--cyan);
+  min-width: 15rem;
 }
 
 /* ============================================
